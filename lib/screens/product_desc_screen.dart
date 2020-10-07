@@ -16,16 +16,19 @@ class ProductDescription extends StatelessWidget {
         .getProductFromId(productId);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.title)),
+      appBar: AppBar(
+        title: Text(product.title),
+      ),
       body: SingleChildScrollView(
-          child: Card(
-        elevation: 10,
-        margin: EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [],
+        child: Card(
+          elevation: 10,
+          margin: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

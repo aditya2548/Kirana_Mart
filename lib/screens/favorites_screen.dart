@@ -27,8 +27,8 @@ class FavoritesScreen extends StatelessWidget {
               crossAxisSpacing: 15,
               mainAxisSpacing: 15,
             ),
-            //  Not using ChangeNotifierProvider with builder method because in that case,
-            //  Widgets get recycled, we are changing the widget data in recycling
+            //  Not using ChangeNotifierProvider with builder method because that case gets buggy when
+            //  Widgets get recycled,as we are changing the widget data in recycling
             //  Here widget gets attached to changing data instead of provider being attahced to changing data
             itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
               value: favProductList[index],

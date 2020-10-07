@@ -1,3 +1,6 @@
+import './models/cart_provider.dart';
+import './screens/cart_screen.dart';
+
 import './screens/home_page_tabs_screen.dart';
 import './models/product_provider.dart';
 import './screens/product_desc_screen.dart';
@@ -10,9 +13,18 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //  change notifier for changes in ProdutsProvider(list of products)
-    return ChangeNotifierProvider(
-      create: (_) => ProductsProvider(),
+    //  multiprovider with several childs change notifier for changes in
+    //  ->  ProdutsProvider(list of products)
+    //  -> CartProvider (list of cart-items)
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProductsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CartProvider(),
+        ),
+      ],
       child: MaterialApp(
         title: "Kirana Mart",
         theme: ThemeData(
@@ -25,6 +37,7 @@ class MyApp extends StatelessWidget {
         home: HomePageTabsScreen(),
         routes: {
           ProductDescription.routeName: (ctx) => ProductDescription(),
+          CartScreen.routeName: (ctx) => CartScreen(),
         },
       ),
     );
