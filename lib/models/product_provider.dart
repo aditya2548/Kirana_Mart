@@ -46,6 +46,16 @@ class ProductsProvider with ChangeNotifier {
     return [..._productItems];
   }
 
+  //  function to get a copy of list of favorite products
+  List<Product> get getFavoriteProductItems {
+    return _productItems.where((element) => element.isFav).toList();
+  }
+
+  //  function to reload all the favorites
+  void reloadFavorites() {
+    notifyListeners();
+  }
+
   //  function to get a product when id is provided
   Product getProductFromId(String id) {
     return _productItems.firstWhere((element) => element.id == id);

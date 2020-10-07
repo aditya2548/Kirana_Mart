@@ -16,7 +16,7 @@ class ProductDescription extends StatelessWidget {
         .getProductFromId(productId);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Kirana Mart")),
+      appBar: AppBar(title: Text(product.title)),
       body: SingleChildScrollView(
           child: Card(
         elevation: 10,

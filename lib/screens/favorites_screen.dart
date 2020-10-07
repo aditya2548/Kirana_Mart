@@ -1,35 +1,23 @@
 import '../models/product_provider.dart';
 import '../widgets/product_item.dart';
-
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-class ProductsListScreen extends StatelessWidget {
+import 'package:provider/provider.dart';
+
+class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //  Fetch product list using Provider
-    final productList = Provider.of<ProductsProvider>(context).getProductItems;
-    //  Individual product item
+    final productListProvider = Provider.of<ProductsProvider>(context);
+    final favProductList = productListProvider.getFavoriteProductItems;
     return Column(
       children: [
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          "Categories",
-          textAlign: TextAlign.left,
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [Text("A"), Text("A"), Text("A"), Text("A"), Text("A")],
-            )),
-        SizedBox(
-          height: 10,
-        ),
+        FlatButton.icon(
+            onPressed: () {
+              productListProvider.reloadFavorites();
+            },
+            icon: Icon(Icons.refresh),
+            label: Text("Reload favorites")),
         Flexible(
           child: GridView.builder(
             shrinkWrap: true,
@@ -43,11 +31,11 @@ class ProductsListScreen extends StatelessWidget {
             //  Widgets get recycled, we are changing the widget data in recycling
             //  Here widget gets attached to changing data instead of provider being attahced to changing data
             itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
-              value: productList[index],
+              value: favProductList[index],
               child: ProductItem(),
             ),
             padding: const EdgeInsets.all(10),
-            itemCount: productList.length,
+            itemCount: favProductList.length,
           ),
         ),
       ],

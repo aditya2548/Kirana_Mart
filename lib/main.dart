@@ -1,6 +1,6 @@
+import './screens/home_page_tabs_screen.dart';
 import './models/product_provider.dart';
 import './screens/product_desc_screen.dart';
-import './screens/products_list_screen.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Kirana Mart",
         theme: ThemeData(
-          primarySwatch: Colors.purple,
+          primarySwatch: Colors.teal,
           brightness: Brightness.dark,
-          accentColor: Colors.deepOrange,
-          primaryColor: Colors.purple,
+          accentColor: Colors.blue,
+          primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
         ),
-        home: ProductsListScreen(),
+        home: HomePageTabsScreen(),
         routes: {
           ProductDescription.routeName: (ctx) => ProductDescription(),
         },
