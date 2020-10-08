@@ -70,7 +70,8 @@ class ProductItem extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.add_shopping_cart_rounded),
                 onPressed: () {
-                  cartItems.addItem(product.id, product.price, product.title);
+                  cartItems.addItemWithQuantity(
+                      product.id, product.price, product.title, 1);
                 },
                 color: Theme.of(context).accentColor,
               ),

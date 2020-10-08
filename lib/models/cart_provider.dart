@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 //  Class for a cart item (CartItem.productId != product.productId)
 class CartItem {
@@ -23,28 +24,40 @@ class CartProvider with ChangeNotifier {
     return {..._cardItemsList};
   }
 
-  //  method to add an item to the cart
-  void addItem(String productId, double price, String title) {
+  //  method to add an item to the cart with given quantity with a toast message
+  void addItemWithQuantity(
+      String productId, double price, String title, int quantity) {
     //  if product already in cart, just change quantity, else add item
+    String toastText = "";
     if (_cardItemsList.containsKey(productId)) {
+      toastText = "Added $quantity more $title to Cart :)";
       _cardItemsList.update(
         productId,
         (oldItem) => CartItem(
             id: oldItem.id,
             title: oldItem.title,
-            quantity: oldItem.quantity + 1,
+            quantity: oldItem.quantity + quantity,
             pricePerUnit: oldItem.pricePerUnit),
       );
     } else {
+      toastText = "Added $quantity $title to Cart :)";
       _cardItemsList.putIfAbsent(
         productId,
         () => CartItem(
             id: DateTime.now().toString(),
             title: title,
-            quantity: 1,
+            quantity: quantity,
             pricePerUnit: price),
       );
     }
+    Fluttertoast.showToast(
+      msg: toastText,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      backgroundColor: Colors.green[100],
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
     notifyListeners();
   }
 

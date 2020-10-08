@@ -2,6 +2,7 @@ import '../models/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//  A single item present in mycart
 class MyCartItem extends StatelessWidget {
   @required
   final String productId;
@@ -108,7 +109,7 @@ class MyCartItem extends StatelessWidget {
                       ),
                       onPressed: () {
                         Provider.of<CartProvider>(context, listen: false)
-                            .addItem(productId, price, title);
+                            .addItemWithQuantity(productId, price, title, 1);
                       }),
                   Container(
                       padding: EdgeInsets.all(10),

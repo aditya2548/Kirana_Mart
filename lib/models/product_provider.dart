@@ -7,7 +7,8 @@ class ProductsProvider with ChangeNotifier {
     Product(
       id: 'p1',
       title: 'Ketchup',
-      description: 'tomato ketchup',
+      description:
+          "tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup",
       price: 50,
       imageUrl:
           'https://assets.sainsburys-groceries.co.uk/gol/3304846/1/640x640.jpg',
