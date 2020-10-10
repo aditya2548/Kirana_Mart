@@ -1,3 +1,7 @@
+import './screens/orders_screen.dart';
+
+import './models/orders_provider.dart';
+
 import './models/cart_provider.dart';
 import './screens/cart_screen.dart';
 
@@ -24,6 +28,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => CartProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => OrdersProvider(),
+        )
       ],
       child: MaterialApp(
         title: "Kirana Mart",
@@ -38,6 +45,7 @@ class MyApp extends StatelessWidget {
         routes: {
           ProductDescription.routeName: (ctx) => ProductDescription(),
           CartScreen.routeName: (ctx) => CartScreen(),
+          OrdersScreen.routeName: (ctx) => OrdersScreen(),
         },
       ),
     );

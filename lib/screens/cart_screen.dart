@@ -1,5 +1,7 @@
 import '../models/cart_provider.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/my_cart_item.dart';
+import '../models/orders_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +15,7 @@ class CartScreen extends StatelessWidget {
     final cartData = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cart"),
+        title: Text("My Cart"),
       ),
       body: Column(
         children: [
@@ -39,10 +41,19 @@ class CartScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Text(" Total: "),
-                  Text("Rs. ${cartData.getTotalCartAmount}"),
+                  Text("Rs. ${cartData.getTotalCartAmount.toStringAsFixed(2)}"),
                   Spacer(),
                   FlatButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      //  listen->false as no need to listen to changes in orders data over here
+                      Provider.of<OrdersProvider>(context, listen: false)
+                          .addOrder(
+                        cartData.getCardItemsList.values.toList(),
+                        cartData.getTotalCartAmount,
+                      );
+                      //  Clear cart after placing order
+                      cartData.clearCart();
+                    },
                     color: Theme.of(context).primaryColor,
                     icon: Icon(Icons.assignment_turned_in),
                     label: Text(
@@ -72,6 +83,7 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
+      drawer: AppDrawer(),
     );
   }
 }

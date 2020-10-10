@@ -50,10 +50,11 @@ class CartProvider with ChangeNotifier {
             pricePerUnit: price),
       );
     }
+    Fluttertoast.cancel();
     Fluttertoast.showToast(
       msg: toastText,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
+      gravity: ToastGravity.CENTER,
       backgroundColor: Colors.green[100],
       textColor: Colors.black,
       fontSize: 16.0,
@@ -95,5 +96,11 @@ class CartProvider with ChangeNotifier {
               pricePerUnit: value.pricePerUnit));
       notifyListeners();
     }
+  }
+
+  //  Method to empty our cart(used after the order is placed)
+  void clearCart() {
+    _cardItemsList = {};
+    notifyListeners();
   }
 }
