@@ -61,4 +61,32 @@ class ProductsProvider with ChangeNotifier {
   Product getProductFromId(String id) {
     return _productItems.firstWhere((element) => element.id == id);
   }
+
+  //  Function to add a product to product list
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        productCategory: product.productCategory);
+    _productItems.insert(0, newProduct);
+    notifyListeners();
+  }
+
+  //  Function to update a product present in product list
+  void updateProduct(String id, Product product) {
+    final index = _productItems.indexWhere((element) => element.id == id);
+    if (index >= 0) {
+      _productItems[index] = product;
+      notifyListeners();
+    }
+  }
+
+  //  Function to delete product
+  void deleteProduct(String id) {
+    _productItems.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
 }

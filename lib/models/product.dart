@@ -61,6 +61,23 @@ class Product with ChangeNotifier {
     }
   }
 
+  static ProductCategory stringtoProductCat(String c) {
+    switch (c) {
+      case "Beverage":
+        return ProductCategory.Beverages;
+      case "Cooking Essential":
+        return ProductCategory.CookingEssentials;
+      case "Household":
+        return ProductCategory.HouseHold;
+      case "Packaged Food":
+        return ProductCategory.PackagedFoods;
+      case "Personal Care":
+        return ProductCategory.PersonalCare;
+      default:
+        return ProductCategory.HouseHold;
+    }
+  }
+
 //  function to toggle favourite status and to notify to all the listeners of product
   void toggleFav() {
     isFav = !isFav;
