@@ -1,3 +1,4 @@
+import '../models/cart_provider.dart';
 import '../screens/product_desc_screen.dart';
 import '../models/product.dart';
 
@@ -10,6 +11,9 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context);
+    // cartprovider has listen false as no change of adding product on display screen
+    final CartProvider cartItems =
+        Provider.of<CartProvider>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15), topRight: Radius.circular(15)),
@@ -65,7 +69,10 @@ class ProductItem extends StatelessWidget {
               )),
               IconButton(
                 icon: Icon(Icons.add_shopping_cart_rounded),
-                onPressed: () {},
+                onPressed: () {
+                  cartItems.addItemWithQuantity(
+                      product.id, product.price, product.title, 1);
+                },
                 color: Theme.of(context).accentColor,
               ),
             ],

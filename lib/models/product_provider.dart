@@ -7,7 +7,8 @@ class ProductsProvider with ChangeNotifier {
     Product(
       id: 'p1',
       title: 'Ketchup',
-      description: 'tomato ketchup',
+      description:
+          "tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup",
       price: 50,
       imageUrl:
           'https://assets.sainsburys-groceries.co.uk/gol/3304846/1/640x640.jpg',
@@ -46,8 +47,46 @@ class ProductsProvider with ChangeNotifier {
     return [..._productItems];
   }
 
+  //  function to get a copy of list of favorite products
+  List<Product> get getFavoriteProductItems {
+    return _productItems.where((element) => element.isFav).toList();
+  }
+
+  //  function to reload all the favorites
+  void reloadFavorites() {
+    notifyListeners();
+  }
+
   //  function to get a product when id is provided
   Product getProductFromId(String id) {
     return _productItems.firstWhere((element) => element.id == id);
+  }
+
+  //  Function to add a product to product list
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        productCategory: product.productCategory);
+    _productItems.insert(0, newProduct);
+    notifyListeners();
+  }
+
+  //  Function to update a product present in product list
+  void updateProduct(String id, Product product) {
+    final index = _productItems.indexWhere((element) => element.id == id);
+    if (index >= 0) {
+      _productItems[index] = product;
+      notifyListeners();
+    }
+  }
+
+  //  Function to delete product
+  void deleteProduct(String id) {
+    _productItems.removeWhere((element) => element.id == id);
+    notifyListeners();
   }
 }
