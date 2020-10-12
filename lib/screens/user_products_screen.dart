@@ -30,15 +30,20 @@ class UserProductsScreen extends StatelessWidget {
         onPressed: () =>
             Navigator.of(context).pushNamed(EditUserProductScreen.routeName),
       ),
-      body: ListView.builder(
-        itemCount: myProductsData.length,
-        itemBuilder: (ctx, index) => UserProductItem(
-          id: myProductsData[index].id,
-          title: myProductsData[index].title,
-          description: myProductsData[index].description,
-          imageUrl: myProductsData[index].imageUrl,
-          price: myProductsData[index].price,
-          productCategory: myProductsData[index].productCategory,
+      //  RefreshIndicator to re-fetch the products list
+      body: RefreshIndicator(
+        onRefresh: () => Provider.of<ProductsProvider>(context, listen: false)
+            .fetchProducts(),
+        child: ListView.builder(
+          itemCount: myProductsData.length,
+          itemBuilder: (ctx, index) => UserProductItem(
+            id: myProductsData[index].id,
+            title: myProductsData[index].title,
+            description: myProductsData[index].description,
+            imageUrl: myProductsData[index].imageUrl,
+            price: myProductsData[index].price,
+            productCategory: myProductsData[index].productCategory,
+          ),
         ),
       ),
       drawer: AppDrawer(),

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
-import '../models/product_provider.dart';
-import 'package:provider/provider.dart';
+import '../dialog/custom_dialog.dart';
 
 import '../models/product.dart';
 
@@ -36,33 +35,6 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  Alert dialog that returns Future<true> if we click on delete and deletes product
-    Future<bool> deleteProduct(String id) async {
-      return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Confirm"),
-            content:
-                const Text("Are you sure you wish to delete this product?"),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Provider.of<ProductsProvider>(context, listen: false)
-                        .deleteProduct(id);
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text("DELETE")),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("CANCEL"),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     return Card(
       elevation: 20,
       margin: EdgeInsets.all(10),
@@ -141,7 +113,8 @@ class UserProductItem extends StatelessWidget {
                 ),
                 color: Theme.of(context).errorColor,
                 onPressed: () {
-                  deleteProduct(id);
+                  CustomDialog.deleteProductDialogWithIdFromMyProducts(
+                      id, context);
                 },
               ),
             ],

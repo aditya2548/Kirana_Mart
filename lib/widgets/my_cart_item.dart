@@ -1,3 +1,5 @@
+import '../dialog/custom_dialog.dart';
+
 import '../models/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,32 +21,6 @@ class MyCartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  Alert dialog that returns Future<true> if we click on delete
-    Future<bool> confirmDelete() async {
-      return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Confirm"),
-            content: const Text("Are you sure you wish to delete this item?"),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Provider.of<CartProvider>(context, listen: false)
-                        .removeItem(productId);
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text("DELETE")),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("CANCEL"),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     //  return dismissable so that we can swipe right and delete item completely
     //  or we also have + and - buttons to increase and decrease count
     return Dismissible(
@@ -58,7 +34,8 @@ class MyCartItem extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
       ),
-      confirmDismiss: (dir) => confirmDelete(),
+      confirmDismiss: (dir) =>
+          CustomDialog.deleteProductDialogWithIdFromCart(productId, context),
       direction: DismissDirection.endToStart,
       child: Card(
         elevation: 20,
@@ -127,7 +104,8 @@ class MyCartItem extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (quantity == 1)
-                        confirmDelete();
+                        CustomDialog.deleteProductDialogWithIdFromCart(
+                            productId, context);
                       else
                         Provider.of<CartProvider>(context, listen: false)
                             .decreaseItemCount(productId, quantity);

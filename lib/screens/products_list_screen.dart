@@ -61,23 +61,29 @@ class ProductsListScreen extends StatelessWidget {
         //  re-build everytime, just the products grid needs to be re-built
         Consumer<ProductsProvider>(
           builder: (ctx, productList, child) => Flexible(
-            child: GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
+            //  RefreshIndicator to re-fetch the products list
+            child: RefreshIndicator(
+              onRefresh: () =>
+                  Provider.of<ProductsProvider>(context, listen: false)
+                      .fetchProducts(),
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                ),
+                //  Not using ChangeNotifierProvider with builder method because in that case,
+                //  Widgets get recycled, we are changing the widget data in recycling
+                //  Here widget gets attached to changing data instead of provider being attahced to changing data
+                itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
+                  value: productList.getProductItems[index],
+                  child: ProductItem(),
+                ),
+                padding: const EdgeInsets.all(10),
+                itemCount: productList.getProductItems.length,
               ),
-              //  Not using ChangeNotifierProvider with builder method because in that case,
-              //  Widgets get recycled, we are changing the widget data in recycling
-              //  Here widget gets attached to changing data instead of provider being attahced to changing data
-              itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
-                value: productList.getProductItems[index],
-                child: ProductItem(),
-              ),
-              padding: const EdgeInsets.all(10),
-              itemCount: productList.getProductItems.length,
             ),
           ),
         )
