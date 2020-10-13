@@ -49,6 +49,13 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //  variable and method to get count of fav items to be shown as badge count
+    int count;
+    setState(() {
+      count =
+          Provider.of<ProductsProvider>(context).getFavoriteProductItems.length;
+    });
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -110,6 +117,18 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                   Text(
                     "Fav",
                   ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Badge(
+                    badgeColor: Colors.green,
+                    animationDuration: Duration(milliseconds: 200),
+                    animationType: BadgeAnimationType.scale,
+                    badgeContent: Text(
+                      count.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  )
                 ],
               ),
             ),
