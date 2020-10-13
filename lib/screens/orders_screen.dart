@@ -22,7 +22,7 @@ class OrdersScreen extends StatelessWidget {
           itemBuilder: (ctx, index) => MyOrdersItem(ordersList.toList()[index]),
         ),
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer("My Orders"),
     );
   }
 }

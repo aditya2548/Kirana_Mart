@@ -5,17 +5,48 @@ import '../screens/orders_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
+  //  Name of the page from where we opened the app drawer
+  final String parentName;
+  AppDrawer(this.parentName);
+
   @override
   Widget build(BuildContext context) {
+    //  Function to go to the desired page, if not there already
+    void checkAndPush(String name, String routeName) {
+      if (parentName == name) {
+        Navigator.of(context).pop();
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Already in $name",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 10),
+            ),
+            backgroundColor: Theme.of(context).primaryColorDark,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      } else {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
+      }
+    }
+
     return Drawer(
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 30, bottom: 30),
+            margin: EdgeInsets.fromLTRB(
+                5, MediaQuery.of(context).padding.top + 5, 5, 2),
             width: double.infinity,
             color: Theme.of(context).primaryColor,
-            height: 30,
-            child: Text("Hello user"),
+            height: 50,
+            child: Center(
+              child: Text(
+                "HELLO, FRIEND",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
           Divider(
             thickness: 2,
@@ -24,7 +55,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.shopping_bag_rounded),
             title: Text("Home"),
             onTap: () {
-              Navigator.of(context).pushNamed('/');
+              checkAndPush("Home", "/");
             },
           ),
           Divider(
@@ -34,7 +65,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.request_page),
             title: Text("My Orders"),
             onTap: () {
-              Navigator.of(context).pushNamed(OrdersScreen.routeName);
+              checkAndPush("My Orders", OrdersScreen.routeName);
             },
           ),
           Divider(
@@ -44,7 +75,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.shopping_bag_rounded),
             title: Text("My Cart"),
             onTap: () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
+              checkAndPush("My Cart", CartScreen.routeName);
             },
           ),
           Divider(
@@ -54,7 +85,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.edit_outlined),
             title: Text("My Products"),
             onTap: () {
-              Navigator.of(context).pushNamed(UserProductsScreen.routeName);
+              checkAndPush("My Products", UserProductsScreen.routeName);
             },
           ),
           Divider(

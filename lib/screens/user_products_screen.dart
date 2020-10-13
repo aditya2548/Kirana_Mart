@@ -46,7 +46,7 @@ class UserProductsScreen extends StatelessWidget {
           ),
         ),
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer("My Products"),
     );
   }
 }

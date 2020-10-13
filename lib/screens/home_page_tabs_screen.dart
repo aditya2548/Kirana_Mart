@@ -162,7 +162,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
             FavoritesScreen(),
           ],
         ),
-        drawer: AppDrawer(),
+        drawer: AppDrawer("Home"),
       ),
     );
   }

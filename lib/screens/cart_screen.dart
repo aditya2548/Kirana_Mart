@@ -83,7 +83,7 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer("My Cart"),
     );
   }
 }

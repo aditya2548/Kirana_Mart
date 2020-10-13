@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
         ),
+        themeMode: ThemeMode.dark,
         home: HomePageTabsScreen(),
         routes: {
           ProductDescription.routeName: (ctx) => ProductDescription(),
