@@ -1,3 +1,4 @@
+import '../dialog/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'product.dart';
@@ -67,11 +68,14 @@ class ProductsProvider with ChangeNotifier {
   //  Function to add a product to product list and firestore collection "Products"
   //  The id generated from there is used as product id
   //  wait for value from "await", then further code executed
+  //  Product not added to local product-list -
+  //  as we are listening to product changes in resl-time using fetchProductsRealTime
   Future<void> addProduct(Product product) async {
+    print("add");
     try {
       final CollectionReference c =
           FirebaseFirestore.instance.collection("Products");
-      final value = await c.add(
+      await c.add(
         {
           "title": product.title,
           "description": product.description,
@@ -82,15 +86,6 @@ class ProductsProvider with ChangeNotifier {
           "isFav": product.isFav,
         },
       );
-      final newProduct = Product(
-          id: value.id,
-          title: product.title,
-          description: product.description,
-          imageUrl: product.imageUrl,
-          price: product.price,
-          productCategory: product.productCategory);
-      _productItems.insert(0, newProduct);
-      notifyListeners();
     }
     //  throw the error to the screen/widget using the method
     catch (error) {
@@ -98,8 +93,62 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  //  Function to load products from firestore and storing fetched products to our list of products
-  Future<void> fetchProducts() async {
+  //  Function to fetch products from firestore in real-time
+  //  Add changes in update/add/delete products are handled here to show effect
+  Future<void> fetchProductsRealTime() async {
+    print("fetch");
+
+    final CollectionReference c =
+        FirebaseFirestore.instance.collection("Products");
+
+    List<Product> _fetchedProducts = [];
+    try {
+      c.snapshots().listen((event) {
+        event.docChanges.forEach((element) {
+          if (element.type == DocumentChangeType.added) {
+            print("add");
+            _fetchedProducts.add(
+              Product(
+                id: element.doc.id,
+                title: element.doc.data()["title"],
+                description: element.doc.data()["description"],
+                imageUrl: element.doc.data()["imageUrl"],
+                price: element.doc.data()["price"],
+                productCategory: Product.stringtoProductCat(
+                    element.doc.data()["productCategory"]),
+              ),
+            );
+          } else if (element.type == DocumentChangeType.modified) {
+            print("modify");
+            final modifyIndex =
+                _fetchedProducts.indexWhere((el) => el.id == element.doc.id);
+            _fetchedProducts[modifyIndex] = Product(
+              id: element.doc.id,
+              title: element.doc.data()["title"],
+              description: element.doc.data()["description"],
+              imageUrl: element.doc.data()["imageUrl"],
+              price: element.doc.data()["price"],
+              productCategory: Product.stringtoProductCat(
+                  element.doc.data()["productCategory"]),
+              isFav: _fetchedProducts[modifyIndex].isFav,
+            );
+          } else if (element.type == DocumentChangeType.removed) {
+            print("remove");
+            _fetchedProducts.removeWhere((el) => el.id == element.doc.id);
+          }
+          print(_fetchedProducts.length);
+          _productItems = _fetchedProducts;
+          notifyListeners();
+        });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //  Function to reload products from firestore and storing fetched products to our list of products
+  //  Used for pull down to refresh
+  Future<void> reloadProducts() async {
     try {
       final CollectionReference c =
           FirebaseFirestore.instance.collection("Products");
@@ -121,23 +170,63 @@ class ProductsProvider with ChangeNotifier {
       _productItems = _fetchedProducts;
       notifyListeners();
     } catch (error) {
-      print(error);
       throw error;
     }
   }
 
   //  Function to update a product present in product list
-  void updateProduct(String id, Product product) {
-    final index = _productItems.indexWhere((element) => element.id == id);
-    if (index >= 0) {
-      _productItems[index] = product;
-      notifyListeners();
+  //  Product not modified in local product-list -
+  //  as we are listening to product changes in resl-time using fetchProductsRealTime
+  Future<void> updateProduct(String id, Product product) async {
+    print("update");
+    try {
+      final DocumentReference docRef =
+          FirebaseFirestore.instance.collection("Products").doc(id);
+
+      await docRef.update(
+        {
+          "title": product.title,
+          "description": product.description,
+          "imageUrl": product.imageUrl,
+          "price": product.price,
+          "productCategory":
+              Product.productCattoString(product.productCategory),
+          "isFav": product.isFav,
+        },
+      );
+    } catch (error) {
+      throw error;
     }
   }
 
   //  Function to delete product
-  void deleteProduct(String id) {
-    _productItems.removeWhere((element) => element.id == id);
-    notifyListeners();
+  //  Also check whether product is present there,
+  //  because .delete won't throw an exception even if product doesn't exist
+  //  So, delete product only if it exists at specified location in firestore
+  //  else show an error-dialog
+  Future<void> deleteProduct(String id, BuildContext context) async {
+    try {
+      final DocumentReference docRef =
+          FirebaseFirestore.instance.collection("Products").doc(id);
+      docRef.get().then(
+        (value) {
+          //  If that product is present in collection
+          if (value.exists) {
+            print("there");
+            docRef.delete();
+            Navigator.of(context).pop(true);
+          }
+          //  If product is not there, show error
+          else {
+            CustomDialog.generalErrorDialog(context)
+                .then((value) => Navigator.of(context).pop(true));
+          }
+        },
+      );
+    } catch (error) {
+      print(error);
+    } finally {
+      notifyListeners();
+    }
   }
 }

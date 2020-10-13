@@ -112,13 +112,12 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
 
         //  If updating existing product
         if (_editedProduct.id != null) {
-          Provider.of<ProductsProvider>(context, listen: false)
-              .updateProduct(_editedProduct.id, _editedProduct);
-          setState(() {
-            //  Stop showing progress bar
-            _progressBar = false;
-          });
-          Navigator.of(context).pop();
+          try {
+            await Provider.of<ProductsProvider>(context, listen: false)
+                .updateProduct(_editedProduct.id, _editedProduct);
+          } catch (error) {
+            await CustomDialog.generalErrorDialog(context);
+          }
         }
         //  if adding new product
         else {
@@ -126,15 +125,15 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
             await Provider.of<ProductsProvider>(context, listen: false)
                 .addProduct(_editedProduct);
           } catch (error) {
-            CustomDialog.generalErrorDialog(context);
-          } finally {
-            setState(() {
-              //  Stop showing progress bar
-              _progressBar = false;
-            });
-            Navigator.of(context).pop();
+            await CustomDialog.generalErrorDialog(context);
           }
         }
+        //  finally close the screen
+        setState(() {
+          //  Stop showing progress bar
+          _progressBar = false;
+        });
+        Navigator.of(context).pop();
       }
     }
 

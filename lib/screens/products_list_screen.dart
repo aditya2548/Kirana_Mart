@@ -65,7 +65,7 @@ class ProductsListScreen extends StatelessWidget {
             child: RefreshIndicator(
               onRefresh: () =>
                   Provider.of<ProductsProvider>(context, listen: false)
-                      .fetchProducts(),
+                      .reloadProducts(),
               child: GridView.builder(
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

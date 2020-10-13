@@ -11,8 +11,14 @@ class CustomDialog {
     return showDialog(
       context: context,
       child: AlertDialog(
-        title: Text("Something went wrong"),
-        content: Text("Please try again later"),
+        title: Text(
+          "Something went wrong",
+          style: TextStyle(fontSize: 15),
+        ),
+        content: Text(
+          "Please try again later",
+          style: TextStyle(fontSize: 14),
+        ),
         actions: [
           FlatButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -37,11 +43,9 @@ class CustomDialog {
           content: const Text("Are you sure you wish to delete this product?"),
           actions: <Widget>[
             FlatButton(
-                onPressed: () {
-                  Provider.of<ProductsProvider>(context, listen: false)
-                      .deleteProduct(id);
-                  Navigator.of(context).pop(true);
-                },
+                onPressed: () =>
+                    Provider.of<ProductsProvider>(context, listen: false)
+                        .deleteProduct(id, context),
                 child: const Text("DELETE")),
             FlatButton(
               onPressed: () => Navigator.of(context).pop(false),

@@ -33,7 +33,7 @@ class UserProductsScreen extends StatelessWidget {
       //  RefreshIndicator to re-fetch the products list
       body: RefreshIndicator(
         onRefresh: () => Provider.of<ProductsProvider>(context, listen: false)
-            .fetchProducts(),
+            .reloadProducts(),
         child: ListView.builder(
           itemCount: myProductsData.length,
           itemBuilder: (ctx, index) => UserProductItem(

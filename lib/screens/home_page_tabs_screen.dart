@@ -24,7 +24,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
   //  Variable to determine whether progress bar must be shown or not
   bool _progressBar = true;
 
-  //  Need to initialize firebase in initState, and then fetch user products list.
+  //  Need to initialize firebase in initState, and then fetch user products list in real-time
   //  Show error dialog if any of the steps fail
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
       //   _progressBar = true;
       // });
       Provider.of<ProductsProvider>(context, listen: false)
-          .fetchProducts()
+          .fetchProductsRealTime()
           .then((_) {
         setState(() {
           _progressBar = false;
