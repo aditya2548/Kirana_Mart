@@ -55,11 +55,6 @@ class ProductsProvider with ChangeNotifier {
     return _productItems.where((element) => element.isFav).toList();
   }
 
-  //  function to reload all the favorites
-  void reloadFavorites() {
-    notifyListeners();
-  }
-
   //  function to get a product when id is provided
   Product getProductFromId(String id) {
     return _productItems.firstWhere((element) => element.id == id);
@@ -139,6 +134,7 @@ class ProductsProvider with ChangeNotifier {
           print(_fetchedProducts.length);
           _productItems = _fetchedProducts;
           notifyListeners();
+          reloadProducts();
         });
       });
     } catch (error) {
