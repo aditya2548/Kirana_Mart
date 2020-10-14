@@ -1,3 +1,5 @@
+import 'package:firebase_storage/firebase_storage.dart';
+
 import '../dialog/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -179,21 +181,39 @@ class ProductsProvider with ChangeNotifier {
   //  Function to update a product present in product list
   //  Product not modified in local product-list -
   //  as we are listening to product changes in resl-time using fetchProductsRealTime
+  //  Need to fetch the product and the imageUrl associated with it, as user might be changing image
+  //  So, we will need to update the image if needed & delete previous image
   Future<void> updateProduct(String id, Product product) async {
     print("update");
     try {
       final DocumentReference docRef =
           FirebaseFirestore.instance.collection("Products").doc(id);
 
-      await docRef.update(
-        {
-          "title": product.title,
-          "description": product.description,
-          "imageUrl": product.imageUrl,
-          "price": product.price,
-          "productCategory":
-              Product.productCattoString(product.productCategory),
-          "isFav": product.isFav,
+      docRef.get().then(
+        (value) {
+          String _fetchedImageUrl = value.data()["imageUrl"];
+
+          docRef.update(
+            {
+              "title": product.title,
+              "description": product.description,
+              "imageUrl": product.imageUrl,
+              "price": product.price,
+              "productCategory":
+                  Product.productCattoString(product.productCategory),
+              "isFav": product.isFav,
+            },
+          );
+          //  if image is also modified, delete previous image from Firebase Storage
+          if (_fetchedImageUrl != product.imageUrl) {
+            FirebaseStorage.instance
+                .getReferenceFromUrl(value.data()["imageUrl"])
+                .then(
+              (imageRef) {
+                imageRef.delete();
+              },
+            );
+          }
         },
       );
     } catch (error) {
@@ -202,6 +222,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   //  Function to delete product
+  //  Also, delete the image associated with the product (by fetching it's reference from url)
   //  Also check whether product is present there,
   //  because .delete won't throw an exception even if product doesn't exist
   //  So, delete product only if it exists at specified location in firestore
@@ -214,8 +235,17 @@ class ProductsProvider with ChangeNotifier {
         (value) {
           //  If that product is present in collection
           if (value.exists) {
-            print("there");
-            docRef.delete();
+            FirebaseStorage.instance
+                .getReferenceFromUrl(value.data()["imageUrl"])
+                .then(
+              (imageRef) {
+                imageRef.delete().then(
+                  (_) {
+                    docRef.delete();
+                  },
+                );
+              },
+            );
             Navigator.of(context).pop(true);
           }
           //  If product is not there, show error

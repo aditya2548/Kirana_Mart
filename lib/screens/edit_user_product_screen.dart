@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
+
 import '../dialog/custom_dialog.dart';
 import 'package:delayed_display/delayed_display.dart';
 
@@ -95,6 +97,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
       }
       setState(() {
         _image = File(image.path);
+        print("\nPath is\n");
+        print(_image.path.split('/').last);
       });
     }
 
@@ -102,7 +106,28 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     Future<void> saveProduct() async {
       //  trigger validators
       final isValid = _formKey.currentState.validate();
+
       if (isValid) {
+        //  Validate if image is selected or not, if not, show a snackbar
+        //  Can't use context directly as it throws error
+        //  We need to fetch context from form globalkey
+        if (_image == null) {
+          Scaffold.of(_formKey.currentContext).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Please select an image from camera/gallery",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Theme.of(context).errorColor,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          return;
+        }
         //  trigger onSaved
         _formKey.currentState.save();
         setState(() {
@@ -110,6 +135,28 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           _progressBar = true;
         });
 
+        //  First save image to Firebase Storage and then save it's fetched Url in FireStore
+
+        String fileName = _image.path.split('/').last;
+        StorageReference firebaseStorageRef =
+            FirebaseStorage.instance.ref().child('ProductImages/$fileName');
+        StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+        // await uploadTask.onComplete;
+        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+        //  Fetch imageUrl
+        String _imageUrl = await taskSnapshot.ref.getDownloadURL();
+        //  Update product with fetched imageUrl
+
+        _editedProduct = Product(
+          id: _editedProduct.id,
+          title: _editedProduct.title,
+          description: _editedProduct.description,
+          imageUrl: _imageUrl,
+          price: _editedProduct.price,
+          productCategory: _editedProduct.productCategory,
+          isFav: _editedProduct.isFav,
+        );
         //  If updating existing product
         if (_editedProduct.id != null) {
           try {
