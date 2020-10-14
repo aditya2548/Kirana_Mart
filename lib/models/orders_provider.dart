@@ -125,4 +125,17 @@ class OrdersProvider with ChangeNotifier {
       throw error;
     }
   }
+
+  //  Function to get last 7 days orders, used to create the chart
+  List<OrderItem> get getLastWeekOrders {
+    return _ordersList
+        .where(
+          (element) => element.dateTime.isAfter(
+            DateTime.now().subtract(
+              Duration(days: 7),
+            ),
+          ),
+        )
+        .toList();
+  }
 }

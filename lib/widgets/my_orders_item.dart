@@ -22,7 +22,7 @@ class MyOrdersItem extends StatelessWidget {
         : " ${order.productsList.length} products. Total amount: Rs.${order.amount}";
     return Card(
       elevation: 20,
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       color: Colors.teal[900],
       child: ExpansionTile(
         trailing: Icon(Icons.arrow_circle_down_outlined),

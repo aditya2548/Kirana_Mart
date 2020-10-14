@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.blue,
           primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
+          highlightColor: Colors.white,
         ),
         themeMode: ThemeMode.dark,
         home: HomePageTabsScreen(),

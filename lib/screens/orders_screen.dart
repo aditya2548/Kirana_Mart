@@ -1,3 +1,4 @@
+import '../widgets/chart.dart';
 import 'package:delayed_display/delayed_display.dart';
 
 import '../widgets/app_drawer.dart';
@@ -16,10 +17,13 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //  for fetching device size
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text("My Orders"),
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text("My Orders"),
-      ),
+      appBar: appBar,
       body: FutureBuilder(
         future:
             Provider.of<OrdersProvider>(context, listen: false).reloadOrders(),
@@ -52,16 +56,30 @@ class OrdersScreen extends StatelessWidget {
             //  Using consumer here as if we use provider here, whole stateless widget gets
             //  re-rendered again, and we enter an infinite loop
             return Consumer<OrdersProvider>(
-              builder: (ctx, ordersData, child) => RefreshIndicator(
-                onRefresh: () {
-                  return Provider.of<OrdersProvider>(context, listen: false)
-                      .reloadOrders();
-                },
-                child: ListView.builder(
-                  itemCount: ordersData.getOrdersList.length,
-                  itemBuilder: (ctx, index) =>
-                      MyOrdersItem(ordersData.getOrdersList.toList()[index]),
-                ),
+              builder: (ctx, ordersData, child) => Column(
+                children: [
+                  Container(
+                    height: (mediaQuery.size.height -
+                            appBar.preferredSize.height -
+                            mediaQuery.padding.top) *
+                        0.3,
+                    child: Chart(ordersData.getLastWeekOrders),
+                  ),
+                  Flexible(
+                    child: RefreshIndicator(
+                      onRefresh: () {
+                        return Provider.of<OrdersProvider>(context,
+                                listen: false)
+                            .reloadOrders();
+                      },
+                      child: ListView.builder(
+                        itemCount: ordersData.getOrdersList.length,
+                        itemBuilder: (ctx, index) => MyOrdersItem(
+                            ordersData.getOrdersList.toList()[index]),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           }
