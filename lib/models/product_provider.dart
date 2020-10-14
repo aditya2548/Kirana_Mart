@@ -99,6 +99,9 @@ class ProductsProvider with ChangeNotifier {
     List<Product> _fetchedProducts = [];
     try {
       c.snapshots().listen((event) {
+        if (event.docChanges == null) {
+          return;
+        }
         event.docChanges.forEach((element) {
           if (element.type == DocumentChangeType.added) {
             print("add");
@@ -151,6 +154,9 @@ class ProductsProvider with ChangeNotifier {
 
       final value = await c.get();
       final List<Product> _fetchedProducts = [];
+      if (value.docs == null) {
+        return;
+      }
       value.docs.forEach((element) {
         _fetchedProducts.add(Product(
           id: element.id,

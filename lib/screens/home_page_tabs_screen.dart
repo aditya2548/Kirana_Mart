@@ -28,7 +28,6 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
   //  Show error dialog if any of the steps fail
   @override
   void initState() {
-    super.initState();
     Firebase.initializeApp().catchError((error) {
       CustomDialog.generalErrorDialog(context);
     }).whenComplete(() {
@@ -45,6 +44,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
         CustomDialog.generalErrorDialog(context);
       });
     });
+    super.initState();
   }
 
   @override
