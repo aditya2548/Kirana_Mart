@@ -1,3 +1,4 @@
+import './screens/product_category_screen.dart';
 import './screens/edit_user_product_screen.dart';
 
 import './screens/user_products_screen.dart';
@@ -44,7 +45,9 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.blue,
           primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
+          highlightColor: Colors.white,
         ),
+        themeMode: ThemeMode.dark,
         home: HomePageTabsScreen(),
         routes: {
           ProductDescription.routeName: (ctx) => ProductDescription(),
@@ -52,6 +55,8 @@ class MyApp extends StatelessWidget {
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
           UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
           EditUserProductScreen.routeName: (ctx) => EditUserProductScreen(),
+          ProductsByCategoryScreen.routeName: (ctx) =>
+              ProductsByCategoryScreen(),
         },
       ),
     );

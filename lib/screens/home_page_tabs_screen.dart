@@ -1,3 +1,8 @@
+import '../dialog/custom_dialog.dart';
+import '../models/product_provider.dart';
+import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import '../widgets/app_drawer.dart';
 
 import '../models/cart_provider.dart';
@@ -16,8 +21,41 @@ class HomePageTabsScreen extends StatefulWidget {
 }
 
 class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
+  //  Variable to determine whether progress bar must be shown or not
+  bool _progressBar = true;
+
+  //  Need to initialize firebase in initState, and then fetch user products list in real-time
+  //  Show error dialog if any of the steps fail
+  @override
+  void initState() {
+    Firebase.initializeApp().catchError((error) {
+      CustomDialog.generalErrorDialog(context);
+    }).whenComplete(() {
+      // setState(() {
+      //   _progressBar = true;
+      // });
+      Provider.of<ProductsProvider>(context, listen: false)
+          .fetchProductsRealTime()
+          .then((_) {
+        setState(() {
+          _progressBar = false;
+        });
+      }).catchError((error) {
+        CustomDialog.generalErrorDialog(context);
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //  variable and method to get count of fav items to be shown as badge count
+    int count;
+    setState(() {
+      count =
+          Provider.of<ProductsProvider>(context).getFavoriteProductItems.length;
+    });
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -79,6 +117,18 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                   Text(
                     "Fav",
                   ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Badge(
+                    badgeColor: Colors.green,
+                    animationDuration: Duration(milliseconds: 200),
+                    animationType: BadgeAnimationType.scale,
+                    badgeContent: Text(
+                      count.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -86,11 +136,33 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
         ),
         body: TabBarView(
           children: [
-            ProductsListScreen(),
+            //  If progressBar is true, that means products are loading
+            //  So ahow a progress bar, else show products list screen
+            _progressBar
+                ? Center(
+                    child: Container(
+                      height: 130,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          CircularProgressIndicator(),
+                          Text("Loading products"),
+                          DelayedDisplay(
+                              delay: Duration(seconds: 5),
+                              child: Text(
+                                "Please connect to internet.\nProducts will be visible after internet connection is regained",
+                                style: TextStyle(fontSize: 7),
+                                textAlign: TextAlign.center,
+                              ))
+                        ],
+                      ),
+                    ),
+                  )
+                : ProductsListScreen(),
             FavoritesScreen(),
           ],
         ),
-        drawer: AppDrawer(),
+        drawer: AppDrawer("Home"),
       ),
     );
   }

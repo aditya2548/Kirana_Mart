@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 enum ProductCategory {
@@ -79,9 +80,19 @@ class Product with ChangeNotifier {
   }
 
 //  function to toggle favourite status and to notify to all the listeners of product
-  void toggleFav() {
-    isFav = !isFav;
-    notifyListeners();
+  Future<void> toggleFav() async {
+    try {
+      final DocumentReference docRef =
+          FirebaseFirestore.instance.collection("Products").doc(id);
+
+      await docRef.update(
+        {
+          "isFav": !isFav,
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   //  Function to get average star rating of a product
