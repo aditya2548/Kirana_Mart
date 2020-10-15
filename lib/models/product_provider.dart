@@ -261,4 +261,11 @@ class ProductsProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  //  Function to fetch product by category
+  List<Product> getProductsByCategory(ProductCategory productCategory) {
+    return _productItems
+        .where((element) => element.productCategory == productCategory)
+        .toList();
+  }
 }

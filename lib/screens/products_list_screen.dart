@@ -1,3 +1,5 @@
+import '../screens/product_category_screen.dart';
+
 import '../models/product.dart';
 import '../models/product_provider.dart';
 import '../widgets/product_item.dart';
@@ -30,27 +32,16 @@ class ProductsListScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
+                headerCategoryItem(ProductCategory.Beverages,
+                    Icons.emoji_food_beverage, context),
+                headerCategoryItem(ProductCategory.CookingEssentials,
+                    Icons.food_bank, context),
                 headerCategoryItem(
-                    Product.productCattoString(ProductCategory.Beverages),
-                    Icons.emoji_food_beverage,
-                    onPressed: () {}),
+                    ProductCategory.HouseHold, Icons.house_outlined, context),
+                headerCategoryItem(ProductCategory.PackagedFoods,
+                    Icons.fastfood_rounded, context),
                 headerCategoryItem(
-                    Product.productCattoString(
-                        ProductCategory.CookingEssentials),
-                    Icons.food_bank,
-                    onPressed: () {}),
-                headerCategoryItem(
-                    Product.productCattoString(ProductCategory.HouseHold),
-                    Icons.house_outlined,
-                    onPressed: () {}),
-                headerCategoryItem(
-                    Product.productCattoString(ProductCategory.PackagedFoods),
-                    Icons.fastfood_rounded,
-                    onPressed: () {}),
-                headerCategoryItem(
-                    Product.productCattoString(ProductCategory.PersonalCare),
-                    Icons.person,
-                    onPressed: () {}),
+                    ProductCategory.PersonalCare, Icons.person, context),
               ],
             )),
         Container(
@@ -93,7 +84,8 @@ class ProductsListScreen extends StatelessWidget {
 }
 
 //  (UI)Widget for category icons
-Widget headerCategoryItem(String name, IconData icon, {onPressed}) {
+Widget headerCategoryItem(
+    ProductCategory productCategory, IconData icon, BuildContext context) {
   return Container(
     margin: EdgeInsets.only(left: 15),
     child: Column(
@@ -106,13 +98,18 @@ Widget headerCategoryItem(String name, IconData icon, {onPressed}) {
             height: 50,
             child: FloatingActionButton(
               shape: CircleBorder(),
-              heroTag: name,
-              onPressed: onPressed,
+              heroTag: Product.productCattoString(productCategory),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  ProductsByCategoryScreen.routeName,
+                  arguments: productCategory,
+                );
+              },
               backgroundColor: Colors.white,
               child: Icon(icon, size: 35, color: Colors.black87),
             )),
         Text(
-          name + ' ›',
+          Product.productCattoString(productCategory) + ' ›',
           style: TextStyle(
             fontSize: 10,
           ),
