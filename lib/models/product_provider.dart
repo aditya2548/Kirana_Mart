@@ -52,6 +52,14 @@ class ProductsProvider with ChangeNotifier {
     return [..._productItems];
   }
 
+  //  Function for getting list of products based upon the search query
+  List<Product> getProductItemsOnSearch(String search) {
+    return _productItems
+        .where((element) =>
+            element.title.toLowerCase().startsWith(search.toLowerCase()))
+        .toList();
+  }
+
   //  function to get a copy of list of favorite products
   List<Product> get getFavoriteProductItems {
     return _productItems.where((element) => element.isFav).toList();
