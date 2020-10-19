@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -32,12 +33,14 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
 
   //  Product object used to store the object
   var _editedProduct = Product(
-      id: null,
-      title: "",
-      description: "",
-      imageUrl: "https://bitsofco.de/content/images/2018/12/broken-1.png",
-      price: 0,
-      productCategory: ProductCategory.HouseHold);
+    id: null,
+    title: "",
+    description: "",
+    imageUrl: "https://bitsofco.de/content/images/2018/12/broken-1.png",
+    price: 0,
+    productCategory: ProductCategory.HouseHold,
+    retailerId: FirebaseAuth.instance.currentUser.uid,
+  );
 
   //  Need to dispose focusNode otherwise they may lead to memory leaks
   @override
@@ -111,7 +114,10 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
         //  Validate if image is selected or not, if not, show a snackbar
         //  Can't use context directly as it throws error
         //  We need to fetch context from form globalkey
-        if (_image == null) {
+        //  Also check if present image is the default image, or previous one exists in case product is edited
+        if (_image == null &&
+            _initialImageUrl ==
+                "https://bitsofco.de/content/images/2018/12/broken-1.png") {
           Scaffold.of(_formKey.currentContext).showSnackBar(
             SnackBar(
               content: Text(
@@ -135,18 +141,23 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           _progressBar = true;
         });
 
-        //  First save image to Firebase Storage and then save it's fetched Url in FireStore
+        String _imageUrl = _initialImageUrl;
 
-        String fileName = _image.path.split('/').last;
-        StorageReference firebaseStorageRef =
-            FirebaseStorage.instance.ref().child('ProductImages/$fileName');
-        StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-        // await uploadTask.onComplete;
-        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+        if (_image != null) {
+          //  First save image to Firebase Storage and then save it's fetched Url in FireStore
 
-        //  Fetch imageUrl
-        String _imageUrl = await taskSnapshot.ref.getDownloadURL();
-        //  Update product with fetched imageUrl
+          String fileName = _image.path.split('/').last;
+          StorageReference firebaseStorageRef =
+              FirebaseStorage.instance.ref().child('ProductImages/$fileName');
+          StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+          // await uploadTask.onComplete;
+          StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+          //  Fetch imageUrl
+          _imageUrl = await taskSnapshot.ref.getDownloadURL();
+        }
+
+        //  Update product with fetched/previous imageUrl
 
         _editedProduct = Product(
           id: _editedProduct.id,
@@ -156,6 +167,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           price: _editedProduct.price,
           productCategory: _editedProduct.productCategory,
           isFav: _editedProduct.isFav,
+          retailerId: FirebaseAuth.instance.currentUser.uid,
         );
         //  If updating existing product
         if (_editedProduct.id != null) {
@@ -242,6 +254,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           price: _editedProduct.price,
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
+                          retailerId: FirebaseAuth.instance.currentUser.uid,
                         ),
                         //  null returned in validator->input is correct
                         validator: (title) {
@@ -275,6 +288,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           price: double.parse(price),
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
+                          retailerId: FirebaseAuth.instance.currentUser.uid,
                         ),
                         validator: (price) {
                           if (price == null || price.trim() == "") {
@@ -306,6 +320,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           price: _editedProduct.price,
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
+                          retailerId: FirebaseAuth.instance.currentUser.uid,
                         ),
                         validator: (desc) {
                           if (desc == null || desc.trim() == "") {
@@ -352,6 +367,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                                   productCategory:
                                       Product.stringtoProductCat(selected),
                                   isFav: _editedProduct.isFav,
+                                  retailerId:
+                                      FirebaseAuth.instance.currentUser.uid,
                                 );
                               });
                             },

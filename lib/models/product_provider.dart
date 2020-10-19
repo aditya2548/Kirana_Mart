@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -47,6 +48,10 @@ class ProductsProvider with ChangeNotifier {
     //   productCategory: ProductCategory.PackagedFoods,
     // ),
   ];
+
+  //  List of all pending products for approval by admin
+  List<Product> _pendingProducts = [];
+
   //  function to get a copy of list of products
   List<Product> get getProductItems {
     return [..._productItems];
@@ -56,7 +61,15 @@ class ProductsProvider with ChangeNotifier {
   List<Product> getProductItemsOnSearch(String search) {
     return _productItems
         .where((element) =>
-            element.title.toLowerCase().startsWith(search.toLowerCase()))
+            element.title.toLowerCase().contains(search.toLowerCase()))
+        .toList();
+  }
+
+//  To get the products provided by the user(using retailerId)
+  List<Product> getMyProducts() {
+    return _productItems
+        .where((element) =>
+            element.retailerId == FirebaseAuth.instance.currentUser.uid)
         .toList();
   }
 
@@ -79,7 +92,7 @@ class ProductsProvider with ChangeNotifier {
     print("add");
     try {
       final CollectionReference c =
-          FirebaseFirestore.instance.collection("Products");
+          FirebaseFirestore.instance.collection("PendingProducts");
       await c.add(
         {
           "title": product.title,
@@ -89,6 +102,7 @@ class ProductsProvider with ChangeNotifier {
           "productCategory":
               Product.productCattoString(product.productCategory),
           "isFav": product.isFav,
+          "retailerId": product.retailerId,
         },
       );
     }
@@ -124,6 +138,7 @@ class ProductsProvider with ChangeNotifier {
                 price: element.doc.data()["price"],
                 productCategory: Product.stringtoProductCat(
                     element.doc.data()["productCategory"]),
+                retailerId: element.doc.data()["retailerId"],
               ),
             );
           } else if (element.type == DocumentChangeType.modified) {
@@ -139,6 +154,7 @@ class ProductsProvider with ChangeNotifier {
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
               isFav: _fetchedProducts[modifyIndex].isFav,
+              retailerId: element.doc.data()["retailerId"],
             );
           } else if (element.type == DocumentChangeType.removed) {
             print("remove");
@@ -177,6 +193,7 @@ class ProductsProvider with ChangeNotifier {
           productCategory:
               Product.stringtoProductCat(element.data()["productCategory"]),
           isFav: element.data()["isFav"],
+          retailerId: element.data()["retailerId"],
         ));
       });
       _productItems = _fetchedProducts;
@@ -191,37 +208,23 @@ class ProductsProvider with ChangeNotifier {
   //  as we are listening to product changes in resl-time using fetchProductsRealTime
   //  Need to fetch the product and the imageUrl associated with it, as user might be changing image
   //  So, we will need to update the image if needed & delete previous image
+  //  The updated product is then sent to PendingProducts collection from where,
+  //  it is sent to user products after approval from the admin
   Future<void> updateProduct(String id, Product product) async {
-    print("update");
     try {
-      final DocumentReference docRef =
-          FirebaseFirestore.instance.collection("Products").doc(id);
+      final DocumentReference docRefApproval =
+          FirebaseFirestore.instance.collection("PendingProducts").doc(id);
 
-      docRef.get().then(
-        (value) {
-          String _fetchedImageUrl = value.data()["imageUrl"];
-
-          docRef.update(
-            {
-              "title": product.title,
-              "description": product.description,
-              "imageUrl": product.imageUrl,
-              "price": product.price,
-              "productCategory":
-                  Product.productCattoString(product.productCategory),
-              "isFav": product.isFav,
-            },
-          );
-          //  if image is also modified, delete previous image from Firebase Storage
-          if (_fetchedImageUrl != product.imageUrl) {
-            FirebaseStorage.instance
-                .getReferenceFromUrl(value.data()["imageUrl"])
-                .then(
-              (imageRef) {
-                imageRef.delete();
-              },
-            );
-          }
+      await docRefApproval.set(
+        {
+          "title": product.title,
+          "description": product.description,
+          "imageUrl": product.imageUrl,
+          "price": product.price,
+          "productCategory":
+              Product.productCattoString(product.productCategory),
+          "isFav": product.isFav,
+          "retailerId": product.retailerId,
         },
       );
     } catch (error) {
@@ -275,5 +278,133 @@ class ProductsProvider with ChangeNotifier {
     return _productItems
         .where((element) => element.productCategory == productCategory)
         .toList();
+  }
+
+  //  Function to reload products from firestore and storing fetched products to our list of products
+  //  Used for pull down to refresh
+  Future<void> reloadPendingProducts() async {
+    final CollectionReference c =
+        FirebaseFirestore.instance.collection("PendingProducts");
+
+    List<Product> _fetchedProducts = [];
+    try {
+      c.snapshots().listen((event) {
+        if (event.docChanges == null) {
+          return;
+        }
+        event.docChanges.forEach((element) {
+          if (element.type == DocumentChangeType.added) {
+            print("add");
+            _fetchedProducts.add(
+              Product(
+                id: element.doc.id,
+                title: element.doc.data()["title"],
+                description: element.doc.data()["description"],
+                imageUrl: element.doc.data()["imageUrl"],
+                price: element.doc.data()["price"],
+                productCategory: Product.stringtoProductCat(
+                    element.doc.data()["productCategory"]),
+                retailerId: element.doc.data()["retailerId"],
+              ),
+            );
+          } else if (element.type == DocumentChangeType.modified) {
+            print("modify");
+            final modifyIndex =
+                _fetchedProducts.indexWhere((el) => el.id == element.doc.id);
+            _fetchedProducts[modifyIndex] = Product(
+              id: element.doc.id,
+              title: element.doc.data()["title"],
+              description: element.doc.data()["description"],
+              imageUrl: element.doc.data()["imageUrl"],
+              price: element.doc.data()["price"],
+              productCategory: Product.stringtoProductCat(
+                  element.doc.data()["productCategory"]),
+              isFav: _fetchedProducts[modifyIndex].isFav,
+              retailerId: element.doc.data()["retailerId"],
+            );
+          } else if (element.type == DocumentChangeType.removed) {
+            print("remove");
+            _fetchedProducts.removeWhere((el) => el.id == element.doc.id);
+          }
+          print(_fetchedProducts.length);
+          _pendingProducts = _fetchedProducts;
+          notifyListeners();
+          reloadProducts();
+        });
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  List<Product> get getPendingProductItems {
+    return [..._pendingProducts];
+  }
+
+  //  Product approved by admin
+  //  Add to all products, remove from pending products
+  Future<void> approveProduct(String id) async {
+    final DocumentReference docRef =
+        FirebaseFirestore.instance.collection("Products").doc(id);
+
+    final _updatedData = await FirebaseFirestore.instance
+        .collection("PendingProducts")
+        .doc(id)
+        .get();
+    docRef.get().then(
+      (value) {
+        //  If product was modified
+        if (value.exists) {
+          String _fetchedImageUrl = value.data()["imageUrl"];
+
+          docRef.set(
+            {
+              "title": _updatedData.data()["title"],
+              "description": _updatedData.data()["description"],
+              "imageUrl": _updatedData.data()["imageUrl"],
+              "price": _updatedData.data()["price"],
+              "productCategory": _updatedData.data()["productCategory"],
+              "isFav": _updatedData.data()["isFav"],
+              "retailerId": _updatedData.data()["retailerId"],
+            },
+          );
+          //  if image is also modified, delete previous image from Firebase Storage
+          if (_fetchedImageUrl != _updatedData.data()["imageUrl"]) {
+            FirebaseStorage.instance
+                .getReferenceFromUrl(value.data()["imageUrl"])
+                .then(
+              (imageRef) {
+                imageRef.delete();
+              },
+            );
+          }
+        }
+        //  If new product was added
+        else {
+          docRef.set(
+            {
+              "title": _updatedData.data()["title"],
+              "description": _updatedData.data()["description"],
+              "imageUrl": _updatedData.data()["imageUrl"],
+              "price": _updatedData.data()["price"],
+              "productCategory": _updatedData.data()["productCategory"],
+              "isFav": _updatedData.data()["isFav"],
+              "retailerId": _updatedData.data()["retailerId"],
+            },
+          );
+        }
+        //  Remove the item from pendingProducts
+        FirebaseFirestore.instance
+            .collection("PendingProducts")
+            .doc(id)
+            .delete();
+      },
+    );
+  }
+
+  //  Product declined by admin
+  Future<void> declineProduct(String id) async {
+    //  Remove the item from pendingProducts
+    FirebaseFirestore.instance.collection("PendingProducts").doc(id).delete();
   }
 }

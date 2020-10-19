@@ -27,6 +27,7 @@ class Product with ChangeNotifier {
   final String imageUrl;
   final double price;
   final ProductCategory productCategory;
+  final String retailerId;
   bool isFav;
   //  Map of reviews user-email as the key (dummy reviews)
   List<Map<String, Review>> _reviews = [
@@ -42,6 +43,7 @@ class Product with ChangeNotifier {
     @required this.imageUrl,
     @required this.price,
     @required this.productCategory,
+    @required this.retailerId,
     this.isFav = false,
   });
 

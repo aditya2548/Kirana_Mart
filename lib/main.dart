@@ -1,3 +1,6 @@
+import './screens/admin_screen.dart';
+import './screens/user_profile_screen.dart';
+
 import './models/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -81,6 +84,8 @@ class MyApp extends StatelessWidget {
           LoginScreen.routeName: (ctx) => LoginScreen(),
           SignUpScreen.routeName: (ctx) => SignUpScreen(),
           WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
+          AdminScreen.routeName: (ctx) => AdminScreen(),
+          UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
         },
       ),
     );
@@ -88,6 +93,7 @@ class MyApp extends StatelessWidget {
 }
 
 //  Wrapper to check whether user is authenticated while splash screen is shown
+//  Admin screen is visible only for admin
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -96,6 +102,8 @@ class AuthenticationWrapper extends StatelessWidget {
 
     if (_firebaseUser == null)
       return WelcomeScreen();
+    else if (_firebaseUser.email == "aditya2512sharma@gmail.com")
+      return AdminScreen();
     else
       return HomePageTabsScreen();
   }

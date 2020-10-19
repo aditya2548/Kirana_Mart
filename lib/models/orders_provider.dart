@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -37,8 +38,10 @@ class OrdersProvider with ChangeNotifier {
   Future<void> addOrder(List<CartItem> productsList, double amount) async {
     print("add order");
     try {
-      final CollectionReference c =
-          FirebaseFirestore.instance.collection("Orders");
+      final CollectionReference c = FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyOrders");
       var docRef = await c.add(
         {
           "amount": amount,
@@ -53,6 +56,7 @@ class OrdersProvider with ChangeNotifier {
             "title": element.title,
             "quantity": element.quantity,
             "pricePerUnit": element.pricePerUnit,
+            "productId": element.productId,
           },
         );
       });
@@ -82,8 +86,10 @@ class OrdersProvider with ChangeNotifier {
   //  Used for pull down to refresh and when orders screen is opened
   Future<void> reloadOrders() async {
     try {
-      final CollectionReference c =
-          FirebaseFirestore.instance.collection("Orders");
+      final CollectionReference c = FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyOrders");
 
       final value = await c.get();
       final List<OrderItem> _fetchedOrders = [];
@@ -99,6 +105,7 @@ class OrdersProvider with ChangeNotifier {
                     title: element.data()["title"],
                     quantity: element.data()["quantity"],
                     pricePerUnit: element.data()["pricePerUnit"],
+                    productId: element.data()["productId"],
                   ),
                 );
               });

@@ -47,6 +47,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
         CustomDialog.generalErrorDialog(context);
       });
     });
+    Provider.of<CartProvider>(context, listen: false).fetchCartItems();
     super.initState();
   }
 

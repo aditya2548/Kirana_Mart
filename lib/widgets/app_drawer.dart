@@ -1,3 +1,7 @@
+import '../screens/admin_screen.dart';
+import '../screens/user_profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../screens/cart_screen.dart';
 import '../screens/user_products_screen.dart';
 
@@ -48,11 +52,26 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
           ),
+          //  If email isn't verified, show a red container on app bar
+          if (FirebaseAuth.instance.currentUser.emailVerified == false)
+            Container(
+              margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
+              width: double.infinity,
+              color: Theme.of(context).errorColor,
+              height: 50,
+              child: Text(
+                "Email isn't verified.\nVerify to unlock features",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           Divider(
             thickness: 2,
           ),
           ListTile(
-            leading: Icon(Icons.shopping_bag_rounded),
+            leading: Icon(Icons.home),
             title: Text("Home"),
             onTap: () {
               checkAndPush("Home", "/");
@@ -91,6 +110,30 @@ class AppDrawer extends StatelessWidget {
           Divider(
             thickness: 1,
           ),
+          ListTile(
+            leading: Icon(Icons.person_outline),
+            title: Text("My Profile"),
+            onTap: () {
+              checkAndPush("My Profile", UserProfileScreen.routeName);
+            },
+          ),
+          Divider(
+            thickness: 1,
+          ),
+          if (FirebaseAuth.instance.currentUser.email ==
+              "aditya2512sharma@gmail.com")
+            ListTile(
+              leading: Icon(Icons.done_all),
+              title: Text("Approve Products"),
+              onTap: () {
+                checkAndPush("Approve Products", AdminScreen.routeName);
+              },
+            ),
+          if (FirebaseAuth.instance.currentUser.email ==
+              "aditya2512sharma@gmail.com")
+            Divider(
+              thickness: 1,
+            ),
         ],
       ),
     );

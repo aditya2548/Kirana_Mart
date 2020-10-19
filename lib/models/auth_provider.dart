@@ -49,11 +49,13 @@ class AuthProvider {
               email: _authData["email"], password: _authData["password"]);
       // print(userId.user.uid);
       try {
-        final CollectionReference c =
-            FirebaseFirestore.instance.collection("UserData");
-        await c.add(
+        final CollectionReference collectionReference = FirebaseFirestore
+            .instance
+            .collection("User")
+            .doc(userId.user.uid)
+            .collection("MyData");
+        await collectionReference.add(
           {
-            "id": userId.user.uid,
             "name": _authData["name"],
             "mobileNumber": _authData["mobileNumber"],
             "address": _authData["address"],

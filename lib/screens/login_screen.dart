@@ -1,3 +1,6 @@
+import '../screens/admin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../models/auth_provider.dart';
 import '../screens/home_page_tabs_screen.dart';
 import '../screens/signup_screen.dart';
@@ -104,7 +107,13 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
     });
     if (loginResult == "Logged In") {
       Navigator.pop(context);
-      Navigator.of(context).pushReplacementNamed(HomePageTabsScreen.routeName);
+      final _firebaseUser = context.watch<User>();
+      //  If user is admin
+      if (_firebaseUser.email == "aditya2512sharma@gmail.com")
+        Navigator.of(context).pushReplacementNamed(AdminScreen.routeName);
+      else
+        Navigator.of(context)
+            .pushReplacementNamed(HomePageTabsScreen.routeName);
     }
   }
 
