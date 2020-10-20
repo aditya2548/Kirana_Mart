@@ -139,6 +139,7 @@ class ProductsProvider with ChangeNotifier {
                 productCategory: Product.stringtoProductCat(
                     element.doc.data()["productCategory"]),
                 retailerId: element.doc.data()["retailerId"],
+                quantity: element.doc.data()["quantity"],
               ),
             );
           } else if (element.type == DocumentChangeType.modified) {
@@ -155,6 +156,7 @@ class ProductsProvider with ChangeNotifier {
                   element.doc.data()["productCategory"]),
               isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
+              quantity: element.doc.data()["quantity"],
             );
           } else if (element.type == DocumentChangeType.removed) {
             print("remove");
@@ -194,6 +196,7 @@ class ProductsProvider with ChangeNotifier {
               Product.stringtoProductCat(element.data()["productCategory"]),
           isFav: element.data()["isFav"],
           retailerId: element.data()["retailerId"],
+          quantity: element.data()["quantity"],
         ));
       });
       _productItems = _fetchedProducts;
@@ -305,6 +308,7 @@ class ProductsProvider with ChangeNotifier {
                 productCategory: Product.stringtoProductCat(
                     element.doc.data()["productCategory"]),
                 retailerId: element.doc.data()["retailerId"],
+                quantity: element.doc.data()["quantity"],
               ),
             );
           } else if (element.type == DocumentChangeType.modified) {
@@ -321,6 +325,7 @@ class ProductsProvider with ChangeNotifier {
                   element.doc.data()["productCategory"]),
               isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
+              quantity: element.doc.data()["quantity"],
             );
           } else if (element.type == DocumentChangeType.removed) {
             print("remove");
@@ -406,5 +411,15 @@ class ProductsProvider with ChangeNotifier {
   Future<void> declineProduct(String id) async {
     //  Remove the item from pendingProducts
     FirebaseFirestore.instance.collection("PendingProducts").doc(id).delete();
+  }
+
+  //  Function to add product stock
+  Future<void> addProductQuantity(String productId, int newQuantity) async {
+    await FirebaseFirestore.instance
+        .collection("Products")
+        .doc(productId)
+        .update(
+      {"quantity": newQuantity},
+    );
   }
 }

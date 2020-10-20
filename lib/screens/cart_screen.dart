@@ -137,10 +137,12 @@ class _OrderButtonState extends State<OrderButton> {
   Widget build(BuildContext context) {
     return FlatButton.icon(
       onPressed:
-          //  if cart amount is <=0 or placing order or email not verified, disable button
+          //  if cart amount is <=0 or placing order or email not verified or any item is more than available, disable button
           (widget.cartData.getTotalCartAmount <= 0 ||
                   _progressBar == true ||
-                  !FirebaseAuth.instance.currentUser.emailVerified)
+                  !FirebaseAuth.instance.currentUser.emailVerified ||
+                  !Provider.of<CartProvider>(context, listen: false)
+                      .allItemsValid(context))
               ? null
               : () async {
                   //  Change widget state to loading spinner

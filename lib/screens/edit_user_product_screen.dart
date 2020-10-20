@@ -40,6 +40,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     price: 0,
     productCategory: ProductCategory.HouseHold,
     retailerId: FirebaseAuth.instance.currentUser.uid,
+    quantity: 0,
   );
 
   //  Need to dispose focusNode otherwise they may lead to memory leaks
@@ -168,6 +169,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           productCategory: _editedProduct.productCategory,
           isFav: _editedProduct.isFav,
           retailerId: FirebaseAuth.instance.currentUser.uid,
+          quantity: 0,
         );
         //  If updating existing product
         if (_editedProduct.id != null) {
@@ -255,6 +257,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
                           retailerId: FirebaseAuth.instance.currentUser.uid,
+                          quantity: 0,
                         ),
                         //  null returned in validator->input is correct
                         validator: (title) {
@@ -289,6 +292,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
                           retailerId: FirebaseAuth.instance.currentUser.uid,
+                          quantity: 0,
                         ),
                         validator: (price) {
                           if (price == null || price.trim() == "") {
@@ -321,6 +325,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           productCategory: _editedProduct.productCategory,
                           isFav: _editedProduct.isFav,
                           retailerId: FirebaseAuth.instance.currentUser.uid,
+                          quantity: 0,
                         ),
                         validator: (desc) {
                           if (desc == null || desc.trim() == "") {
@@ -369,6 +374,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                                   isFav: _editedProduct.isFav,
                                   retailerId:
                                       FirebaseAuth.instance.currentUser.uid,
+                                  quantity: 0,
                                 );
                               });
                             },

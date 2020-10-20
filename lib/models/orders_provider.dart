@@ -34,6 +34,7 @@ class OrdersProvider with ChangeNotifier {
   //  Method to add a order,
   //  Using current datetime converted to Iso8601String for easy retreival
   //  Document containing totalAmount, date, collection of cartitems
+  //  Also, reduce appropriate quantity from stock
 
   Future<void> addOrder(List<CartItem> productsList, double amount) async {
     print("add order");
@@ -42,6 +43,9 @@ class OrdersProvider with ChangeNotifier {
           .collection("User")
           .doc(FirebaseAuth.instance.currentUser.uid)
           .collection("MyOrders");
+      //  Reference to reduce quantity from stock
+      final CollectionReference prod =
+          FirebaseFirestore.instance.collection("Products");
       var docRef = await c.add(
         {
           "amount": amount,
@@ -50,6 +54,9 @@ class OrdersProvider with ChangeNotifier {
       );
 
       productsList.forEach((element) {
+        prod.doc(element.productId).update({
+          "quantity": FieldValue.increment(-1 * element.quantity),
+        });
         c.doc(docRef.id).collection("productsList").add(
           {
             "id": element.id,
@@ -65,15 +72,6 @@ class OrdersProvider with ChangeNotifier {
     catch (error) {
       throw error;
     }
-
-    // _ordersList.insert(
-    //   0,
-    //   OrderItem(
-    //       id: DateTime.now().toString(),
-    //       amount: amount,
-    //       productsList: productsList,
-    //       dateTime: DateTime.now()),
-    // );
     Fluttertoast.cancel();
     Fluttertoast.showToast(
         msg: "Order placed successfully :)",

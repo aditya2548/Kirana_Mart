@@ -1,3 +1,5 @@
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../models/cart_provider.dart';
 import '../screens/product_desc_screen.dart';
 import '../models/product.dart';
@@ -30,6 +32,16 @@ class ProductItem extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
+        //  header to show unavailable if quantity <=0
+        header: product.quantity <= 0
+            ? Container(
+                color: Colors.red,
+                alignment: Alignment.center,
+                child: Text(
+                  "OUT OF STOCK",
+                ),
+              )
+            : null,
         //  Row with children -> [Fav icon, (column of product title and price), add to cart icon]
         footer: Container(
           color: Colors.black87,
@@ -70,8 +82,15 @@ class ProductItem extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.add_shopping_cart_rounded),
                 onPressed: () {
+                  if (product.quantity < 1) {
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                        msg: "Sorry, product unavailable at the moment",
+                        backgroundColor: Colors.red);
+                    return;
+                  }
                   cartItems.addItemWithQuantity(
-                      product.id, product.price, product.title, 1);
+                      product.id, product.price, product.title, 1, context);
                 },
                 color: Theme.of(context).accentColor,
               ),

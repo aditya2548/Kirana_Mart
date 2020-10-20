@@ -1,3 +1,5 @@
+import '../models/product_provider.dart';
+
 import '../dialog/custom_dialog.dart';
 
 import '../models/cart_provider.dart';
@@ -40,7 +42,12 @@ class MyCartItem extends StatelessWidget {
       child: Card(
         elevation: 20,
         margin: EdgeInsets.all(10),
-        color: Colors.teal[900],
+        color: quantity >
+                Provider.of<ProductsProvider>(context, listen: false)
+                    .getProductFromId(productId)
+                    .quantity
+            ? Colors.blueGrey[900]
+            : Colors.teal[900],
         child: ExpansionTile(
           trailing: Icon(Icons.arrow_circle_down_outlined),
           tilePadding: EdgeInsets.all(5),
@@ -86,7 +93,8 @@ class MyCartItem extends StatelessWidget {
                       ),
                       onPressed: () {
                         Provider.of<CartProvider>(context, listen: false)
-                            .addItemWithQuantity(productId, price, title, 1);
+                            .addItemWithQuantity(
+                                productId, price, title, 1, context);
                       }),
                   Container(
                       padding: EdgeInsets.all(10),

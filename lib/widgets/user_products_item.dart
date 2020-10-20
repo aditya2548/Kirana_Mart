@@ -1,5 +1,9 @@
 import 'dart:ui';
 
+import '../models/product_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+
 import '../dialog/custom_dialog.dart';
 
 import '../models/product.dart';
@@ -23,6 +27,8 @@ class UserProductItem extends StatelessWidget {
   final String description;
   @required
   final ProductCategory productCategory;
+  @required
+  final int quantity;
 
   UserProductItem({
     this.id,
@@ -31,14 +37,34 @@ class UserProductItem extends StatelessWidget {
     this.price,
     this.imageUrl,
     this.productCategory,
+    this.quantity,
   });
 
   @override
   Widget build(BuildContext context) {
+    //  Controller for the stock amount
+    TextEditingController quantityController = TextEditingController();
+
+    void submitQuantity() {
+      //  validate quantity first (non-zero positive integers accepted only)
+      String updatedQuantity = quantityController.text;
+
+      if (updatedQuantity == null ||
+          updatedQuantity.trim() == "" ||
+          int.tryParse(updatedQuantity) == null ||
+          int.parse(updatedQuantity) <= 0) {
+        Fluttertoast.cancel();
+        Fluttertoast.showToast(msg: "Please provide a valid quantity");
+        return;
+      }
+      Provider.of<ProductsProvider>(context, listen: false)
+          .addProductQuantity(id, quantity + int.parse(updatedQuantity));
+    }
+
     return Card(
       elevation: 20,
       margin: EdgeInsets.all(10),
-      color: Colors.teal[900],
+      color: quantity <= 0 ? Colors.blueGrey[900] : Colors.teal[900],
       child: ExpansionTile(
         trailing: Icon(Icons.arrow_circle_down_outlined),
         leading: CircleAvatar(
@@ -48,7 +74,9 @@ class UserProductItem extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Text(
             title,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: quantity <= 0 ? Colors.red : Colors.white,
+                fontWeight: FontWeight.bold),
           ),
         ),
         subtitle: Text(
@@ -67,7 +95,7 @@ class UserProductItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 10),
             child: Text(
               Product.productCattoString(productCategory),
               textAlign: TextAlign.center,
@@ -89,6 +117,37 @@ class UserProductItem extends StatelessWidget {
             child: Text(
               description,
               textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Row(
+              children: [
+                Text("Stock: $quantity"),
+                Spacer(),
+                SizedBox(
+                  height: 20,
+                  width: 70,
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: quantityController,
+                    onSubmitted: (_) {
+                      submitQuantity();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                FlatButton.icon(
+                  onPressed: () {
+                    submitQuantity();
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text("ADD"),
+                  color: Colors.green,
+                ),
+              ],
             ),
           ),
           Row(

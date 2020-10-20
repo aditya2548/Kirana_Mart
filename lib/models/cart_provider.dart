@@ -1,7 +1,9 @@
+import '../models/product_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 //  Class for a cart item (CartItem.productId != product.productId)
 class CartItem {
@@ -78,10 +80,11 @@ class CartProvider with ChangeNotifier {
   }
 
   //  method to add an item to the cart with given quantity with a toast message
-  Future<void> addItemWithQuantity(
-      String productId, double price, String title, int quantity) async {
+  Future<void> addItemWithQuantity(String productId, double price, String title,
+      int quantity, BuildContext context) async {
     //  if product already in cart, just change quantity, else add item
     String toastText = "";
+    bool check = false;
     // if (_cardItemsList.containsKey(productId)) {
     try {
       final DocumentReference documentReference = FirebaseFirestore.instance
@@ -92,13 +95,36 @@ class CartProvider with ChangeNotifier {
       documentReference.get().then((value) {
         if (value.exists) {
           toastText = "Added $quantity more $title to Cart :)";
-          documentReference.update(
-            {
-              "quantity": FieldValue.increment(quantity),
-            },
-          );
+          documentReference.get().then((value) {
+            //  Check whether sufficient quantity is available or not
+            if (Provider.of<ProductsProvider>(context, listen: false)
+                    .getProductFromId(productId)
+                    .quantity <=
+                value.data()["quantity"]) {
+              check = true;
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                  msg: "Sorry, stock unavailable", backgroundColor: Colors.red);
+              return;
+            }
+            documentReference.update(
+              {
+                "quantity": FieldValue.increment(quantity),
+              },
+            );
+          });
         } else {
           toastText = "Added $quantity $title to Cart :)";
+          if (Provider.of<ProductsProvider>(context, listen: false)
+                  .getProductFromId(productId)
+                  .quantity <
+              1) {
+            check = true;
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+                msg: "Sorry, stock unavailable", backgroundColor: Colors.red);
+            return;
+          }
           documentReference.set({
             "id": DateTime.now().toIso8601String(),
             "pricePerUnit": price,
@@ -107,15 +133,17 @@ class CartProvider with ChangeNotifier {
           });
         }
       }).then((value) {
-        Fluttertoast.cancel();
-        Fluttertoast.showToast(
-          msg: toastText,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.green[100],
-          textColor: Colors.black,
-          fontSize: 12.0,
-        );
+        print(check);
+        if (check == false) {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: toastText,
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.green[100],
+            textColor: Colors.black,
+            fontSize: 12.0,
+          );
+        }
         notifyListeners();
       });
     }
@@ -192,5 +220,26 @@ class CartProvider with ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  //  Function to check if all cart items are within the available quantity
+  bool allItemsValid(BuildContext context) {
+    bool flag = true;
+    _cardItemsList.forEach(
+      (element) {
+        print(element.quantity);
+        print("\n");
+        print(Provider.of<ProductsProvider>(context)
+            .getProductFromId(element.productId)
+            .quantity);
+        if (element.quantity >
+            Provider.of<ProductsProvider>(context)
+                .getProductFromId(element.productId)
+                .quantity) {
+          flag = false;
+        }
+      },
+    );
+    return flag;
   }
 }

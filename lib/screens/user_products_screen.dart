@@ -106,6 +106,7 @@ class UserProductsScreen extends StatelessWidget {
                     price: ordersData.getMyProducts()[index].price,
                     productCategory:
                         ordersData.getMyProducts()[index].productCategory,
+                    quantity: ordersData.getMyProducts()[index].quantity,
                   ),
                 ),
               ),
