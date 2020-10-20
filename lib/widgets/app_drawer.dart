@@ -74,7 +74,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text("Home"),
             onTap: () {
-              checkAndPush("Home", "/");
+              checkAndPush("Home", "/home_page_tabs_screen");
             },
           ),
           Divider(

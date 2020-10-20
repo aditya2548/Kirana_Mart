@@ -1,3 +1,5 @@
+import '../dialog/custom_dialog.dart';
+
 import '../screens/admin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -107,7 +109,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
     });
     if (loginResult == "Logged In") {
       Navigator.pop(context);
-      final _firebaseUser = context.watch<User>();
+      final _firebaseUser = context.read<User>();
       //  If user is admin
       if (_firebaseUser.email == "aditya2512sharma@gmail.com")
         Navigator.of(context).pushReplacementNamed(AdminScreen.routeName);
@@ -215,7 +217,9 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
           bottom: 15,
           left: 5,
           child: FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              CustomDialog.resetPasswordDialog(context);
+            },
             child: Text(
               'Forgot Password ?',
               style:

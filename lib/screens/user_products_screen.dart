@@ -1,4 +1,5 @@
 import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../screens/edit_user_product_screen.dart';
@@ -17,6 +18,19 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = "/user_products_screen";
   @override
   Widget build(BuildContext context) {
+    //  Don't allow adding products if email is not verified
+    if (!FirebaseAuth.instance.currentUser.emailVerified) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            child: Text(
+              "Please verify email to\nstart selling products",
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("My products"),

@@ -1,4 +1,5 @@
 import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../dialog/custom_dialog.dart';
 
@@ -55,6 +56,13 @@ class CartScreen extends StatelessWidget {
             return Consumer<CartProvider>(
               builder: (ctx, cartData, child) => Column(
                 children: [
+                  if (!FirebaseAuth.instance.currentUser.emailVerified)
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: Text("Please verify email to place order"),
+                      color: Theme.of(context).errorColor,
+                    ),
                   Card(
                     margin: EdgeInsets.all(10),
                     elevation: 10,
@@ -129,8 +137,10 @@ class _OrderButtonState extends State<OrderButton> {
   Widget build(BuildContext context) {
     return FlatButton.icon(
       onPressed:
-          //  if cart amount is <=0 or placing order, disable button
-          (widget.cartData.getTotalCartAmount <= 0 || _progressBar == true)
+          //  if cart amount is <=0 or placing order or email not verified, disable button
+          (widget.cartData.getTotalCartAmount <= 0 ||
+                  _progressBar == true ||
+                  !FirebaseAuth.instance.currentUser.emailVerified)
               ? null
               : () async {
                   //  Change widget state to loading spinner
