@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 //  Product provided by the user
 //  Contains an expansionTile with product title, price and product image
 //  Upon expansion, we get product description and options to edit/delete the product
-class UserProductItem extends StatelessWidget {
+class UserProductItem extends StatefulWidget {
   @required
   final String id;
   @required
@@ -41,10 +41,27 @@ class UserProductItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    //  Controller for the stock amount
-    TextEditingController quantityController = TextEditingController();
+  _UserProductItemState createState() => _UserProductItemState();
+}
 
+class _UserProductItemState extends State<UserProductItem> {
+  TextEditingController quantityController;
+  @override
+  void initState() {
+    super.initState();
+
+    //  Controller for the stock amount
+    quantityController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    quantityController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     void submitQuantity() {
       //  validate quantity first (non-zero positive integers accepted only)
       String updatedQuantity = quantityController.text;
@@ -57,30 +74,30 @@ class UserProductItem extends StatelessWidget {
         Fluttertoast.showToast(msg: "Please provide a valid quantity");
         return;
       }
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProductQuantity(id, quantity + int.parse(updatedQuantity));
+      Provider.of<ProductsProvider>(context, listen: false).addProductQuantity(
+          widget.id, widget.quantity + int.parse(updatedQuantity));
     }
 
     return Card(
       elevation: 20,
       margin: EdgeInsets.all(10),
-      color: quantity <= 0 ? Colors.blueGrey[900] : Colors.teal[900],
+      color: widget.quantity <= 0 ? Colors.blueGrey[900] : Colors.teal[900],
       child: ExpansionTile(
         trailing: Icon(Icons.arrow_circle_down_outlined),
         leading: CircleAvatar(
-          backgroundImage: NetworkImage(imageUrl),
+          backgroundImage: NetworkImage(widget.imageUrl),
         ),
         title: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Text(
-            title,
+            widget.title,
             style: TextStyle(
-                color: quantity <= 0 ? Colors.red : Colors.white,
+                color: widget.quantity <= 0 ? Colors.red : Colors.white,
                 fontWeight: FontWeight.bold),
           ),
         ),
         subtitle: Text(
-          "Price per item: Rs. $price",
+          "Price per item: Rs. ${widget.price}",
           style: TextStyle(fontSize: 10),
         ),
         children: [
@@ -97,7 +114,7 @@ class UserProductItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Text(
-              Product.productCattoString(productCategory),
+              Product.productCattoString(widget.productCategory),
               textAlign: TextAlign.center,
             ),
           ),
@@ -115,7 +132,7 @@ class UserProductItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
-              description,
+              widget.description,
               textAlign: TextAlign.center,
             ),
           ),
@@ -123,7 +140,7 @@ class UserProductItem extends StatelessWidget {
             padding: const EdgeInsets.all(30.0),
             child: Row(
               children: [
-                Text("Stock: $quantity"),
+                Text("Stock: ${widget.quantity}"),
                 Spacer(),
                 SizedBox(
                   height: 20,
@@ -162,7 +179,8 @@ class UserProductItem extends StatelessWidget {
                 ),
                 onPressed: () => Navigator.of(context)
                     //  Id passed so that the next screen knows we're editing a product and not adding one
-                    .pushNamed(EditUserProductScreen.routeName, arguments: id),
+                    .pushNamed(EditUserProductScreen.routeName,
+                        arguments: widget.id),
               ),
               RaisedButton.icon(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
@@ -173,7 +191,7 @@ class UserProductItem extends StatelessWidget {
                 color: Theme.of(context).errorColor,
                 onPressed: () {
                   CustomDialog.deleteProductDialogWithIdFromMyProducts(
-                      id, context);
+                      widget.id, context);
                 },
               ),
             ],
