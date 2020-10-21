@@ -1,3 +1,5 @@
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../models/cart_provider.dart';
 import '../widgets/product_review.dart';
 import '../models/product_provider.dart';
@@ -34,7 +36,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
     //  Function to add item to cart with specified quantity
     void addToCart() {
       cartItems.addItemWithQuantity(
-          product.id, product.price, product.title, _quantity);
+          product.id, product.price, product.title, _quantity, context);
       setState(() {
         _quantity = 1;
       });
@@ -42,6 +44,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
 
     //  Product details, containing:
     //    ->  product image
+    //    ->  Alert text if stock is less than 10
     //    ->  product name
     //    ->  product price per unit
     //    ->  product rating(in stars) and total number of ratings
@@ -74,6 +77,16 @@ class _ProductDescriptionState extends State<ProductDescription> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            if (product.quantity <= 10 && product.quantity > 0)
+                              Text(
+                                "Hurry, only ${product.quantity} left in stock!!",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            if (product.quantity == 0)
+                              Text(
+                                "Sorry, product out of stock :(",
+                                style: TextStyle(color: Colors.red),
+                              ),
                             Text(
                               product.title,
                               style: TextStyle(
@@ -135,7 +148,16 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                           onPressed: () {
                                             setState(
                                               () {
-                                                print(_quantity);
+                                                if (_quantity >=
+                                                    product.quantity) {
+                                                  Fluttertoast.cancel();
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                          "Sorry, limited stocks available",
+                                                      backgroundColor:
+                                                          Colors.red);
+                                                  return;
+                                                }
                                                 _quantity += 1;
                                               },
                                             );

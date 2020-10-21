@@ -1,4 +1,6 @@
 import 'package:delayed_display/delayed_display.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../screens/edit_user_product_screen.dart';
 
@@ -16,10 +18,34 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = "/user_products_screen";
   @override
   Widget build(BuildContext context) {
+    //  Don't allow adding products if email is not verified
+    if (!FirebaseAuth.instance.currentUser.emailVerified) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            child: Text(
+              "Please verify email to\nstart selling products",
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("My products"),
         actions: [
+          IconButton(
+              icon: Icon(Icons.help_outline),
+              onPressed: () {
+                Fluttertoast.cancel();
+                Fluttertoast.showToast(
+                    msg:
+                        "New products and modifications are visible after approval by admin",
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Theme.of(context).accentColor,
+                    toastLength: Toast.LENGTH_LONG);
+              }),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () => Navigator.of(context)
@@ -71,15 +97,16 @@ class UserProductsScreen extends StatelessWidget {
                       .reloadProducts();
                 },
                 child: ListView.builder(
-                  itemCount: ordersData.getProductItems.length,
+                  itemCount: ordersData.getMyProducts().length,
                   itemBuilder: (ctx, index) => UserProductItem(
-                    id: ordersData.getProductItems[index].id,
-                    title: ordersData.getProductItems[index].title,
-                    description: ordersData.getProductItems[index].description,
-                    imageUrl: ordersData.getProductItems[index].imageUrl,
-                    price: ordersData.getProductItems[index].price,
+                    id: ordersData.getMyProducts()[index].id,
+                    title: ordersData.getMyProducts()[index].title,
+                    description: ordersData.getMyProducts()[index].description,
+                    imageUrl: ordersData.getMyProducts()[index].imageUrl,
+                    price: ordersData.getMyProducts()[index].price,
                     productCategory:
-                        ordersData.getProductItems[index].productCategory,
+                        ordersData.getMyProducts()[index].productCategory,
+                    quantity: ordersData.getMyProducts()[index].quantity,
                   ),
                 ),
               ),

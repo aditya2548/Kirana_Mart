@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -33,12 +34,18 @@ class OrdersProvider with ChangeNotifier {
   //  Method to add a order,
   //  Using current datetime converted to Iso8601String for easy retreival
   //  Document containing totalAmount, date, collection of cartitems
+  //  Also, reduce appropriate quantity from stock
 
   Future<void> addOrder(List<CartItem> productsList, double amount) async {
     print("add order");
     try {
-      final CollectionReference c =
-          FirebaseFirestore.instance.collection("Orders");
+      final CollectionReference c = FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyOrders");
+      //  Reference to reduce quantity from stock
+      final CollectionReference prod =
+          FirebaseFirestore.instance.collection("Products");
       var docRef = await c.add(
         {
           "amount": amount,
@@ -47,12 +54,16 @@ class OrdersProvider with ChangeNotifier {
       );
 
       productsList.forEach((element) {
+        prod.doc(element.productId).update({
+          "quantity": FieldValue.increment(-1 * element.quantity),
+        });
         c.doc(docRef.id).collection("productsList").add(
           {
             "id": element.id,
             "title": element.title,
             "quantity": element.quantity,
             "pricePerUnit": element.pricePerUnit,
+            "productId": element.productId,
           },
         );
       });
@@ -61,15 +72,6 @@ class OrdersProvider with ChangeNotifier {
     catch (error) {
       throw error;
     }
-
-    // _ordersList.insert(
-    //   0,
-    //   OrderItem(
-    //       id: DateTime.now().toString(),
-    //       amount: amount,
-    //       productsList: productsList,
-    //       dateTime: DateTime.now()),
-    // );
     Fluttertoast.cancel();
     Fluttertoast.showToast(
         msg: "Order placed successfully :)",
@@ -82,8 +84,10 @@ class OrdersProvider with ChangeNotifier {
   //  Used for pull down to refresh and when orders screen is opened
   Future<void> reloadOrders() async {
     try {
-      final CollectionReference c =
-          FirebaseFirestore.instance.collection("Orders");
+      final CollectionReference c = FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyOrders");
 
       final value = await c.get();
       final List<OrderItem> _fetchedOrders = [];
@@ -99,6 +103,7 @@ class OrdersProvider with ChangeNotifier {
                     title: element.data()["title"],
                     quantity: element.data()["quantity"],
                     pricePerUnit: element.data()["pricePerUnit"],
+                    productId: element.data()["productId"],
                   ),
                 );
               });

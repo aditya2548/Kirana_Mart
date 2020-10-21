@@ -1,3 +1,5 @@
+import '../widgets/data_search.dart';
+
 import '../dialog/custom_dialog.dart';
 import '../models/product_provider.dart';
 import 'package:delayed_display/delayed_display.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 
 //  Stateful main widget which then renders two tabs(Home and fav)
 class HomePageTabsScreen extends StatefulWidget {
+  static const routeName = "/home_page_tabs_screen";
   @override
   _HomePageTabsScreenState createState() => _HomePageTabsScreenState();
 }
@@ -44,6 +47,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
         CustomDialog.generalErrorDialog(context);
       });
     });
+    Provider.of<CartProvider>(context, listen: false).fetchCartItems();
     super.initState();
   }
 
@@ -66,6 +70,11 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
           ),
           //  cart option at top left in appbar
           actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: DataSearch());
+                }),
             //  Used consumer instead of provider as we don't need to update the whole widget
             //  We just need to update our badge count when an item is added to cart
             //  Also, we set the cart image as child in the Consumer so that we can access it
