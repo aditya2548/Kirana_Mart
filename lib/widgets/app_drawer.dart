@@ -1,3 +1,6 @@
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../screens/admin_screen.dart';
 import '../screens/user_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -134,6 +137,20 @@ class AppDrawer extends StatelessWidget {
             Divider(
               thickness: 1,
             ),
+          ListTile(
+            leading: Icon(Icons.mail),
+            title: Text("Contact Us"),
+            onTap: () async {
+              var url =
+                  "mailto:kirana.mart.grocery@gmail.com?subject=Kirana Mart Query&body=Please provide details regarding your problem.\nWe will contact you shortly.";
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                Fluttertoast.showToast(
+                    msg: "Sorry for the inconvenience\nPlease try again later");
+              }
+            },
+          ),
         ],
       ),
     );

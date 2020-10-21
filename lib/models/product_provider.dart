@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../dialog/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -101,10 +102,12 @@ class ProductsProvider with ChangeNotifier {
           "price": product.price,
           "productCategory":
               Product.productCattoString(product.productCategory),
-          "isFav": product.isFav,
+          // "isFav": product.isFav,
           "retailerId": product.retailerId,
         },
       );
+      Fluttertoast.showToast(
+          msg: "Product will be added after appoval by admin");
     }
     //  throw the error to the screen/widget using the method
     catch (error) {
@@ -114,15 +117,27 @@ class ProductsProvider with ChangeNotifier {
 
   //  Function to fetch products from firestore in real-time
   //  Add changes in update/add/delete products are handled here to show effect
+  //  Also, changes to fav of any user are also shown
   Future<void> fetchProductsRealTime() async {
-    print("fetch");
-
-    final CollectionReference c =
+    final CollectionReference productReference =
         FirebaseFirestore.instance.collection("Products");
-
+    final CollectionReference favReference = FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("MyFav");
     List<Product> _fetchedProducts = [];
     try {
-      c.snapshots().listen((event) {
+      favReference.snapshots().listen((event) {
+        if (event.docChanges == null) {
+          return;
+        }
+        reloadProducts();
+      });
+    } catch (error) {
+      throw error;
+    }
+    try {
+      productReference.snapshots().listen((event) {
         if (event.docChanges == null) {
           return;
         }
@@ -154,7 +169,7 @@ class ProductsProvider with ChangeNotifier {
               price: element.doc.data()["price"],
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
-              isFav: _fetchedProducts[modifyIndex].isFav,
+              // isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
               quantity: element.doc.data()["quantity"],
             );
@@ -185,6 +200,20 @@ class ProductsProvider with ChangeNotifier {
       if (value.docs == null) {
         return;
       }
+      List<String> isFav = [];
+      await FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyFav")
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          if (element.data()["isFav"] == true) {
+            isFav.add(element.id);
+          }
+        });
+        // isFav.add(value)
+      });
       value.docs.forEach((element) {
         _fetchedProducts.add(Product(
           id: element.id,
@@ -194,7 +223,8 @@ class ProductsProvider with ChangeNotifier {
           price: element.data()["price"],
           productCategory:
               Product.stringtoProductCat(element.data()["productCategory"]),
-          isFav: element.data()["isFav"],
+          // isFav: element.data()["isFav"],
+          isFav: isFav.contains(element.id),
           retailerId: element.data()["retailerId"],
           quantity: element.data()["quantity"],
         ));
@@ -226,10 +256,12 @@ class ProductsProvider with ChangeNotifier {
           "price": product.price,
           "productCategory":
               Product.productCattoString(product.productCategory),
-          "isFav": product.isFav,
+          // "isFav": product.isFav,
           "retailerId": product.retailerId,
         },
       );
+      Fluttertoast.showToast(
+          msg: "Edits will be visible after approval by admin");
     } catch (error) {
       throw error;
     }
@@ -323,7 +355,7 @@ class ProductsProvider with ChangeNotifier {
               price: element.doc.data()["price"],
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
-              isFav: _fetchedProducts[modifyIndex].isFav,
+              // isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
               quantity: element.doc.data()["quantity"],
             );
@@ -369,8 +401,9 @@ class ProductsProvider with ChangeNotifier {
               "imageUrl": _updatedData.data()["imageUrl"],
               "price": _updatedData.data()["price"],
               "productCategory": _updatedData.data()["productCategory"],
-              "isFav": _updatedData.data()["isFav"],
+              // "isFav": _updatedData.data()["isFav"],
               "retailerId": _updatedData.data()["retailerId"],
+              "quantity": value.data()["quantity"],
             },
           );
           //  if image is also modified, delete previous image from Firebase Storage
@@ -393,8 +426,9 @@ class ProductsProvider with ChangeNotifier {
               "imageUrl": _updatedData.data()["imageUrl"],
               "price": _updatedData.data()["price"],
               "productCategory": _updatedData.data()["productCategory"],
-              "isFav": _updatedData.data()["isFav"],
+              // "isFav": _updatedData.data()["isFav"],
               "retailerId": _updatedData.data()["retailerId"],
+              "quantity": 0,
             },
           );
         }

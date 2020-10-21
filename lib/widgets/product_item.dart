@@ -13,6 +13,32 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context);
+    //  Function to get product header
+    //  if it's quantity is less than 10
+    //  or if it is out of stock
+    Widget getHeader() {
+      if (product.quantity <= 0) {
+        return Container(
+          color: Colors.red,
+          alignment: Alignment.center,
+          child: Text(
+            "OUT OF STOCK",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        );
+      } else if (product.quantity < 10) {
+        return Container(
+          color: Colors.yellow,
+          alignment: Alignment.center,
+          child: Text(
+            "Only ${product.quantity} left",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        );
+      }
+      return null;
+    }
+
     // cartprovider has listen false as no change of adding product on display screen
     final CartProvider cartItems =
         Provider.of<CartProvider>(context, listen: false);
@@ -33,15 +59,7 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         //  header to show unavailable if quantity <=0
-        header: product.quantity <= 0
-            ? Container(
-                color: Colors.red,
-                alignment: Alignment.center,
-                child: Text(
-                  "OUT OF STOCK",
-                ),
-              )
-            : null,
+        header: getHeader(),
         //  Row with children -> [Fav icon, (column of product title and price), add to cart icon]
         footer: Container(
           color: Colors.black87,

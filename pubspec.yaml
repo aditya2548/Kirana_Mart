@@ -35,6 +35,9 @@ dependencies:
   firebase_storage: ^4.0.1
   firebase_auth: ^0.18.1+2
   delayed_display: ^1.0.3
+  # url_launcher(for mail and phone)
+  url_launcher: ^5.7.5
+
 
 
 
