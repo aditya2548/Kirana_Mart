@@ -83,7 +83,7 @@ class ProductItem extends StatelessWidget {
                       product.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 10,
+                        // fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -92,8 +92,8 @@ class ProductItem extends StatelessWidget {
                     "Rs. ${product.price.toString()}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 6,
-                    ),
+                        // fontSize: 6,
+                        ),
                   ),
                 ],
               )),

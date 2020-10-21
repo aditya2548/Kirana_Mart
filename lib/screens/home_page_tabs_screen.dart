@@ -86,7 +86,10 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                 animationType: BadgeAnimationType.scale,
                 badgeContent: Text(
                   "${cartData.getCartItemCount}",
-                  style: TextStyle(color: Colors.white, fontSize: 10),
+                  style: TextStyle(
+                    color: Colors.white,
+                    // fontSize: 10,
+                  ),
                 ),
                 child: child,
               ),
@@ -96,9 +99,9 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                     Navigator.of(context).pushNamed(CartScreen.routeName);
                   }),
             ),
-            SizedBox(
-              width: 10,
-            ),
+            // SizedBox(
+            //   width: 10,
+            // ),
           ],
           bottom: TabBar(tabs: <Widget>[
             Tab(
@@ -135,7 +138,10 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                     animationType: BadgeAnimationType.scale,
                     badgeContent: Text(
                       count.toString(),
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: TextStyle(
+                        color: Colors.white,
+                        // fontSize: 10,
+                      ),
                     ),
                   )
                 ],

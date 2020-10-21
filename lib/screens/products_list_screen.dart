@@ -111,8 +111,8 @@ Widget headerCategoryItem(
         Text(
           Product.productCattoString(productCategory) + ' ›',
           style: TextStyle(
-            fontSize: 10,
-          ),
+              // fontSize: 10,
+              ),
           textAlign: TextAlign.center,
         )
       ],

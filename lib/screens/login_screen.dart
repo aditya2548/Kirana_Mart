@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
                 child: Text(
                   "Sign Up ?",
                   style: TextStyle(
-                    fontSize: 13,
+                    // fontSize: 13,
                     color: Theme.of(context).highlightColor,
                   ),
                 ),
@@ -47,7 +47,7 @@ class LoginScreen extends StatelessWidget {
               child: Text(
                 'Welcome Back!',
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).highlightColor),
               ),
@@ -56,7 +56,8 @@ class LoginScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
               child: Text("Howdy, let's authenticate",
                   style: TextStyle(
-                      fontSize: 10, color: Theme.of(context).highlightColor)),
+                      // fontSize: 10,
+                      color: Theme.of(context).highlightColor)),
             ),
             Center(
               child: Padding(
@@ -145,11 +146,11 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                     children: <Widget>[
                       TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           labelText: 'E-Mail',
-                          errorStyle: TextStyle(fontSize: 8),
+                          // errorStyle: TextStyle(fontSize: 8),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
@@ -165,11 +166,11 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         },
                       ),
                       TextFormField(
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          errorStyle: TextStyle(fontSize: 8),
+                          // errorStyle: TextStyle(fontSize: 8),
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.visiblePassword,
@@ -222,8 +223,9 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
             },
             child: Text(
               'Forgot Password ?',
-              style:
-                  TextStyle(fontSize: 12, color: Theme.of(context).accentColor),
+              style: TextStyle(
+                  // fontSize: 12,
+                  color: Theme.of(context).accentColor),
             ),
           ),
         ),

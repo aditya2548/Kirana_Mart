@@ -172,7 +172,7 @@ class _OrderButtonState extends State<OrderButton> {
           ? CircularProgressIndicator()
           : Text(
               "PLACE ORDER",
-              style: TextStyle(fontSize: 12),
+              // style: TextStyle(fontSize: 12),
             ),
     );
   }

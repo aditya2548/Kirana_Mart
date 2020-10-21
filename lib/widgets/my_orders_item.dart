@@ -18,8 +18,8 @@ class MyOrdersItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = order.productsList.length == 1
-        ? " ${order.productsList.length} product. Total amount: Rs.${order.amount}"
-        : " ${order.productsList.length} products. Total amount: Rs.${order.amount}";
+        ? " ${order.productsList.length} product. Total cost: Rs.${order.amount}"
+        : " ${order.productsList.length} products. Total cost: Rs.${order.amount}";
     return Card(
       elevation: 20,
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -32,13 +32,16 @@ class MyOrdersItem extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              // fontSize: 11,
+            ),
           ),
         ),
         subtitle: Center(
           child: Text(
             "Date: ${DateFormat("dd MMM yyyy, HH:mm").format(order.dateTime)} ",
-            style: TextStyle(fontSize: 10),
+            // style: TextStyle(fontSize: 10),
           ),
         ),
         children: [

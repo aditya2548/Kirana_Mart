@@ -47,15 +47,14 @@ class WelcomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  // mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Spacer(),
                     Text(
                       "Get Started",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
-                      width: 40,
-                    ),
+                    Spacer(),
                     Icon(Icons.arrow_forward_ios)
                   ],
                 )),

@@ -83,7 +83,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
         ),
         subtitle: Text(
           "Price per item: Rs. ${widget.price}",
-          style: TextStyle(fontSize: 10),
+          // style: TextStyle(fontSize: 10),
         ),
         children: [
           Padding(

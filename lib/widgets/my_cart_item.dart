@@ -72,7 +72,7 @@ class MyCartItem extends StatelessWidget {
           ),
           subtitle: Text(
             "Price per item: Rs. $price ",
-            style: TextStyle(fontSize: 10),
+            // style: TextStyle(fontSize: 10),
           ),
           children: [
             Padding(

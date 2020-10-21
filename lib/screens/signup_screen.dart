@@ -26,7 +26,7 @@ class SignUpScreen extends StatelessWidget {
               child: Text(
                 "Login ?",
                 style: TextStyle(
-                  fontSize: 13,
+                  // fontSize: 20,
                   color: Theme.of(context).highlightColor,
                 ),
               ),
@@ -50,9 +50,10 @@ class SignUpScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-              child: Text("Let's get started",
-                  style: TextStyle(
-                      fontSize: 10, color: Theme.of(context).highlightColor)),
+              child: Text(
+                "Let's get started",
+                style: TextStyle(color: Theme.of(context).highlightColor),
+              ),
             ),
             Center(
               child: Padding(
@@ -138,10 +139,10 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
                         labelText: 'Name',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.name,
                       validator: (value) {
@@ -158,11 +159,11 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         labelText: 'E-Mail',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
@@ -179,10 +180,10 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
                         labelText: 'Mobile Number',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
@@ -201,10 +202,10 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
                         labelText: 'Address',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -222,11 +223,11 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       },
                     ),
                     TextFormField(
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.visiblePassword,
@@ -243,11 +244,11 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       },
                     ),
                     TextFormField(
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
                         labelText: 'Confirm Password',
-                        errorStyle: TextStyle(fontSize: 8),
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.visiblePassword,

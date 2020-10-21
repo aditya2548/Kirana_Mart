@@ -1,3 +1,5 @@
+import 'package:flutter/rendering.dart';
+
 import '../models/auth_provider.dart';
 import '../widgets/app_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,9 +50,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ? Center(child: CircularProgressIndicator())
           : Center(
               child: Container(
-                margin: EdgeInsets.all(10),
+                margin: EdgeInsets.fromLTRB(15, 50, 15, 15),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (_user.emailVerified == false)
                       RaisedButton(
@@ -77,7 +79,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           alignment: Alignment.center,
                           color: Theme.of(context).errorColor,
                           child: Padding(
-                            padding: const EdgeInsets.all(5.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Text(
                               "   Email not verified\nplease click to verify",
                               style: TextStyle(
@@ -94,7 +96,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         alignment: Alignment.center,
                         color: Colors.green,
                         child: Padding(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Text(
                             "Email verified :)",
                             style: TextStyle(
@@ -103,48 +105,64 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                       ),
-                    Container(
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Card(
+                      elevation: 15,
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       color: Theme.of(context).primaryColor,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Padding(
+                      // width: double.infinity,
+                      // alignment: Alignment.center,
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Name: $_name"),
                       ),
                     ),
-                    Container(
+                    Card(
+                      elevation: 15,
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       color: Theme.of(context).primaryColor,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Padding(
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Email: ${_user.email}"),
                       ),
                     ),
-                    Container(
+                    Card(
+                      elevation: 15,
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       color: Theme.of(context).primaryColor,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Padding(
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Address: $_address"),
                       ),
                     ),
-                    Container(
+                    Card(
+                      elevation: 15,
+                      margin: EdgeInsets.symmetric(vertical: 8),
                       color: Theme.of(context).primaryColor,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Padding(
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.all(8.0),
                         child: Text("Mobile Number: $_mobileNumber"),
                       ),
                     ),
-                    RaisedButton(
-                      child: Text("Sign-out"),
-                      onPressed: () {
-                        Provider.of<AuthProvider>(context, listen: false)
-                            .signOutUser(context);
-                      },
+                    Container(
+                      margin: EdgeInsets.only(top: 40),
+                      child: RaisedButton(
+                        child: Text("Sign-out"),
+                        onPressed: () {
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .signOutUser(context);
+                        },
+                      ),
                     ),
                   ],
                 ),
