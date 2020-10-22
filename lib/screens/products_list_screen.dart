@@ -7,12 +7,75 @@ import '../widgets/product_item.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-class ProductsListScreen extends StatelessWidget {
+class ProductsListScreen extends StatefulWidget {
+  @override
+  _ProductsListScreenState createState() => _ProductsListScreenState();
+}
+
+class _ProductsListScreenState extends State<ProductsListScreen> {
+  //  Controller for gridview.builder
+  ScrollController _scrollController = ScrollController();
+  //  variable to show progressIndicator while fetching products
+  var _isFetching = false;
+  //  Variable to check if more products available or not
+  var _moreAvailable = true;
+
+  @override
+  void initState() {
+    super.initState();
+    //  Listener for scroll controller, to fetch more products when we have only 1/4th of available products left
+    //  And only when more products are available
+    _scrollController.addListener(() {
+      var provider = Provider.of<ProductsProvider>(context, listen: false);
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.25;
+
+      //  Show message at bottom that no more products available
+      if (!provider.moreProductsAvailable()) {
+        //  if at the end of list
+        if (maxScroll - currentScroll == 0) {
+          setState(() {
+            _moreAvailable = false;
+          });
+        }
+        //  If no more products available, but we go back above in the list
+        else {
+          setState(() {
+            _moreAvailable = true;
+          });
+        }
+      }
+      //  request for more data when reaching the end of list
+      if (maxScroll - currentScroll <= delta &&
+          provider.moreProductsAvailable()) {
+        setState(() {
+          _isFetching = true;
+        });
+        provider.requestMoreData().then((value) {
+          setState(() {
+            _isFetching = false;
+          });
+        });
+      }
+    });
+  }
+
+//  Disposing scrollController to prevent memory leaks
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        //  Progress indicator if fetching products
+        if (_isFetching) LinearProgressIndicator(),
+
         SizedBox(
           height: 10,
         ),
@@ -56,8 +119,9 @@ class ProductsListScreen extends StatelessWidget {
             child: RefreshIndicator(
               onRefresh: () =>
                   Provider.of<ProductsProvider>(context, listen: false)
-                      .reloadProducts(),
+                      .fetchProductsRealTime(),
               child: GridView.builder(
+                controller: _scrollController,
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -77,7 +141,17 @@ class ProductsListScreen extends StatelessWidget {
               ),
             ),
           ),
-        )
+        ),
+        //  To be shown at the bottm, only when we reach the bottom and no more products are available
+        if (!_moreAvailable)
+          Container(
+            margin: EdgeInsets.only(top: 0),
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text("No More Products Available"),
+            ),
+          ),
       ],
     );
   }

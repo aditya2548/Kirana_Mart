@@ -1,6 +1,8 @@
+import '../models/product_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum ProductCategory {
   CookingEssentials,
@@ -85,7 +87,7 @@ class Product with ChangeNotifier {
   }
 
 //  function to toggle favourite status and to notify to all the listeners of product
-  Future<void> toggleFav() async {
+  Future<void> toggleFav(BuildContext context) async {
     try {
       // final DocumentReference docRef =
       //     FirebaseFirestore.instance.collection("Products").doc(id);
@@ -99,6 +101,7 @@ class Product with ChangeNotifier {
           "isFav": !isFav,
         },
       );
+      Provider.of<ProductsProvider>(context, listen: false).fetchFavsRealTime();
     } catch (error) {
       throw error;
     }

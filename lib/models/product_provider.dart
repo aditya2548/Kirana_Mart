@@ -50,6 +50,19 @@ class ProductsProvider with ChangeNotifier {
     // ),
   ];
 
+  //  Stores documentSnashot of last fetched document(lazy loading)
+  DocumentSnapshot _lastDocument;
+
+  //   List of List of products that contain paged product lists
+  //   so that we can update a particular previous page if needed
+  List<List<Product>> _allPagedProducts = List<List<Product>>();
+
+  //  boolean to know whether we have more products available or not
+  bool _hasMoreProducts = true;
+
+  //  number of products to be loaded at once
+  int _productsPerPage = 7;
+
   //  List of all pending products for approval by admin
   List<Product> _pendingProducts = [];
 
@@ -76,7 +89,7 @@ class ProductsProvider with ChangeNotifier {
 
   //  function to get a copy of list of favorite products
   List<Product> get getFavoriteProductItems {
-    return _productItems.where((element) => element.isFav).toList();
+    return getProductItems.where((element) => element.isFav).toList();
   }
 
   //  function to get a product when id is provided
@@ -115,35 +128,63 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  //  Function to freshly load the products list
+  //  On formation on screen, or on refresh
+  bool reloading = false;
+  Future<void> fetchProductsRealTime() async {
+    _hasMoreProducts = true;
+    reloading = true;
+    _lastDocument = null;
+    return await listenToProductsRealTime();
+  }
+
+  //  Request for more products if needed
+  Future<bool> requestMoreData() async {
+    return await listenToProductsRealTime();
+  }
+
+  //  get data whether more products are available or not
+  bool moreProductsAvailable() {
+    return _hasMoreProducts;
+  }
+
   //  Function to fetch products from firestore in real-time
   //  Add changes in update/add/delete products are handled here to show effect
   //  Also, changes to fav of any user are also shown
-  Future<void> fetchProductsRealTime() async {
-    final CollectionReference productReference =
-        FirebaseFirestore.instance.collection("Products");
-    final CollectionReference favReference = FirebaseFirestore.instance
-        .collection("User")
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .collection("MyFav");
-    List<Product> _fetchedProducts = [];
-    try {
-      favReference.snapshots().listen((event) {
-        if (event.docChanges == null) {
-          return;
-        }
-        reloadProducts();
-      });
-    } catch (error) {
-      throw error;
+  //  Products fetched in pages of 20 products per page
+  Future<bool> listenToProductsRealTime() async {
+    var pageProducts = FirebaseFirestore.instance
+        .collection("Products")
+        .orderBy("title")
+        .limit(_productsPerPage);
+
+    //  if requesting more products
+    if (_lastDocument != null) {
+      pageProducts = pageProducts.startAfterDocument(_lastDocument);
     }
+    //  If no more data, return
+    if (!_hasMoreProducts) {
+      return false;
+    }
+    if (reloading) {
+      _allPagedProducts = List<List<Product>>();
+      reloading = false;
+    }
+    //  We got data to load now!!
+    //  Index of page to be requested
+    var _currentRequestIndex = _allPagedProducts.length;
+
+    List<Product> _fetchedProducts = [];
+
+    //  Listen and fetch products
     try {
-      productReference.snapshots().listen((event) {
-        if (event.docChanges == null) {
+      pageProducts.snapshots().listen((event) {
+        if (event.docChanges == null || event.docs.isEmpty) {
           return;
         }
+        List<Product> allProducts;
         event.docChanges.forEach((element) {
           if (element.type == DocumentChangeType.added) {
-            print("add");
             _fetchedProducts.add(
               Product(
                 id: element.doc.id,
@@ -158,7 +199,6 @@ class ProductsProvider with ChangeNotifier {
               ),
             );
           } else if (element.type == DocumentChangeType.modified) {
-            print("modify");
             final modifyIndex =
                 _fetchedProducts.indexWhere((el) => el.id == element.doc.id);
             _fetchedProducts[modifyIndex] = Product(
@@ -169,19 +209,68 @@ class ProductsProvider with ChangeNotifier {
               price: element.doc.data()["price"],
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
-              // isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
               quantity: element.doc.data()["quantity"],
             );
           } else if (element.type == DocumentChangeType.removed) {
-            print("remove");
             _fetchedProducts.removeWhere((el) => el.id == element.doc.id);
           }
-          print(_fetchedProducts.length);
-          _productItems = _fetchedProducts;
-          notifyListeners();
-          reloadProducts();
+
+          //  If current request index is less than the length of allPagedProducts
+          //  it means, we're modifying changes made to previous fetched product
+          var pageExits = _currentRequestIndex < _allPagedProducts.length;
+
+          if (pageExits) {
+            _allPagedProducts[_currentRequestIndex] = _fetchedProducts;
+          } else {
+            _allPagedProducts.add(_fetchedProducts);
+          }
+
+          //  Fold to fetch all the products from the list of (paged list of products)
+          allProducts = _allPagedProducts.fold<List<Product>>(List<Product>(),
+              (initialValue, pageItems) => initialValue..addAll(pageItems));
+
+          if (_currentRequestIndex == _allPagedProducts.length - 1) {
+            _lastDocument = event.docs.last;
+          }
+          _hasMoreProducts = _fetchedProducts.length == _productsPerPage;
+
+          // reloadProducts();
         });
+        // _productItems = _fetchedProducts;
+        print(
+            "Lazy Loading fetched: ${_fetchedProducts.length}, total: ${allProducts.length}");
+        _productItems = allProducts;
+        fetchFavsRealTime();
+
+        notifyListeners();
+      });
+    } catch (error) {
+      throw error;
+    }
+    return true;
+  }
+
+  //  To listen to changes in fav
+  Future<void> fetchFavsRealTime() async {
+    final CollectionReference favReference = FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("MyFav");
+    try {
+      favReference.snapshots().listen((event) {
+        if (event.docChanges == null) {
+          return;
+        }
+        // reloadProducts();
+        // fetchProductsRealTime();
+        event.docChanges.forEach((element) {
+          var index = _productItems
+              .indexWhere((product) => product.id == element.doc.id);
+          if (index != -1)
+            _productItems[index].isFav = element.doc.data()["isFav"];
+        });
+        // requestMoreData();
       });
     } catch (error) {
       throw error;

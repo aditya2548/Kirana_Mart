@@ -70,7 +70,7 @@ class ProductItem extends StatelessWidget {
                     ? Icons.favorite_rounded
                     : Icons.favorite_border_rounded),
                 onPressed: () {
-                  product.toggleFav();
+                  product.toggleFav(context);
                 },
                 color: Colors.red,
               ),

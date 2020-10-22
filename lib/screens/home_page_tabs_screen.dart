@@ -34,9 +34,9 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
     Firebase.initializeApp().catchError((error) {
       CustomDialog.generalErrorDialog(context);
     }).whenComplete(() {
-      // setState(() {
-      //   _progressBar = true;
-      // });
+      setState(() {
+        _progressBar = false;
+      });
       Provider.of<ProductsProvider>(context, listen: false)
           .fetchProductsRealTime()
           .then((_) {

@@ -12,7 +12,7 @@ class FavoritesScreen extends StatelessWidget {
     final favProductList = productListProvider.getFavoriteProductItems;
     return RefreshIndicator(
       onRefresh: () {
-        return productListProvider.reloadProducts();
+        return productListProvider.fetchProductsRealTime();
       },
       child: GridView.builder(
         shrinkWrap: true,
