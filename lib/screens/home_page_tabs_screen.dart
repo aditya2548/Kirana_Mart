@@ -1,3 +1,5 @@
+import '../screens/notifications_screen.dart';
+
 import '../widgets/data_search.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -71,10 +73,17 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
           //  cart option at top left in appbar
           actions: <Widget>[
             IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                }),
+              icon: Icon(Icons.notification_important),
+              onPressed: () {
+                Navigator.of(context).pushNamed(NotificationsScreen.routeName);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: DataSearch());
+              },
+            ),
             //  Used consumer instead of provider as we don't need to update the whole widget
             //  We just need to update our badge count when an item is added to cart
             //  Also, we set the cart image as child in the Consumer so that we can access it

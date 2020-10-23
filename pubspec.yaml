@@ -37,6 +37,11 @@ dependencies:
   delayed_display: ^1.0.3
   # url_launcher(for mail and phone)
   url_launcher: ^5.7.5
+  # FCM
+  firebase_messaging: ^7.0.3
+  http: ^0.12.2
+
+
 
 
 

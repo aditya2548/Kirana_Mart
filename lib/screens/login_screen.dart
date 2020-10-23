@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../dialog/custom_dialog.dart';
 
 import '../screens/admin_screen.dart';
@@ -112,7 +114,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
       Navigator.pop(context);
       final _firebaseUser = context.read<User>();
       //  If user is admin
-      if (_firebaseUser.email == "aditya2512sharma@gmail.com")
+      if (_firebaseUser.email == DataModel.adminEmail)
         Navigator.of(context).pushReplacementNamed(AdminScreen.routeName);
       else
         Navigator.of(context)

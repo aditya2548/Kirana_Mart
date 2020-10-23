@@ -76,6 +76,7 @@ class _UserProductItemState extends State<UserProductItem> {
       }
       Provider.of<ProductsProvider>(context, listen: false).addProductQuantity(
           widget.id, widget.quantity + int.parse(updatedQuantity));
+      setState(() {});
     }
 
     return Card(

@@ -85,8 +85,10 @@ class CartScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(" Total: "),
-                          Text(
-                              "Rs. ${cartData.getTotalCartAmount.toStringAsFixed(2)}"),
+                          Container(
+                            child: Text(
+                                "Rs. ${cartData.getTotalCartAmount.toStringAsFixed(0)}"),
+                          ),
                           Spacer(),
                           OrderButton(cartData: cartData),
                         ],
@@ -172,7 +174,7 @@ class _OrderButtonState extends State<OrderButton> {
           ? CircularProgressIndicator()
           : Text(
               "PLACE ORDER",
-              // style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 12),
             ),
     );
   }

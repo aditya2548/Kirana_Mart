@@ -1,6 +1,8 @@
+import '../models/fcm_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../dialog/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -469,9 +471,12 @@ class ProductsProvider with ChangeNotifier {
 
   //  Product approved by admin
   //  Add to all products, remove from pending products
-  Future<void> approveProduct(String id) async {
+  Future<void> approveProduct(String id, BuildContext context) async {
     final DocumentReference docRef =
         FirebaseFirestore.instance.collection("Products").doc(id);
+
+    //  flag to know whether product modified or added
+    bool flag = true;
 
     final _updatedData = await FirebaseFirestore.instance
         .collection("PendingProducts")
@@ -481,6 +486,7 @@ class ProductsProvider with ChangeNotifier {
       (value) {
         //  If product was modified
         if (value.exists) {
+          flag = false;
           String _fetchedImageUrl = value.data()["imageUrl"];
 
           docRef.set(
@@ -527,12 +533,27 @@ class ProductsProvider with ChangeNotifier {
             .doc(id)
             .delete();
       },
-    );
+    ).then((value) {
+      var provider = Provider.of<FcmProvider>(context, listen: false);
+      //  If product was added, send addition notification
+      if (flag) {
+        provider.sendProductAcceptedMessage(
+            _updatedData.data()["retailerId"], _updatedData.data()["title"]);
+      }
+      //  else send modification notification
+      else {
+        provider.sendProductModifiedMessage(
+            _updatedData.data()["retailerId"], _updatedData.data()["title"]);
+      }
+    });
   }
 
   //  Product declined by admin
-  Future<void> declineProduct(String id) async {
-    //  Remove the item from pendingProducts
+  Future<void> declineProduct(String id, BuildContext context, String reason,
+      String retailerId, String productTitle) async {
+    //  Remove the item from pendingProducts and send notification to user
+    Provider.of<FcmProvider>(context, listen: false)
+        .sendProductRejectionReason(retailerId, productTitle, reason);
     FirebaseFirestore.instance.collection("PendingProducts").doc(id).delete();
   }
 

@@ -1,3 +1,6 @@
+import '../models/data_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import '../screens/welcome_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,8 +19,37 @@ class AuthProvider {
   Future<String> loginWithEmailAndPassword(
       String email, String password, BuildContext context) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      var userCredentials = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      //  Refetch and store fcm token in case it refreshes
+      String token = await FirebaseMessaging().getToken();
+      FirebaseFirestore.instance
+          .collection("User")
+          .doc(userCredentials.user.uid)
+          .collection("MyData")
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          FirebaseFirestore.instance
+              .collection("User")
+              .doc(userCredentials.user.uid)
+              .collection("MyData")
+              .doc(element.id)
+              .update(
+            {"fcmToken": token},
+          );
+        });
+      });
+      if (email == DataModel.adminEmail) {
+        await FirebaseFirestore.instance
+            .collection("Admin")
+            .doc(DataModel.adminEmail)
+            .update({
+          "fcmToken": token,
+          "adminId": userCredentials.user.uid,
+        });
+      }
       // notifyListeners();
       return "Logged In";
     } on FirebaseAuthException catch (e) {
@@ -62,13 +94,27 @@ class AuthProvider {
             .collection("User")
             .doc(userId.user.uid)
             .collection("MyData");
+        String token = await FirebaseMessaging().getToken();
         await collectionReference.add(
           {
             "name": _authData["name"],
             "mobileNumber": _authData["mobileNumber"],
             "address": _authData["address"],
+            "fcmToken": token,
           },
         );
+        if (_authData["email"] == DataModel.adminEmail) {
+          await FirebaseFirestore.instance
+              .collection("Admin")
+              .doc(_authData["email"])
+              .set({
+            "email": _authData["email"],
+            "name": _authData["name"],
+            "mobileNumber": _authData["mobileNumber"],
+            "address": _authData["address"],
+            "fcmToken": token,
+          });
+        }
       }
       //  throw the error to the screen/widget using the method
       catch (error) {

@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+import '../screens/notifications_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -123,8 +125,7 @@ class AppDrawer extends StatelessWidget {
           Divider(
             thickness: 1,
           ),
-          if (FirebaseAuth.instance.currentUser.email ==
-              "aditya2512sharma@gmail.com")
+          if (FirebaseAuth.instance.currentUser.email == DataModel.adminEmail)
             ListTile(
               leading: Icon(Icons.done_all),
               title: Text("Approve Products"),
@@ -132,8 +133,7 @@ class AppDrawer extends StatelessWidget {
                 checkAndPush("Approve Products", AdminScreen.routeName);
               },
             ),
-          if (FirebaseAuth.instance.currentUser.email ==
-              "aditya2512sharma@gmail.com")
+          if (FirebaseAuth.instance.currentUser.email == DataModel.adminEmail)
             Divider(
               thickness: 1,
             ),
@@ -149,6 +149,16 @@ class AppDrawer extends StatelessWidget {
                 Fluttertoast.showToast(
                     msg: "Sorry for the inconvenience\nPlease try again later");
               }
+            },
+          ),
+          Divider(
+            thickness: 1,
+          ),
+          ListTile(
+            leading: Icon(Icons.notification_important),
+            title: Text("My notifications"),
+            onTap: () {
+              checkAndPush("My notifications", NotificationsScreen.routeName);
             },
           ),
         ],

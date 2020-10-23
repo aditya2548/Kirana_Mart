@@ -24,6 +24,8 @@ class PendingUserProductItem extends StatefulWidget {
   final String description;
   @required
   final ProductCategory productCategory;
+  @required
+  final String retailerId;
 
   PendingUserProductItem({
     this.id,
@@ -32,6 +34,7 @@ class PendingUserProductItem extends StatefulWidget {
     this.price,
     this.imageUrl,
     this.productCategory,
+    this.retailerId,
   });
 
   @override
@@ -60,9 +63,8 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
             fontSize: 12);
         return;
       }
-      print(reason);
-      Provider.of<ProductsProvider>(context, listen: false)
-          .declineProduct(widget.id);
+      Provider.of<ProductsProvider>(context, listen: false).declineProduct(
+          widget.id, context, reason, widget.retailerId, widget.title);
     }
 
     return Card(
@@ -140,7 +142,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
                   ),
                   onPressed: () {
                     Provider.of<ProductsProvider>(context, listen: false)
-                        .approveProduct(widget.id);
+                        .approveProduct(widget.id, context);
                   }),
               RaisedButton.icon(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),

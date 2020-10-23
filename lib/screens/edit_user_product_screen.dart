@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../models/fcm_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -176,6 +177,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           try {
             await Provider.of<ProductsProvider>(context, listen: false)
                 .updateProduct(_editedProduct.id, _editedProduct);
+            await Provider.of<FcmProvider>(context, listen: false)
+                .sendMessageToAdmin(_editedProduct.title);
           } catch (error) {
             await CustomDialog.generalErrorDialog(context);
           }
@@ -185,6 +188,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           try {
             await Provider.of<ProductsProvider>(context, listen: false)
                 .addProduct(_editedProduct);
+            await Provider.of<FcmProvider>(context, listen: false)
+                .sendMessageToAdmin(_editedProduct.title);
           } catch (error) {
             await CustomDialog.generalErrorDialog(context);
           }
@@ -241,10 +246,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                       TextFormField(
                         initialValue: _initialTitle,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         decoration: InputDecoration(
-                            labelText: "Product name",
-                            errorStyle: TextStyle(fontSize: 8)),
+                          labelText: "Product name",
+                          errorStyle: TextStyle(fontSize: 8),
+                        ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) => FocusScope.of(context)
                             .requestFocus(_priceFocusNode),
@@ -275,7 +281,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                         initialValue: _initialPrice,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         focusNode: _priceFocusNode,
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         decoration: InputDecoration(
                             labelText: "Product price (Rs.)",
                             errorStyle: TextStyle(fontSize: 10)),
@@ -309,7 +315,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                         initialValue: _initialDescription,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         focusNode: _descriptionFocusNode,
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         maxLines: 3,
                         minLines: 1,
                         decoration: InputDecoration(
@@ -344,7 +350,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                         children: [
                           Text(
                             "Product Category:",
-                            style: TextStyle(fontSize: 10),
+                            // style: TextStyle(fontSize: 10),
                           ),
                           SizedBox(
                             width: 20,
@@ -355,7 +361,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                                     value: Product.productCattoString(e),
                                     child: Text(
                                       Product.productCattoString(e),
-                                      style: TextStyle(fontSize: 10),
+                                      // style: TextStyle(fontSize: 10),
                                     )))
                                 .toList(),
                             onChanged: (selected) {

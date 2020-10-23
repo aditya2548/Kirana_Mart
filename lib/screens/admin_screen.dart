@@ -57,6 +57,8 @@ class _AdminScreenState extends State<AdminScreen> {
                     price: ordersData.getPendingProductItems[index].price,
                     productCategory: ordersData
                         .getPendingProductItems[index].productCategory,
+                    retailerId:
+                        ordersData.getPendingProductItems[index].retailerId,
                   ),
                 ),
         ),
