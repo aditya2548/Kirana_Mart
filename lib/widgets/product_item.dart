@@ -47,15 +47,32 @@ class ProductItem extends StatelessWidget {
           topLeft: Radius.circular(15), topRight: Radius.circular(15)),
       child: GridTile(
         child: GestureDetector(
-          //  To go to product details when a product is clicked
+          //  To go to product details when a product is clicked, but first fetch all the reviews
           onTap: () {
-            Navigator.of(context)
-                .pushNamed(ProductDescription.routeName, arguments: product.id);
+            Provider.of<Product>(context, listen: false)
+                .fetchAllReviews()
+                .then((value) {
+              Navigator.of(context).pushNamed(ProductDescription.routeName,
+                  arguments: product.id);
+            });
           },
           //  Image of the product fetched through the image url
           child: Image.network(
             product.imageUrl,
             fit: BoxFit.fill,
+            //  Show loading spinner when fetching product
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null,
+                ),
+              );
+            },
           ),
         ),
         //  header to show unavailable if quantity <=0

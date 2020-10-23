@@ -1,4 +1,4 @@
-import 'package:fluttertoast/fluttertoast.dart';
+import '../widgets/review_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
 import '../models/orders_provider.dart';
@@ -53,14 +53,20 @@ class MyOrdersItem extends StatelessWidget {
                 elevation: 10,
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: ListTile(
+                  dense: true,
                   title: Text(order.productsList.toList()[index].title),
                   subtitle: Text(
                       "Rs. ${order.productsList.toList()[index].pricePerUnit} x ${order.productsList.toList()[index].quantity}"),
                   trailing: FlatButton(
                     color: Theme.of(context).primaryColorDark,
                     onPressed: () {
-                      Fluttertoast.cancel();
-                      Fluttertoast.showToast(msg: "Feature coming soon");
+                      //  Bottom sheet to add/update product review
+                      showBottomSheet(
+                          context: context,
+                          builder: (_) {
+                            return NewReview(
+                                order.productsList.toList()[index].productId);
+                          });
                     },
                     child: Text("Review product"),
                   ),

@@ -20,7 +20,9 @@ class Review {
   final String description;
   @required
   final int stars;
-  Review({this.username, this.description, this.stars});
+  @required
+  final DateTime dateTime;
+  Review({this.username, this.description, this.stars, this.dateTime});
 }
 
 class Product with ChangeNotifier {
@@ -35,9 +37,27 @@ class Product with ChangeNotifier {
   bool isFav;
   //  Map of reviews user-email as the key (dummy reviews)
   List<Map<String, Review>> _reviews = [
-    {"userId": Review(username: "Aman", stars: 5, description: "Good")},
-    {"userId": Review(username: "Amit", stars: 2, description: "Average")},
-    {"userId": Review(username: "Gaurav", stars: 1, description: "Good")},
+    // {
+    //   "userId": Review(
+    //       username: "Aman",
+    //       stars: 5,
+    //       description: "Good",
+    //       dateTime: DateTime(2000))
+    // },
+    // {
+    //   "userId": Review(
+    //       username: "Amit",
+    //       stars: 2,
+    //       description: "Average",
+    //       dateTime: DateTime(2000))
+    // },
+    // {
+    //   "userId": Review(
+    //       username: "Gaurav",
+    //       stars: 1,
+    //       description: "Good",
+    //       dateTime: DateTime.now())
+    // },
   ];
 
   Product({
@@ -127,5 +147,27 @@ class Product with ChangeNotifier {
   //  Function to get the review's list
   List<Map<String, Review>> get getReviews {
     return [..._reviews];
+  }
+
+  //  Function to fetch reviews from firestore
+  Future fetchAllReviews() async {
+    _reviews = [];
+    var snapshot = await FirebaseFirestore.instance
+        .collection("Products")
+        .doc(id)
+        .collection("Reviews")
+        .get();
+    print(snapshot.docs.length);
+    snapshot.docs.forEach((element) {
+      _reviews.add({
+        element.id: Review(
+          dateTime: DateTime.parse(element.data()["dateTime"]),
+          username: element.data()["username"],
+          stars: element.data()["stars"],
+          description: element.data()["description"],
+        ),
+      });
+    });
+    notifyListeners();
   }
 }

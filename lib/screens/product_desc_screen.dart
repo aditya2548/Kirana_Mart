@@ -119,7 +119,9 @@ class _ProductDescriptionState extends State<ProductDescription> {
                             SizedBox(
                               height: 5,
                             ),
-                            Text("( ${product.getReviewCount} reviews found)"),
+                            Text(product.getReviewCount <= 1
+                                ? "( ${product.getReviewCount} review found)"
+                                : "( ${product.getReviewCount} reviews found)"),
                             SizedBox(
                               height: 20,
                             ),
