@@ -565,5 +565,6 @@ class ProductsProvider with ChangeNotifier {
         .update(
       {"quantity": newQuantity},
     );
+    notifyListeners();
   }
 }
