@@ -94,7 +94,12 @@ class MyCartItem extends StatelessWidget {
                       onPressed: () {
                         Provider.of<CartProvider>(context, listen: false)
                             .addItemWithQuantity(
-                                productId, price, title, 1, context);
+                          productId,
+                          price,
+                          title,
+                          1,
+                          context,
+                        );
                       }),
                   Container(
                       padding: EdgeInsets.all(10),

@@ -12,12 +12,14 @@ class CartItem {
   final int quantity;
   final double pricePerUnit;
   final String productId;
+  final String retailerNumber;
   CartItem({
     @required this.id,
     @required this.title,
     @required this.quantity,
     @required this.pricePerUnit,
     @required this.productId,
+    @required this.retailerNumber,
   });
 }
 
@@ -46,15 +48,14 @@ class CartProvider with ChangeNotifier {
         event.docChanges.forEach((element) {
           if (element.type == DocumentChangeType.added) {
             print("add");
-            _fetchedCartItems.add(
-              CartItem(
-                id: element.doc.data()["id"],
-                title: element.doc.data()["title"],
-                pricePerUnit: element.doc.data()["pricePerUnit"],
-                quantity: element.doc.data()["quantity"],
-                productId: element.doc.id,
-              ),
-            );
+            _fetchedCartItems.add(CartItem(
+              id: element.doc.data()["id"],
+              title: element.doc.data()["title"],
+              pricePerUnit: element.doc.data()["pricePerUnit"],
+              quantity: element.doc.data()["quantity"],
+              productId: element.doc.id,
+              retailerNumber: element.doc.data()["retailerNumber"],
+            ));
           } else if (element.type == DocumentChangeType.modified) {
             final modifyIndex = _fetchedCartItems
                 .indexWhere((el) => el.productId == element.doc.id);
@@ -64,6 +65,7 @@ class CartProvider with ChangeNotifier {
               pricePerUnit: element.doc.data()["pricePerUnit"],
               quantity: element.doc.data()["quantity"],
               productId: element.doc.id,
+              retailerNumber: element.doc.data()["retailerNumber"],
             );
           } else if (element.type == DocumentChangeType.removed) {
             _fetchedCartItems
@@ -125,11 +127,31 @@ class CartProvider with ChangeNotifier {
                 msg: "Sorry, stock unavailable", backgroundColor: Colors.red);
             return;
           }
-          documentReference.set({
-            "id": DateTime.now().toIso8601String(),
-            "pricePerUnit": price,
-            "title": title,
-            "quantity": quantity,
+          String retailerId = "";
+          FirebaseFirestore.instance
+              .collection("Products")
+              .doc(productId)
+              .get()
+              .then((value) {
+            retailerId = value.data()["retailerId"];
+          }).then((value) {
+            String retailerNumber = "";
+            FirebaseFirestore.instance
+                .collection("User")
+                .doc(retailerId)
+                .collection("MyData")
+                .get()
+                .then((value) {
+              retailerNumber = value.docs.first.data()["mobileNumber"];
+            }).then((value) {
+              documentReference.set({
+                "id": DateTime.now().toIso8601String(),
+                "pricePerUnit": price,
+                "title": title,
+                "quantity": quantity,
+                "retailerNumber": retailerNumber,
+              });
+            });
           });
         }
       }).then((value) {

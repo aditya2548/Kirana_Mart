@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/cart_provider.dart';
 import '../widgets/product_review.dart';
@@ -18,6 +20,12 @@ class ProductDescription extends StatefulWidget {
 class _ProductDescriptionState extends State<ProductDescription> {
   //  Quantity of items to be purchased
   int _quantity = 1;
+
+  //  Fetch retailer details when screen is built for 1st time
+  String retailerName = "";
+  String retailerAddress = "";
+  bool _firstFetch = true;
+
   @override
   Widget build(BuildContext context) {
     //  product id fetched through modalroute
@@ -42,6 +50,20 @@ class _ProductDescriptionState extends State<ProductDescription> {
       });
     }
 
+    if (_firstFetch == true) {
+      FirebaseFirestore.instance
+          .collection("User")
+          .doc(product.retailerId)
+          .collection("MyData")
+          .get()
+          .then((value) {
+        setState(() {
+          retailerName = value.docs.first.data()["name"];
+          retailerAddress = value.docs.first.data()["address"];
+          _firstFetch = false;
+        });
+      });
+    }
     //  Product details, containing:
     //    ->  product image
     //    ->  Alert text if stock is less than 10
@@ -105,15 +127,20 @@ class _ProductDescriptionState extends State<ProductDescription> {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              child: SmoothStarRating(
-                                isReadOnly: true,
-                                allowHalfRating: true,
-                                starCount: 5,
-                                rating: product.getAverageRating,
-                                size: 27.0,
-                                color: Colors.orange,
-                                borderColor: Colors.deepOrange,
+                            Shimmer.fromColors(
+                              baseColor: Colors.yellow[900],
+                              highlightColor: Colors.yellow[100],
+                              period: Duration(seconds: 1),
+                              child: Container(
+                                child: SmoothStarRating(
+                                  isReadOnly: true,
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: product.getAverageRating,
+                                  size: 27.0,
+                                  color: Colors.orange,
+                                  borderColor: Colors.deepOrange,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -122,6 +149,25 @@ class _ProductDescriptionState extends State<ProductDescription> {
                             Text(product.getReviewCount <= 1
                                 ? "( ${product.getReviewCount} review found)"
                                 : "( ${product.getReviewCount} reviews found)"),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              color: Theme.of(context).primaryColorDark,
+                              child: Text("Retailer"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+                              child: Text(
+                                retailerName.toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(retailerAddress),
+                            ),
                             SizedBox(
                               height: 20,
                             ),

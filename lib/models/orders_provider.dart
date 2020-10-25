@@ -1,7 +1,9 @@
+import '../models/fcm_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../models/cart_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +38,8 @@ class OrdersProvider with ChangeNotifier {
   //  Document containing totalAmount, date, collection of cartitems
   //  Also, reduce appropriate quantity from stock
 
-  Future<void> addOrder(List<CartItem> productsList, double amount) async {
+  Future<void> addOrder(
+      List<CartItem> productsList, double amount, BuildContext context) async {
     print("add order");
     try {
       final CollectionReference c = FirebaseFirestore.instance
@@ -64,8 +67,13 @@ class OrdersProvider with ChangeNotifier {
             "quantity": element.quantity,
             "pricePerUnit": element.pricePerUnit,
             "productId": element.productId,
+            "retailerNumber": element.retailerNumber,
           },
         );
+
+        Provider.of<FcmProvider>(context, listen: false)
+            .sendSaleMessageToRetailer(element.productId, element.quantity,
+                element.quantity * element.pricePerUnit);
       });
     }
     //  throw the error to the screen/widget using the method
@@ -104,6 +112,7 @@ class OrdersProvider with ChangeNotifier {
                     quantity: element.data()["quantity"],
                     pricePerUnit: element.data()["pricePerUnit"],
                     productId: element.data()["productId"],
+                    retailerNumber: element.data()["retailerNumber"],
                   ),
                 );
               });

@@ -1,4 +1,5 @@
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/cart_provider.dart';
 import '../screens/product_desc_screen.dart';
@@ -9,7 +10,12 @@ import 'package:provider/provider.dart';
 
 //  Single card of a product item to be displayed in the product grid
 
-class ProductItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
+  @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context);
@@ -64,14 +70,27 @@ class ProductItem extends StatelessWidget {
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent loadingProgress) {
               if (loadingProgress == null) return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes
-                      : null,
-                ),
-              );
+              return Shimmer.fromColors(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 40, 40, 60),
+                      child: Image.asset(
+                        "assets/images/Kirana_mart_logo.png",
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                  ),
+                  period: Duration(seconds: 1),
+                  baseColor: Colors.red,
+                  highlightColor: Colors.orange);
+              // Center(
+              //   child: CircularProgressIndicator(
+              //     value: loadingProgress.expectedTotalBytes != null
+              //         ? loadingProgress.cumulativeBytesLoaded /
+              //             loadingProgress.expectedTotalBytes
+              //         : null,
+              //   ),
+              // );
             },
           ),
         ),
@@ -87,6 +106,9 @@ class ProductItem extends StatelessWidget {
                     ? Icons.favorite_rounded
                     : Icons.favorite_border_rounded),
                 onPressed: () {
+                  setState(() {
+                    product.isFav = !product.isFav;
+                  });
                   product.toggleFav(context);
                 },
                 color: Colors.red,

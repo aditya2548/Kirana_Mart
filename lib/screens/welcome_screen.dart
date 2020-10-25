@@ -1,3 +1,5 @@
+import 'package:shimmer/shimmer.dart';
+
 import '../screens/signup_screen.dart';
 
 import 'package:flutter/material.dart';
@@ -13,17 +15,27 @@ class WelcomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            "assets/images/logo_transparent.png",
+          Shimmer.fromColors(
+            baseColor: Colors.red,
+            highlightColor: Colors.orange,
+            period: Duration(seconds: 2),
+            child: Image.asset(
+              "assets/images/logo_transparent.png",
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 4, 4, 1),
-            child: Text(
-              "WELCOME TO KIRANA MART",
-              style: TextStyle(
-                  color: Colors.orange[900],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15),
+            child: Shimmer.fromColors(
+              baseColor: Colors.red,
+              highlightColor: Colors.orange,
+              period: Duration(seconds: 2),
+              child: Text(
+                "WELCOME TO KIRANA MART",
+                style: TextStyle(
+                    color: Colors.orange[900],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15),
+              ),
             ),
           ),
           Text(

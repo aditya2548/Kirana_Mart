@@ -33,21 +33,24 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
   //  Show error dialog if any of the steps fail
   @override
   void initState() {
+    setState(() {
+      _progressBar = true;
+    });
     Firebase.initializeApp().catchError((error) {
       CustomDialog.generalErrorDialog(context);
     }).whenComplete(() {
       setState(() {
         _progressBar = false;
       });
-      Provider.of<ProductsProvider>(context, listen: false)
-          .fetchProductsRealTime()
-          .then((_) {
-        setState(() {
-          _progressBar = false;
-        });
-      }).catchError((error) {
-        CustomDialog.generalErrorDialog(context);
-      });
+      // Provider.of<ProductsProvider>(context, listen: false)
+      //     .listenToProductsRealTime()
+      //     .then((_) {
+      //   setState(() {
+      //     _progressBar = false;
+      //   });
+      // }).catchError((error) {
+      //   CustomDialog.generalErrorDialog(context);
+      // });
     });
     Provider.of<CartProvider>(context, listen: false).fetchCartItems();
     super.initState();
@@ -138,21 +141,21 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                   Text(
                     "Fav",
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Badge(
-                    badgeColor: Colors.green,
-                    animationDuration: Duration(milliseconds: 200),
-                    animationType: BadgeAnimationType.scale,
-                    badgeContent: Text(
-                      count.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        // fontSize: 10,
-                      ),
-                    ),
-                  )
+                  // SizedBox(
+                  //   width: 5,
+                  // ),
+                  // Badge(
+                  //   badgeColor: Colors.green,
+                  //   animationDuration: Duration(milliseconds: 200),
+                  //   animationType: BadgeAnimationType.scale,
+                  //   badgeContent: Text(
+                  //     count.toString(),
+                  //     style: TextStyle(
+                  //       color: Colors.white,
+                  //       // fontSize: 10,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
             ),

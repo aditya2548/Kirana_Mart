@@ -188,6 +188,62 @@ class FcmProvider with ChangeNotifier {
     });
   }
 
+  //  Message to notify seller whenever a purchase is made
+  Future sendSaleMessageToRetailer(
+      String productId, int quantity, double cost) async {
+    String buyerAddress = "";
+    String buyerNumber = "";
+    String buyerName = "";
+    String productName = "";
+
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("MyData")
+        .get()
+        .then((value) {
+      buyerAddress = value.docs.first.data()["address"];
+      buyerNumber = value.docs.first.data()["mobileNumber"];
+      buyerName = value.docs.first.data()["name"];
+    });
+
+    String retailerId = "";
+
+    String token;
+    //  Fetch retailerId from productId
+    await FirebaseFirestore.instance
+        .collection("Products")
+        .doc(productId)
+        .get()
+        .then((value) {
+      retailerId = value.data()["retailerId"];
+      productName = value.data()["title"];
+    });
+    //  Fetch retailer fcm token using retailerId
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(retailerId)
+        .collection("MyData")
+        .get()
+        .then((value) {
+      token = value.docs.first.data()["fcmToken"];
+    });
+    String title = "$buyerName bought your product $productName";
+    String body =
+        "Sale details: $quantity $productName ordered.\nDelivery address: $buyerAddress\nNumber: $buyerNumber\nCost: $cost";
+    await sendMessage(token, title, body);
+    return await FirebaseFirestore.instance
+        .collection("User")
+        .doc(retailerId)
+        .collection("MyMessages")
+        .add({
+      "title": title,
+      "body": body,
+      "dateTime": DateTime.now().toIso8601String(),
+      "error": false,
+    });
+  }
+
   //  General message to send to a user with user token, title and body
   Future<void> sendMessage(String token, String title, String body) async {
     await http.post(

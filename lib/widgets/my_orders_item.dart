@@ -1,3 +1,6 @@
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../widgets/review_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
@@ -68,8 +71,21 @@ class MyOrdersItem extends StatelessWidget {
                                 order.productsList.toList()[index].productId);
                           });
                     },
-                    child: Text("Review product"),
+                    child: Text("Review"),
                   ),
+                  leading: IconButton(
+                      icon: Icon(Icons.call),
+                      onPressed: () async {
+                        var url =
+                            "tel:${order.productsList.toList()[index].retailerNumber}";
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg:
+                                  "Sorry for the inconvenience\nPlease try again later");
+                        }
+                      }),
                 ),
               ),
             ),

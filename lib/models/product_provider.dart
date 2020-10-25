@@ -63,7 +63,7 @@ class ProductsProvider with ChangeNotifier {
   bool _hasMoreProducts = true;
 
   //  number of products to be loaded at once
-  int _productsPerPage = 7;
+  int _productsPerPage = 8;
 
   //  List of all pending products for approval by admin
   List<Product> _pendingProducts = [];
@@ -75,6 +75,7 @@ class ProductsProvider with ChangeNotifier {
 
   //  Function for getting list of products based upon the search query
   List<Product> getProductItemsOnSearch(String search) {
+    reloadProducts();
     return _productItems
         .where((element) =>
             element.title.toLowerCase().contains(search.toLowerCase()))
@@ -92,6 +93,18 @@ class ProductsProvider with ChangeNotifier {
   //  function to get a copy of list of favorite products
   List<Product> get getFavoriteProductItems {
     return getProductItems.where((element) => element.isFav).toList();
+  }
+
+  //  Remove a product from favs locally
+  void removeFav(id) {
+    getFavoriteProductItems.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  //  Add a product to favs locally
+  void addFav(id) {
+    getFavoriteProductItems.add(getProductFromId(id));
+    notifyListeners();
   }
 
   //  function to get a product when id is provided
@@ -137,11 +150,12 @@ class ProductsProvider with ChangeNotifier {
     _hasMoreProducts = true;
     reloading = true;
     _lastDocument = null;
-    return await listenToProductsRealTime();
+    await listenToProductsRealTime();
+    reloading = false;
   }
 
   //  Request for more products if needed
-  Future<bool> requestMoreData() async {
+  Future<void> requestMoreData() async {
     return await listenToProductsRealTime();
   }
 
@@ -154,12 +168,14 @@ class ProductsProvider with ChangeNotifier {
   //  Add changes in update/add/delete products are handled here to show effect
   //  Also, changes to fav of any user are also shown
   //  Products fetched in pages of 20 products per page
-  Future<bool> listenToProductsRealTime() async {
+  Future<void> listenToProductsRealTime() async {
     var pageProducts = FirebaseFirestore.instance
         .collection("Products")
         .orderBy("title")
         .limit(_productsPerPage);
-
+    if (reloading) {
+      return;
+    }
     //  if requesting more products
     if (_lastDocument != null) {
       pageProducts = pageProducts.startAfterDocument(_lastDocument);
@@ -168,10 +184,10 @@ class ProductsProvider with ChangeNotifier {
     if (!_hasMoreProducts) {
       return false;
     }
-    if (reloading) {
-      _allPagedProducts = List<List<Product>>();
-      reloading = false;
-    }
+    // if (reloading) {
+    //   _allPagedProducts = List<List<Product>>();
+    //   reloading = false;
+    // }
     //  We got data to load now!!
     //  Index of page to be requested
     var _currentRequestIndex = _allPagedProducts.length;
@@ -552,9 +568,30 @@ class ProductsProvider with ChangeNotifier {
   Future<void> declineProduct(String id, BuildContext context, String reason,
       String retailerId, String productTitle) async {
     //  Remove the item from pendingProducts and send notification to user
+    //  First remove the image from firebase storage
     Provider.of<FcmProvider>(context, listen: false)
         .sendProductRejectionReason(retailerId, productTitle, reason);
-    FirebaseFirestore.instance.collection("PendingProducts").doc(id).delete();
+    final DocumentReference docRef =
+        FirebaseFirestore.instance.collection("PendingProducts").doc(id);
+    docRef.get().then(
+      (value) {
+        //  If that product is present in collection
+        if (value.exists) {
+          FirebaseStorage.instance
+              .getReferenceFromUrl(value.data()["imageUrl"])
+              .then(
+            (imageRef) {
+              imageRef.delete().then(
+                (_) {
+                  docRef.delete();
+                },
+              );
+            },
+          );
+        }
+        docRef.delete();
+      },
+    );
   }
 
   //  Function to add product stock

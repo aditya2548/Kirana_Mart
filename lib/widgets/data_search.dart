@@ -43,8 +43,29 @@ class DataSearch extends SearchDelegate<Product> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // show result based on selection
-    throw UnimplementedError();
+    // show when someone searches for something
+    final List<Product> productList = query.isEmpty
+        ? []
+        : Provider.of<ProductsProvider>(context).getProductItemsOnSearch(query);
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1,
+        crossAxisSpacing: 15,
+        mainAxisSpacing: 15,
+      ),
+      //  Not using ChangeNotifierProvider with builder method because in that case,
+      //  Widgets get recycled, we are changing the widget data in recycling
+      //  Here widget gets attached to changing data instead of provider being attahced to changing data
+      itemBuilder: (ctx, index) => ChangeNotifierProvider<Product>.value(
+        value: productList[index],
+        child: ProductItem(),
+      ),
+      padding: const EdgeInsets.all(10),
+      itemCount: productList.length,
+    );
+    // throw UnimplementedError();
   }
 
   @override

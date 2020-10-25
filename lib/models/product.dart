@@ -107,7 +107,13 @@ class Product with ChangeNotifier {
   }
 
 //  function to toggle favourite status and to notify to all the listeners of product
+//  We inverted the fav status in the product item itself
   Future<void> toggleFav(BuildContext context) async {
+    if (isFav == false) {
+      Provider.of<ProductsProvider>(context, listen: false).removeFav(id);
+    } else {
+      Provider.of<ProductsProvider>(context, listen: false).addFav(id);
+    }
     try {
       // final DocumentReference docRef =
       //     FirebaseFirestore.instance.collection("Products").doc(id);
@@ -115,10 +121,9 @@ class Product with ChangeNotifier {
           .collection("User")
           .doc(FirebaseAuth.instance.currentUser.uid)
           .collection("MyFav");
-
       await collectionReference.doc(id).set(
         {
-          "isFav": !isFav,
+          "isFav": isFav,
         },
       );
       Provider.of<ProductsProvider>(context, listen: false).fetchFavsRealTime();
