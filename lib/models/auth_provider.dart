@@ -101,6 +101,7 @@ class AuthProvider {
             "mobileNumber": _authData["mobileNumber"],
             "address": _authData["address"],
             "fcmToken": token,
+            "upi": _authData["upi"],
           },
         );
         if (_authData["email"] == DataModel.adminEmail) {
@@ -113,6 +114,7 @@ class AuthProvider {
             "mobileNumber": _authData["mobileNumber"],
             "address": _authData["address"],
             "fcmToken": token,
+            "upi": _authData["upi"]
           });
         }
       }

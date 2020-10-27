@@ -86,6 +86,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
     'mobileNumber': '',
     'address': '',
     'password': '',
+    'upi': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -224,6 +225,17 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       // style: TextStyle(fontSize: 10),
+                      decoration: InputDecoration(
+                          labelText: 'Upi (kirana@example)',
+                          hintText: 'Mandatory for retailers'),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        _authData['upi'] = value;
+                      },
+                    ),
+                    TextFormField(
+                      // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
                         labelText: 'Password',
@@ -259,6 +271,8 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                         }
                         return null;
                       },
+                      onFieldSubmitted: (_) =>
+                          FocusScope.of(context).requestFocus(FocusNode()),
                     ),
                     SizedBox(
                       height: 8,

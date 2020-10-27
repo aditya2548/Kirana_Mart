@@ -30,9 +30,10 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         .listenToProductsRealTime()
         .then((_) {
       Future.delayed(Duration(milliseconds: 1500)).then((value) {
-        setState(() {
-          isLoading = false;
-        });
+        if (this.mounted)
+          setState(() {
+            isLoading = false;
+          });
       });
     }).catchError((error) {
       CustomDialog.generalErrorDialog(context);
