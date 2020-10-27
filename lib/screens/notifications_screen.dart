@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:Kirana_Mart/models/fcm_provider.dart';
 import 'package:Kirana_Mart/widgets/app_drawer.dart';
 import 'package:delayed_display/delayed_display.dart';
@@ -63,7 +65,7 @@ class NotificationsScreen extends StatelessWidget {
                           margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: Container(
                             color: messageData.getMessages[index].error == true
-                                ? Colors.red[900]
+                                ? Colors.pink[900]
                                 : Theme.of(context).primaryColor,
                             child: ExpansionTile(
                               tilePadding: EdgeInsets.all(5),
@@ -71,7 +73,9 @@ class NotificationsScreen extends StatelessWidget {
                                   vertical: 15, horizontal: 20),
                               title: Container(
                                   child: Text(
-                                      messageData.getMessages[index].title)),
+                                messageData.getMessages[index].title,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
                               subtitle: Text(
                                 DateFormat("dd MMM yyyy, HH:mm").format(
                                     messageData.getMessages[index].dateTime),

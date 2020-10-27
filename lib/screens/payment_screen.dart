@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import '../dialog/custom_dialog.dart';
 import '../models/cart_provider.dart';
-import '../models/data_model.dart';
+import '../models/key_data_model.dart';
 import '../models/orders_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +24,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   //  Amount to be paid
   String amount;
   //  upi address of kiranamart
-  String upiAddress = DataModel.adminUpi;
+  String upiAddress = KeyDataModel.adminUpi;
 
   Future<List<ApplicationMeta>> _appsFuture;
 
@@ -132,6 +132,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     });
     //  Clear cart after placing order
     cartData.clearCart();
+    Navigator.of(context).pop();
   }
 
   @override

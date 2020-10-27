@@ -1,4 +1,4 @@
-import '../models/data_model.dart';
+import '../models/key_data_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../screens/welcome_screen.dart';
@@ -41,10 +41,10 @@ class AuthProvider {
           );
         });
       });
-      if (email == DataModel.adminEmail) {
+      if (email == KeyDataModel.adminEmail) {
         await FirebaseFirestore.instance
             .collection("Admin")
-            .doc(DataModel.adminEmail)
+            .doc(KeyDataModel.adminEmail)
             .update({
           "fcmToken": token,
           "adminId": userCredentials.user.uid,
@@ -104,7 +104,7 @@ class AuthProvider {
             "upi": _authData["upi"],
           },
         );
-        if (_authData["email"] == DataModel.adminEmail) {
+        if (_authData["email"] == KeyDataModel.adminEmail) {
           await FirebaseFirestore.instance
               .collection("Admin")
               .doc(_authData["email"])

@@ -1,4 +1,6 @@
-import '../models/data_model.dart';
+import '../screens/pending_payments_admin_screen.dart';
+
+import '../models/key_data_model.dart';
 import '../screens/notifications_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,6 +37,12 @@ class AppDrawer extends StatelessWidget {
             duration: Duration(seconds: 1),
           ),
         );
+      } else if (parentName != "Home") {
+        //  Two times so that all the screens do not get stacked up on top of each other
+        //  Only the home screen remains always at the bottom while using drawer
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
       } else {
         Navigator.of(context).pop();
         Navigator.of(context).pushNamed(routeName);
@@ -125,7 +133,8 @@ class AppDrawer extends StatelessWidget {
           Divider(
             thickness: 1,
           ),
-          if (FirebaseAuth.instance.currentUser.email == DataModel.adminEmail)
+          if (FirebaseAuth.instance.currentUser.email ==
+              KeyDataModel.adminEmail)
             ListTile(
               leading: Icon(Icons.done_all),
               title: Text("Approve Products"),
@@ -133,7 +142,23 @@ class AppDrawer extends StatelessWidget {
                 checkAndPush("Approve Products", AdminScreen.routeName);
               },
             ),
-          if (FirebaseAuth.instance.currentUser.email == DataModel.adminEmail)
+          if (FirebaseAuth.instance.currentUser.email ==
+              KeyDataModel.adminEmail)
+            Divider(
+              thickness: 1,
+            ),
+          if (FirebaseAuth.instance.currentUser.email ==
+              KeyDataModel.adminEmail)
+            ListTile(
+              leading: Icon(Icons.timelapse),
+              title: Text("Pending Payments"),
+              onTap: () {
+                checkAndPush(
+                    "Pending Payments", PendingPaymentsAdminScreen.routeName);
+              },
+            ),
+          if (FirebaseAuth.instance.currentUser.email ==
+              KeyDataModel.adminEmail)
             Divider(
               thickness: 1,
             ),

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../models/data_model.dart';
+import '../models/key_data_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,8 +14,14 @@ class FcmProvider with ChangeNotifier {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Message> _messages = [];
 
+  List<PendingPayment> _pendingPayments = [];
+
   List<Message> get getMessages {
     return [..._messages];
+  }
+
+  List<PendingPayment> get getPendingPayments {
+    return [..._pendingPayments];
   }
 
   //  Function to fetch all the notifications of a user (latest first)
@@ -41,6 +47,36 @@ class FcmProvider with ChangeNotifier {
         );
       });
       _messages = _fetchedMessages;
+      notifyListeners();
+    });
+  }
+
+  //  Function to fetch all the pending payments of admin (latest first)
+  Future<void> reloadPendingPayments() async {
+    print("LOADING");
+    var _fetchedPayments = List<PendingPayment>();
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("PendingPayments")
+        .orderBy("dateTime", descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        print(element.data()["amount"]);
+        _fetchedPayments.add(
+          PendingPayment(
+            id: element.id,
+            amount: element.data()["amount"],
+            incomplete: element.data()["incomplete"],
+            retailerUpi: element.data()["retailerUpi"],
+            dateTime: DateTime.parse(
+              element.data()["dateTime"],
+            ),
+          ),
+        );
+      });
+      _pendingPayments = _fetchedPayments;
       notifyListeners();
     });
   }
@@ -169,7 +205,7 @@ class FcmProvider with ChangeNotifier {
     String adminId;
     await FirebaseFirestore.instance
         .collection("Admin")
-        .doc(DataModel.adminEmail)
+        .doc(KeyDataModel.adminEmail)
         .get()
         .then((value) {
       token = value.data()["fcmToken"];
@@ -254,6 +290,7 @@ class FcmProvider with ChangeNotifier {
   }
 
   //  Message to be sent to admin in case he needs to do a payment to a retailer
+  //  And store the payment details (retailer upi and amount to PendingPayments)
   Future<void> sendPaymentMessageToAdmin(
       String retailerUpi, double cost) async {
     String title = "You have a new payment to complete";
@@ -262,7 +299,7 @@ class FcmProvider with ChangeNotifier {
     String adminId;
     await FirebaseFirestore.instance
         .collection("Admin")
-        .doc(DataModel.adminEmail)
+        .doc(KeyDataModel.adminEmail)
         .get()
         .then((value) {
       token = value.data()["fcmToken"];
@@ -272,12 +309,12 @@ class FcmProvider with ChangeNotifier {
     return await FirebaseFirestore.instance
         .collection("User")
         .doc(adminId)
-        .collection("MyMessages")
+        .collection("PendingPayments")
         .add({
-      "title": title,
-      "body": body,
       "dateTime": DateTime.now().toIso8601String(),
-      "error": true,
+      "incomplete": true,
+      "retailerUpi": retailerUpi,
+      "amount": cost
     });
   }
 
@@ -287,7 +324,7 @@ class FcmProvider with ChangeNotifier {
       'https://fcm.googleapis.com/fcm/send',
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'key=${DataModel.fcmServerKey}',
+        'Authorization': 'key=${KeyDataModel.fcmServerKey}',
       },
       body: jsonEncode(
         <String, dynamic>{
@@ -316,4 +353,19 @@ class Message {
       @required this.body,
       @required this.dateTime,
       @required this.error});
+}
+
+//  Pending Payment class
+class PendingPayment {
+  final double amount;
+  final String retailerUpi;
+  final DateTime dateTime;
+  bool incomplete;
+  final String id;
+  PendingPayment(
+      {@required this.amount,
+      @required this.id,
+      @required this.retailerUpi,
+      @required this.dateTime,
+      @required this.incomplete});
 }

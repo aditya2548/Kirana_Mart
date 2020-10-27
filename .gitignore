@@ -40,4 +40,4 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 android/app/google-services.json
-lib/models/data_model.dart
+lib/models/key_data_model.dart

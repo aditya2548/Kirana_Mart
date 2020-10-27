@@ -1,6 +1,7 @@
+import './screens/pending_payments_admin_screen.dart';
+
 import './screens/payment_screen.dart';
 
-import './models/data_model.dart';
 import './models/fcm_provider.dart';
 import './screens/notifications_screen.dart';
 
@@ -97,6 +98,8 @@ class MyApp extends StatelessWidget {
           UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
           NotificationsScreen.routeName: (ctx) => NotificationsScreen(),
           PaymentScreen.routeName: (ctx) => PaymentScreen(),
+          PendingPaymentsAdminScreen.routeName: (ctx) =>
+              PendingPaymentsAdminScreen(),
         },
       ),
     );
@@ -114,8 +117,6 @@ class AuthenticationWrapper extends StatelessWidget {
     final _firebaseUser = context.watch<User>();
     if (_firebaseUser == null)
       return WelcomeScreen();
-    else if (_firebaseUser.email == DataModel.adminEmail)
-      return AdminScreen();
     else
       return HomePageTabsScreen();
   }
