@@ -46,10 +46,11 @@ class UserProductItem extends StatefulWidget {
 
 class _UserProductItemState extends State<UserProductItem> {
   TextEditingController quantityController;
+  int _quantity;
   @override
   void initState() {
     super.initState();
-
+    _quantity = widget.quantity;
     //  Controller for the stock amount
     quantityController = TextEditingController();
   }
@@ -75,8 +76,10 @@ class _UserProductItemState extends State<UserProductItem> {
         return;
       }
       Provider.of<ProductsProvider>(context, listen: false).addProductQuantity(
-          widget.id, widget.quantity + int.parse(updatedQuantity));
-      setState(() {});
+          widget.id, _quantity + int.parse(updatedQuantity));
+      setState(() {
+        _quantity += int.parse(updatedQuantity);
+      });
     }
 
     return Card(
@@ -141,7 +144,7 @@ class _UserProductItemState extends State<UserProductItem> {
             padding: const EdgeInsets.all(30.0),
             child: Row(
               children: [
-                Text("Stock: ${widget.quantity}"),
+                Text("Stock: $_quantity"),
                 Spacer(),
                 SizedBox(
                   height: 20,

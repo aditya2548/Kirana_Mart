@@ -190,7 +190,7 @@ class FcmProvider with ChangeNotifier {
 
   //  Message to notify seller whenever a purchase is made
   Future sendSaleMessageToRetailer(
-      String productId, int quantity, double cost) async {
+      String productId, int quantity, double cost, bool upi) async {
     String buyerAddress = "";
     String buyerNumber = "";
     String buyerName = "";
@@ -208,6 +208,7 @@ class FcmProvider with ChangeNotifier {
     });
 
     String retailerId = "";
+    String retailerUpi = "";
 
     String token;
     //  Fetch retailerId from productId
@@ -227,12 +228,15 @@ class FcmProvider with ChangeNotifier {
         .get()
         .then((value) {
       token = value.docs.first.data()["fcmToken"];
+      retailerUpi = value.docs.first.data()["upi"];
     });
     String title = "$buyerName bought your product $productName";
-    String body =
-        "Sale details: $quantity $productName ordered.\nDelivery address: $buyerAddress\nNumber: $buyerNumber\nCost: $cost";
+    //  If payment was done by upi, show Cost as paid, else show cost to retailer
+    String body = upi == true
+        ? "Sale details: $quantity $productName ordered.\nDelivery address: $buyerAddress\nNumber: $buyerNumber\nCost: Paid(Upi)"
+        : "Sale details: $quantity $productName ordered.\nDelivery address: $buyerAddress\nNumber: $buyerNumber\nCost: $cost";
     await sendMessage(token, title, body);
-    return await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("User")
         .doc(retailerId)
         .collection("MyMessages")
@@ -241,6 +245,39 @@ class FcmProvider with ChangeNotifier {
       "body": body,
       "dateTime": DateTime.now().toIso8601String(),
       "error": false,
+    });
+
+    //  If upi was true, send notification to admin to re-direct the given amount to mentioned upi address of retailer
+    if (upi == true) {
+      await sendPaymentMessageToAdmin(retailerUpi, cost);
+    }
+  }
+
+  //  Message to be sent to admin in case he needs to do a payment to a retailer
+  Future<void> sendPaymentMessageToAdmin(
+      String retailerUpi, double cost) async {
+    String title = "You have a new payment to complete";
+    String body = "Pay $cost to retailer with upiId: $retailerUpi";
+    String token;
+    String adminId;
+    await FirebaseFirestore.instance
+        .collection("Admin")
+        .doc(DataModel.adminEmail)
+        .get()
+        .then((value) {
+      token = value.data()["fcmToken"];
+      adminId = value.data()["adminId"];
+    });
+    await sendMessage(token, title, body);
+    return await FirebaseFirestore.instance
+        .collection("User")
+        .doc(adminId)
+        .collection("MyMessages")
+        .add({
+      "title": title,
+      "body": body,
+      "dateTime": DateTime.now().toIso8601String(),
+      "error": true,
     });
   }
 

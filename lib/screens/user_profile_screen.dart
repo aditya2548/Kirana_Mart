@@ -1,4 +1,6 @@
+import '../widgets/edit_profile_bottom_sheet.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/auth_provider.dart';
 import '../widgets/app_drawer.dart';
@@ -19,6 +21,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String _mobileNumber = "";
   String _address = "";
   String _name = "";
+  String _upi = "";
   @override
   void initState() {
     super.initState();
@@ -35,6 +38,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _mobileNumber = element.data()["mobileNumber"];
         _address = element.data()["address"];
         _name = element.data()["name"];
+        _upi = element.data()["upi"];
         setState(() {});
       });
     });
@@ -50,10 +54,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ? Center(child: CircularProgressIndicator())
           : Center(
               child: Container(
-                margin: EdgeInsets.fromLTRB(15, 50, 15, 15),
+                margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.red[900],
+                            highlightColor: Colors.orange,
+                            period: Duration(milliseconds: 800),
+                            child: Image.asset(
+                                "assets/images/Kirana_mart_logo.png"),
+                          )),
+                    ),
                     if (_user.emailVerified == false)
                       RaisedButton(
                         onPressed: () {
@@ -154,15 +171,52 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         child: Text("Mobile Number: $_mobileNumber"),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 40),
-                      child: RaisedButton(
-                        child: Text("Sign-out"),
-                        onPressed: () {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .signOutUser(context);
-                        },
+                    Card(
+                      elevation: 15,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      color: Theme.of(context).primaryColor,
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Upi: $_upi"),
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: RaisedButton(
+                            color: Theme.of(context).primaryColor,
+                            child: Text("Edit profile"),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (_) {
+                                  return EditProfile(
+                                    address: _address,
+                                    mobileNumber: _mobileNumber,
+                                    upi: _upi,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: RaisedButton(
+                            color: Theme.of(context).errorColor,
+                            child: Text("Sign-out"),
+                            onPressed: () {
+                              Provider.of<AuthProvider>(context, listen: false)
+                                  .signOutUser(context);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

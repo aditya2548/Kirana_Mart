@@ -83,14 +83,6 @@ class _ProductItemState extends State<ProductItem> {
                   period: Duration(seconds: 1),
                   baseColor: Colors.red,
                   highlightColor: Colors.orange);
-              // Center(
-              //   child: CircularProgressIndicator(
-              //     value: loadingProgress.expectedTotalBytes != null
-              //         ? loadingProgress.cumulativeBytesLoaded /
-              //             loadingProgress.expectedTotalBytes
-              //         : null,
-              //   ),
-              // );
             },
           ),
         ),

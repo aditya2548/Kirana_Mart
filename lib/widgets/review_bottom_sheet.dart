@@ -18,10 +18,35 @@ class _NewReviewState extends State<NewReview> {
   //  form key(used to save review)
   final _formKey = GlobalKey<FormState>();
 
-  //  Fetch username
+  String initialReview;
+  String initialStars;
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
+    //  Set initial value of rating and review, if user edits a previous review
+    setState(() {
+      isLoading = true;
+    });
+    FirebaseFirestore.instance
+        .collection("Products")
+        .doc(widget.productID)
+        .collection("Reviews")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        initialReview = value.data()["description"];
+        initialStars = value.data()["stars"].toString();
+      } else {
+        initialReview = "";
+        initialStars = "";
+      }
+      setState(() {
+        isLoading = false;
+      });
+    });
     FirebaseFirestore.instance
         .collection("User")
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -70,6 +95,13 @@ class _NewReviewState extends State<NewReview> {
 
   @override
   Widget build(BuildContext context) {
+    //  till we're loading last review data for same product by same user
+    if (isLoading == true) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: LinearProgressIndicator(),
+      );
+    }
     return SingleChildScrollView(
       child: Card(
         elevation: 5,
@@ -94,6 +126,7 @@ class _NewReviewState extends State<NewReview> {
                     height: 15,
                   ),
                   TextFormField(
+                    initialValue: initialStars,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
                         labelText: "Stars",
@@ -118,6 +151,7 @@ class _NewReviewState extends State<NewReview> {
                     ),
                   ),
                   TextFormField(
+                    initialValue: initialReview,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
                         labelText: "Review",

@@ -1,3 +1,5 @@
+import './screens/payment_screen.dart';
+
 import './models/data_model.dart';
 import './models/fcm_provider.dart';
 import './screens/notifications_screen.dart';
@@ -94,6 +96,7 @@ class MyApp extends StatelessWidget {
           AdminScreen.routeName: (ctx) => AdminScreen(),
           UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
           NotificationsScreen.routeName: (ctx) => NotificationsScreen(),
+          PaymentScreen.routeName: (ctx) => PaymentScreen(),
         },
       ),
     );

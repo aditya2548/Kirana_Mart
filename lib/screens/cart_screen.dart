@@ -1,7 +1,6 @@
+import '../screens/payment_screen.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../dialog/custom_dialog.dart';
 
 import '../models/cart_provider.dart';
 import '../widgets/app_drawer.dart';
@@ -146,28 +145,8 @@ class _OrderButtonState extends State<OrderButton> {
                   !Provider.of<CartProvider>(context, listen: false)
                       .allItemsValid(context))
               ? null
-              : () async {
-                  //  Change widget state to loading spinner
-                  setState(() {
-                    _progressBar = true;
-                  });
-                  //  listen->false as no need to listen to changes in orders data over here
-                  try {
-                    await Provider.of<OrdersProvider>(context, listen: false)
-                        .addOrder(
-                      widget.cartData.getCardItemsList,
-                      widget.cartData.getTotalCartAmount,
-                      context,
-                    );
-                  } catch (error) {
-                    await CustomDialog.generalErrorDialog(context);
-                  }
-                  //  Change widget state back to button
-                  setState(() {
-                    _progressBar = false;
-                  });
-                  //  Clear cart after placing order
-                  widget.cartData.clearCart();
+              : () {
+                  Navigator.of(context).pushNamed(PaymentScreen.routeName);
                 },
       color: Theme.of(context).primaryColor,
       icon: Icon(Icons.assignment_turned_in),

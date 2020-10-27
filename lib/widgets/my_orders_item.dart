@@ -64,7 +64,8 @@ class MyOrdersItem extends StatelessWidget {
                     color: Theme.of(context).primaryColorDark,
                     onPressed: () {
                       //  Bottom sheet to add/update product review
-                      showBottomSheet(
+                      showModalBottomSheet(
+                          isScrollControlled: true,
                           context: context,
                           builder: (_) {
                             return NewReview(

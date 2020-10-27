@@ -37,9 +37,10 @@ class OrdersProvider with ChangeNotifier {
   //  Using current datetime converted to Iso8601String for easy retreival
   //  Document containing totalAmount, date, collection of cartitems
   //  Also, reduce appropriate quantity from stock
+  //  boolean upi to determine whether cost was paid online or through cod
 
-  Future<void> addOrder(
-      List<CartItem> productsList, double amount, BuildContext context) async {
+  Future<void> addOrder(List<CartItem> productsList, double amount,
+      BuildContext context, bool upi) async {
     print("add order");
     try {
       final CollectionReference c = FirebaseFirestore.instance
@@ -56,25 +57,27 @@ class OrdersProvider with ChangeNotifier {
         },
       );
 
-      productsList.forEach((element) {
-        prod.doc(element.productId).update({
-          "quantity": FieldValue.increment(-1 * element.quantity),
-        });
-        c.doc(docRef.id).collection("productsList").add(
-          {
-            "id": element.id,
-            "title": element.title,
-            "quantity": element.quantity,
-            "pricePerUnit": element.pricePerUnit,
-            "productId": element.productId,
-            "retailerNumber": element.retailerNumber,
-          },
-        );
+      productsList.forEach(
+        (element) {
+          prod.doc(element.productId).update({
+            "quantity": FieldValue.increment(-1 * element.quantity),
+          });
+          c.doc(docRef.id).collection("productsList").add(
+            {
+              "id": element.id,
+              "title": element.title,
+              "quantity": element.quantity,
+              "pricePerUnit": element.pricePerUnit,
+              "productId": element.productId,
+              "retailerNumber": element.retailerNumber,
+            },
+          );
 
-        Provider.of<FcmProvider>(context, listen: false)
-            .sendSaleMessageToRetailer(element.productId, element.quantity,
-                element.quantity * element.pricePerUnit);
-      });
+          Provider.of<FcmProvider>(context, listen: false)
+              .sendSaleMessageToRetailer(element.productId, element.quantity,
+                  element.quantity * element.pricePerUnit, upi);
+        },
+      );
     }
     //  throw the error to the screen/widget using the method
     catch (error) {

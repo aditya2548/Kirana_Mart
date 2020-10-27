@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 import '../screens/edit_user_product_screen.dart';
 
@@ -14,11 +16,34 @@ import 'package:provider/provider.dart';
 //  Contains a list of all the products provided by the user
 //  Instead of using a stateful widget with initState to fetch data and show loading screen,
 //  FutureBuilder used with a steteless widget
-class UserProductsScreen extends StatelessWidget {
+class UserProductsScreen extends StatefulWidget {
   static const routeName = "/user_products_screen";
+
+  @override
+  _UserProductsScreenState createState() => _UserProductsScreenState();
+}
+
+class _UserProductsScreenState extends State<UserProductsScreen> {
+  String retailerUpiId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("MyData")
+        .get()
+        .then((value) {
+      setState(() {
+        retailerUpiId = value.docs.first.data()["upi"];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //  Don't allow adding products if email is not verified
+    //  Don't allow adding products if email is not verified or retailer hasn't mentioned his upi id
     if (!FirebaseAuth.instance.currentUser.emailVerified) {
       return Scaffold(
         body: Center(
@@ -26,6 +51,23 @@ class UserProductsScreen extends StatelessWidget {
             child: Text(
               "Please verify email to\nstart selling products",
               style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+          ),
+        ),
+      );
+    }
+    //  If upiId not mentioned/ invalid, don't allow the user to sell anything
+    if (retailerUpiId.trim() == "" ||
+        !UpiPay.checkIfUpiAddressIsValid(retailerUpiId)) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Text(
+                "Valid Upi id must be provided to start selling",
+                style: TextStyle(color: Theme.of(context).errorColor),
+              ),
             ),
           ),
         ),

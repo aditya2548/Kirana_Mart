@@ -190,7 +190,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       validator: (value) {
                         if (value.length == 0) {
                           return 'Please enter mobile number';
-                        } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                        } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
                             .hasMatch(value)) {
                           return 'Please enter valid mobile number';
                         }

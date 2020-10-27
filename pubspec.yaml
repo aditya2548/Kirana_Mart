@@ -43,7 +43,8 @@ dependencies:
   #shimmer-effect
   shimmer: ^1.1.2
   lazy_load_scrollview: ^1.1.0
-
+  #payments
+  upi_pay: ^0.2.4
 
 
 
