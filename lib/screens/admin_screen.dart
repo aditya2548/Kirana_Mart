@@ -1,3 +1,4 @@
+import '../widgets/custom_app_bar_title.dart';
 import '../models/product_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/pending_user_product_item.dart';
@@ -25,7 +26,8 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Approve Products"),
+        title: CustomAppBarTitle(
+            name: "Approve Products", icondata: Icons.done_all),
         actions: [
           IconButton(
               icon: Icon(Icons.refresh),

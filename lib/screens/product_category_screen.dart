@@ -1,3 +1,5 @@
+import '../widgets/custom_app_bar_title.dart';
+
 import '../models/product.dart';
 import '../models/product_provider.dart';
 import '../widgets/product_item.dart';
@@ -14,7 +16,9 @@ class ProductsByCategoryScreen extends StatelessWidget {
     final productsData = Provider.of<ProductsProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(Product.productCattoString(_productCategory)),
+        title: CustomAppBarTitle(
+            name: Product.productCattoString(_productCategory),
+            icondata: Icons.shopping_bag),
       ),
       body: productsData.getProductsByCategory(_productCategory).length <= 0
           ? Center(

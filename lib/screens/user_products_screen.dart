@@ -1,3 +1,4 @@
+import '../widgets/custom_app_bar_title.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,7 +76,10 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My products"),
+        title: CustomAppBarTitle(
+          name: "My Products",
+          icondata: Icons.edit_outlined,
+        ),
         actions: [
           IconButton(
               icon: Icon(Icons.help_outline),

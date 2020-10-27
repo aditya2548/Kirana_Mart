@@ -163,6 +163,17 @@ class AppDrawer extends StatelessWidget {
               thickness: 1,
             ),
           ListTile(
+            leading: Icon(Icons.notification_important),
+            title: Text("My notifications"),
+            onTap: () {
+              checkAndPush("My notifications", NotificationsScreen.routeName);
+            },
+          ),
+
+          Divider(
+            thickness: 1,
+          ),
+          ListTile(
             leading: Icon(Icons.mail),
             title: Text("Contact Us"),
             onTap: () async {
@@ -174,16 +185,6 @@ class AppDrawer extends StatelessWidget {
                 Fluttertoast.showToast(
                     msg: "Sorry for the inconvenience\nPlease try again later");
               }
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          ListTile(
-            leading: Icon(Icons.notification_important),
-            title: Text("My notifications"),
-            onTap: () {
-              checkAndPush("My notifications", NotificationsScreen.routeName);
             },
           ),
         ],

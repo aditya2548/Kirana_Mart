@@ -1,3 +1,5 @@
+import '../widgets/custom_app_bar_title.dart';
+
 import '../widgets/chart.dart';
 import 'package:delayed_display/delayed_display.dart';
 
@@ -20,7 +22,10 @@ class OrdersScreen extends StatelessWidget {
     //  for fetching device size
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
-      title: Text("My Orders"),
+      title: CustomAppBarTitle(
+        name: "My Orders",
+        icondata: Icons.request_page,
+      ),
     );
     return Scaffold(
       appBar: appBar,

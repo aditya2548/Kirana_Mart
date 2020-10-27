@@ -1,3 +1,5 @@
+import '../widgets/custom_app_bar_title.dart';
+
 import '../widgets/edit_profile_bottom_sheet.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shimmer/shimmer.dart';
@@ -48,7 +50,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Profile"),
+        title: CustomAppBarTitle(
+            name: "My Profile", icondata: Icons.person_outline),
       ),
       body: _mobileNumber == ""
           ? Center(child: CircularProgressIndicator())

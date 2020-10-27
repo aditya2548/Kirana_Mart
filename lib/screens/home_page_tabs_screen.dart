@@ -1,3 +1,5 @@
+import 'package:shimmer/shimmer.dart';
+
 import '../screens/notifications_screen.dart';
 
 import '../widgets/data_search.dart';
@@ -69,9 +71,25 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            "Kirana Mart",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          titleSpacing: -5, //  appicon closer to hamburger
+          title: Shimmer.fromColors(
+            baseColor: Colors.white,
+            highlightColor: Colors.greenAccent[400],
+            child: Row(
+              children: [
+                SizedBox(
+                    height: AppBar().preferredSize.height - 10,
+                    width: AppBar().preferredSize.height - 10,
+                    child: Image.asset("assets/images/Kirana_mart_logo.png")),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Kirana\nMart",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
           ),
           //  cart option at top left in appbar
           actions: <Widget>[

@@ -1,3 +1,4 @@
+import '../widgets/custom_app_bar_title.dart';
 import '../models/fcm_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/pending_payment_item.dart';
@@ -19,7 +20,10 @@ class _PendingPaymentsAdminScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pending Payments"),
+        title: CustomAppBarTitle(
+          name: "Pending Payments",
+          icondata: Icons.timelapse,
+        ),
       ),
       body: FutureBuilder(
         future: Provider.of<FcmProvider>(context, listen: false)

@@ -1,3 +1,4 @@
+import '../widgets/custom_app_bar_title.dart';
 import '../screens/payment_screen.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +20,8 @@ class CartScreen extends StatelessWidget {
     // final cartData = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Cart"),
+        title: CustomAppBarTitle(
+            name: "My Cart", icondata: Icons.shopping_bag_rounded),
       ),
       body: FutureBuilder(
         future:

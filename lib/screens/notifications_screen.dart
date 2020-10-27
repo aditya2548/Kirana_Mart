@@ -1,7 +1,8 @@
 import 'dart:ui';
 
-import 'package:Kirana_Mart/models/fcm_provider.dart';
-import 'package:Kirana_Mart/widgets/app_drawer.dart';
+import '../models/fcm_provider.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/custom_app_bar_title.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,8 +15,10 @@ class NotificationsScreen extends StatelessWidget {
     // var messagesList = Provider.of(context)
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications"),
-      ),
+          title: CustomAppBarTitle(
+        icondata: Icons.notification_important,
+        name: "Notifications",
+      )),
       body: FutureBuilder(
         future:
             Provider.of<FcmProvider>(context, listen: false).reloadMessages(),
