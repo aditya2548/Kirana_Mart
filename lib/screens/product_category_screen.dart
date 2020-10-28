@@ -1,3 +1,6 @@
+import '../dialog/custom_dialog.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+
 import '../widgets/custom_app_bar_title.dart';
 
 import '../models/product.dart';
@@ -6,8 +9,54 @@ import '../widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProductsByCategoryScreen extends StatelessWidget {
+class ProductsByCategoryScreen extends StatefulWidget {
   static const routeName = "/products_category_screen";
+
+  @override
+  _ProductsByCategoryScreenState createState() =>
+      _ProductsByCategoryScreenState();
+}
+
+class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
+  var _moreAvailable = true;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductsProvider>(context, listen: false)
+        .listenToProductsRealTime()
+        .then((_) {
+      Future.delayed(Duration(milliseconds: 1000)).then((value) {
+        if (this.mounted)
+          setState(() {
+            isLoading = false;
+          });
+      });
+    }).catchError((error) {
+      CustomDialog.generalErrorDialog(context);
+    });
+  }
+
+  //  Load more products
+  Future _loadMore() async {
+    if (_moreAvailable == false) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+    _moreAvailable = Provider.of<ProductsProvider>(context, listen: false)
+        .moreProductsAvailable();
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .requestMoreData();
+
+    Future.delayed(Duration(milliseconds: 1000)).then((value) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,29 +79,38 @@ class ProductsByCategoryScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ))
-          : RefreshIndicator(
-              onRefresh: () => productsData.reloadProducts(),
-              child: GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
+          : Column(
+              children: [
+                if (isLoading) LinearProgressIndicator(),
+                LazyLoadScrollView(
+                  onEndOfPage: () => _loadMore(),
+                  child: RefreshIndicator(
+                    onRefresh: () => productsData.reloadProducts(),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                      ),
+                      //  Not using ChangeNotifierProvider with builder method because in that case,
+                      //  Widgets get recycled, we are changing the widget data in recycling
+                      //  Here widget gets attached to changing data instead of provider being attahced to changing data
+                      itemBuilder: (ctx, index) =>
+                          ChangeNotifierProvider<Product>.value(
+                        value: productsData
+                            .getProductsByCategory(_productCategory)[index],
+                        child: ProductItem(),
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      itemCount: productsData
+                          .getProductsByCategory(_productCategory)
+                          .length,
+                    ),
+                  ),
                 ),
-                //  Not using ChangeNotifierProvider with builder method because in that case,
-                //  Widgets get recycled, we are changing the widget data in recycling
-                //  Here widget gets attached to changing data instead of provider being attahced to changing data
-                itemBuilder: (ctx, index) =>
-                    ChangeNotifierProvider<Product>.value(
-                  value: productsData
-                      .getProductsByCategory(_productCategory)[index],
-                  child: ProductItem(),
-                ),
-                padding: const EdgeInsets.all(10),
-                itemCount:
-                    productsData.getProductsByCategory(_productCategory).length,
-              ),
+              ],
             ),
     );
   }
