@@ -58,11 +58,19 @@ class OrdersProvider with ChangeNotifier {
       );
 
       productsList.forEach(
-        (element) {
-          prod.doc(element.productId).update({
+        (element) async {
+          await prod.doc(element.productId).update({
             "quantity": FieldValue.increment(-1 * element.quantity),
           });
-          c.doc(docRef.id).collection("productsList").add(
+          //  Send product running low in stock to subscribed users(quantity<=10)
+          await prod.doc(element.productId).get().then((value) {
+            if (value.data()["quantity"] <= 10) {
+              Provider.of<FcmProvider>(context, listen: false)
+                  .sendLowStockAlertToSubscribers(
+                      element.productId, element.title);
+            }
+          });
+          await c.doc(docRef.id).collection("productsList").add(
             {
               "id": element.id,
               "title": element.title,
@@ -73,7 +81,7 @@ class OrdersProvider with ChangeNotifier {
             },
           );
 
-          Provider.of<FcmProvider>(context, listen: false)
+          await Provider.of<FcmProvider>(context, listen: false)
               .sendSaleMessageToRetailer(element.productId, element.quantity,
                   element.quantity * element.pricePerUnit, upi);
         },

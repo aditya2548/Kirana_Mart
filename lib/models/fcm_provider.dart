@@ -340,6 +340,75 @@ class FcmProvider with ChangeNotifier {
       ),
     );
   }
+
+  //  To subscribe to a product when product is added to fav
+  Future<void> subscribeToTopic(String id) async {
+    print("SUBSCRIBING");
+    await _firebaseMessaging.subscribeToTopic(id);
+    print("SUBSCRIBEDDD");
+  }
+
+  //  To un-subscribe to a product when product is removed from fav
+  Future<void> unsubscribeFromTopic(String id) async {
+    print("UNSUBSCRIBING");
+    await _firebaseMessaging.unsubscribeFromTopic(id);
+    print("UNSUBSCRIBIED");
+  }
+
+  //  Notification to be sent when a fav product is back in stock
+  Future<void> sendProductInStockToSubscribers(
+      String id, String productTitle) async {
+    await http.post(
+      'https://fcm.googleapis.com/fcm/send',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=${KeyDataModel.fcmServerKey}',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'title': '$productTitle is back in stock!',
+            'body': 'Hurry up, buy before the product runs out of stock again'
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done'
+          },
+          'to': '/topics/$id',
+        },
+      ),
+    );
+  }
+
+  //  Notification to be sent when a fav product is going low on stock
+  Future<void> sendLowStockAlertToSubscribers(
+      String id, String productTitle) async {
+    print("LOW STOCK");
+    await http.post(
+      'https://fcm.googleapis.com/fcm/send',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=${KeyDataModel.fcmServerKey}',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'title': 'Only a few of $productTitle left!',
+            'body': 'Hurry up, buy before the product runs out of stock'
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done'
+          },
+          'to': '/topics/$id',
+        },
+      ),
+    );
+  }
 }
 
 //  Message/notification class

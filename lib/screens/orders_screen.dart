@@ -22,6 +22,7 @@ class OrdersScreen extends StatelessWidget {
     //  for fetching device size
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
+      titleSpacing: -5,
       title: CustomAppBarTitle(
         name: "My Orders",
         icondata: Icons.request_page,

@@ -76,7 +76,12 @@ class _UserProductItemState extends State<UserProductItem> {
         return;
       }
       Provider.of<ProductsProvider>(context, listen: false).addProductQuantity(
-          widget.id, _quantity + int.parse(updatedQuantity));
+          widget.id,
+          _quantity,
+          int.parse(updatedQuantity),
+          widget.title,
+          context);
+      quantityController.clear();
       setState(() {
         _quantity += int.parse(updatedQuantity);
       });
@@ -85,7 +90,7 @@ class _UserProductItemState extends State<UserProductItem> {
     return Card(
       elevation: 20,
       margin: EdgeInsets.all(10),
-      color: widget.quantity <= 0 ? Colors.blueGrey[900] : Colors.teal[900],
+      color: _quantity <= 0 ? Colors.blueGrey[900] : Colors.teal[900],
       child: ExpansionTile(
         trailing: Icon(Icons.arrow_circle_down_outlined),
         leading: CircleAvatar(
@@ -96,7 +101,7 @@ class _UserProductItemState extends State<UserProductItem> {
           child: Text(
             widget.title,
             style: TextStyle(
-                color: widget.quantity <= 0 ? Colors.red : Colors.white,
+                color: _quantity <= 0 ? Colors.red : Colors.white,
                 fontWeight: FontWeight.bold),
           ),
         ),

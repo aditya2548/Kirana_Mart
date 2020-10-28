@@ -1,3 +1,5 @@
+import '../models/fcm_provider.dart';
+
 import '../models/product_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -108,11 +110,16 @@ class Product with ChangeNotifier {
 
 //  function to toggle favourite status and to notify to all the listeners of product
 //  We inverted the fav status in the product item itself
+//  Also subscribe to topic(product ID), when added to fav, and un-subscribe if removed from fav
   Future<void> toggleFav(BuildContext context) async {
     if (isFav == false) {
       Provider.of<ProductsProvider>(context, listen: false).removeFav(id);
+      await Provider.of<FcmProvider>(context, listen: false)
+          .unsubscribeFromTopic(id);
     } else {
       Provider.of<ProductsProvider>(context, listen: false).addFav(id);
+      await Provider.of<FcmProvider>(context, listen: false)
+          .subscribeToTopic(id);
     }
     try {
       // final DocumentReference docRef =

@@ -50,6 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
             name: "My Profile", icondata: Icons.person_outline),
       ),
@@ -69,7 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Shimmer.fromColors(
                             baseColor: Colors.red[900],
                             highlightColor: Colors.orange,
-                            period: Duration(milliseconds: 800),
+                            period: Duration(seconds: 2),
                             child: Image.asset(
                                 "assets/images/Kirana_mart_logo.png"),
                           )),

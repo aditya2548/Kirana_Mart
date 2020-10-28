@@ -20,6 +20,7 @@ class _PendingPaymentsAdminScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
           name: "Pending Payments",
           icondata: Icons.timelapse,

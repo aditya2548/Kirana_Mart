@@ -20,6 +20,7 @@ class CartScreen extends StatelessWidget {
     // final cartData = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
             name: "My Cart", icondata: Icons.shopping_bag_rounded),
       ),
@@ -67,6 +68,8 @@ class CartScreen extends StatelessWidget {
                   Card(
                     margin: EdgeInsets.all(10),
                     elevation: 10,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(

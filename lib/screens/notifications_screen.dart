@@ -15,10 +15,11 @@ class NotificationsScreen extends StatelessWidget {
     // var messagesList = Provider.of(context)
     return Scaffold(
       appBar: AppBar(
+          titleSpacing: -5,
           title: CustomAppBarTitle(
-        icondata: Icons.notification_important,
-        name: "Notifications",
-      )),
+            icondata: Icons.notification_important,
+            name: "Notifications",
+          )),
       body: FutureBuilder(
         future:
             Provider.of<FcmProvider>(context, listen: false).reloadMessages(),

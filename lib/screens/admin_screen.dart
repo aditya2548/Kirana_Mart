@@ -26,6 +26,7 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
             name: "Approve Products", icondata: Icons.done_all),
         actions: [

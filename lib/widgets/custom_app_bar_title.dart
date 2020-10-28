@@ -10,7 +10,8 @@ class CustomAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
       baseColor: Colors.white,
-      highlightColor: Colors.greenAccent[400],
+      highlightColor: Colors.amber,
+      period: Duration(seconds: 2),
       child: Row(
         children: [
           SizedBox(

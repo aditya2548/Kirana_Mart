@@ -76,6 +76,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
     }
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
           name: "My Products",
           icondata: Icons.edit_outlined,

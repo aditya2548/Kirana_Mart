@@ -106,6 +106,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         );
         //  Clear cart after placing order
         cartData.clearCart();
+        Future.delayed(Duration(seconds: 2), () => Navigator.of(context).pop());
       }
     }
     return response;
@@ -123,16 +124,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
           cartData.getTotalCartAmount,
           context,
           false);
+      //  Change widget state back to button
+      setState(() {
+        _progressBar = false;
+      });
+      //  Clear cart after placing order
+      cartData.clearCart();
+      Future.delayed(
+          Duration(
+            seconds: 2,
+          ),
+          () => Navigator.of(context).pop());
     } catch (error) {
       await CustomDialog.generalErrorDialog(context);
     }
-    //  Change widget state back to button
-    setState(() {
-      _progressBar = false;
-    });
-    //  Clear cart after placing order
-    cartData.clearCart();
-    Navigator.of(context).pop();
   }
 
   @override
@@ -172,6 +177,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: Column(
               children: [
                 Spacer(),
+                if (snapshot.data.length == 0)
+                  Text("Sorry, no UPI apps installed"),
                 GridView.count(
                   crossAxisCount: 3,
                   shrinkWrap: true,

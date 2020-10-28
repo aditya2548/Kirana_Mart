@@ -65,6 +65,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     final productsData = Provider.of<ProductsProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: -5,
         title: CustomAppBarTitle(
             name: Product.productCattoString(_productCategory),
             icondata: Icons.shopping_bag),

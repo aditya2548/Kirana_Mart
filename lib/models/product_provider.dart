@@ -595,13 +595,18 @@ class ProductsProvider with ChangeNotifier {
   }
 
   //  Function to add product stock
-  Future<void> addProductQuantity(String productId, int newQuantity) async {
+  Future<void> addProductQuantity(String productId, int oldQuantity,
+      int addedQuantity, String title, BuildContext context) async {
     await FirebaseFirestore.instance
         .collection("Products")
         .doc(productId)
         .update(
-      {"quantity": newQuantity},
+      {"quantity": oldQuantity + addedQuantity},
     );
+    if (oldQuantity == 0) {
+      await Provider.of<FcmProvider>(context, listen: false)
+          .sendProductInStockToSubscribers(productId, title);
+    }
     notifyListeners();
   }
 }
