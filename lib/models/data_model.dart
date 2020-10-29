@@ -1,6 +1,6 @@
 // Data model to store all the strings
 class DataModel {
-  static const approveProducts = "Approve Products";
+  static const APPROVE_PRODUCTS = "Approve Products";
   static const noPendingProducts = "No Pending Products";
   static const pleaseWait = "Please wait";
   static const total = " Total: ";
@@ -29,6 +29,10 @@ class DataModel {
   static const somethingWentWrong =
       "Something went wrong\n Please try again later.";
   static const noUpiAppError = "Sorry, no UPI apps installed";
+  static const limitedStocksError = "Sorry, limited stocks available";
+  static const outOfStock = "OUT OF STOCK";
+  static const provideRejectionReason = "Please provide a reason for rejection";
+  static const productUnavailable = "Sorry, product unavailable at the moment";
 
   static const addProduct = "Add Product";
   static const editProduct = "Edit Product";
@@ -51,12 +55,32 @@ class DataModel {
   static const password = "Password";
   static const passwordMinLengthLimitError =
       "Password must be atleast 6 characters long!";
+  static const confirmPassword = "Confirm Password";
+  static const passwordsDontMatch = "Passwords do not match!";
   static const forgotPassword = "Forgot Password ?";
+  static const login = "Login ?";
+  static const helloFriend = "Hello, friend!";
+  static const letsGetStarted = "Let's get started";
+  static const name = "Name";
+  static const invalidName = "Invalid Name!";
+  static const mobileNumber = "Mobile Number";
+  static const enterMobileNumber = "Please enter mobile number";
+  static const enterValidMobileNumber = "Please enter valid mobile number";
+  static const address = "Address";
+  static const enterAddress = "Please enter your address";
+  static const enterValidAddress = "Address must be atleast 10 characters long";
+  static const upiHint = "Upi (kirana@example)";
+  static const upiMandatory = "Mandatory for retailers";
+  static const enterUpi = "Please enter upi-id";
+  static const enterValidUpi = "Please enter valid upi-id (kirana@example)";
+  static const saveChanges = "Save changes";
 
   //  Verify email
   static const verifyMailToSell =
       "Please verify email to\nstart selling products";
   static const verifyMailToOrder = "Please verify email to place order";
+  static const verifyEmailToUnlockFeatures =
+      "Email isn't verified.\nVerify to unlock features";
 
   static const validUpiToSell =
       "Valid Upi id must be provided to start selling";
@@ -76,4 +100,48 @@ class DataModel {
   static const confirmPurchase = "Confirm purchase";
   static const payment = "Payment";
   static const cash = "Cash";
+
+  static const pendingPayments = "Pending Payments";
+  static const productOutOfStock = "Sorry, product out of stock :(";
+  static const retailer = "Retailer";
+  static const quantity = "Quantity";
+
+  static const addToCart = "ADD TO CART";
+  static const productDetails = "Product Details:";
+  static const reviews = "Reviews:";
+  static const noReviewsFound = "No reviews found.";
+  static const categories = "Categories";
+  static const myProfile = "My Profile";
+  static const refreshStatus = "Refresh status";
+  static const emailNotVerified =
+      "   Email not verified\nplease click to verify";
+  static const emailVerified = "Email verified :)";
+  static const editProfile = "Edit profile";
+  static const signOut = "Sign-out";
+
+  static const welcomeToKiranaMart = "WELCOME TO KIRANA MART";
+  static const appTagLine = "~~ Your one stop smart shopping resource ~~";
+  static const getStarted = "Get Started";
+
+  static const contactUs = "Contact Us";
+  static const profileChangesTakeTime =
+      "NOTE: Changes will take a little time to reflect in your profile";
+
+  static const review = "Review";
+  static const provideReview = "Please provide review";
+  static const provideReviewMinLength = "Review should be > 5 characters";
+  static const addReview = "Add Review";
+  static const completePayment = "Payment pending";
+  static const paymentCompleted = "Payment completed";
+  static const enterRejectionReason = "Enter a rejection reason";
+  static const accept = "Accept";
+  static const reject = "Reject";
+  static const stars = "Stars";
+  static const provideStars = "Please provide stars rating";
+  static const provideValidStars = "Please provide valid rating";
+  static const provideStarsInRange = "Please provide a rating between 1 and 5";
+  static const provideValidQuantity = "Please provide a valid quantity";
+  static const add = "ADD";
+  static const edit = "Edit";
+  static const delete = "Delete";
 }

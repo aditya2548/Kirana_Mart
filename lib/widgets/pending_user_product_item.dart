@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import '../models/data_model.dart';
+
 import '../models/product_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +60,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
       if (reason.trim() == "") {
         Fluttertoast.cancel();
         Fluttertoast.showToast(
-            msg: "Please provide a reason for rejection",
+            msg: DataModel.provideRejectionReason,
             backgroundColor: Theme.of(context).errorColor,
             fontSize: 12);
         return;
@@ -91,7 +93,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              "Product category:",
+              DataModel.productCategory,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -109,7 +111,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              "Product description:",
+              DataModel.productDetails,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -126,7 +128,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Divider(),
           TextField(
             decoration: InputDecoration(
-              hintText: 'Enter a rejection reason',
+              hintText: DataModel.enterRejectionReason,
             ),
             controller: myController,
           ),
@@ -134,7 +136,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               RaisedButton.icon(
-                  label: Text("Accept"),
+                  label: Text(DataModel.accept),
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   color: Theme.of(context).primaryColorDark,
                   icon: Icon(
@@ -146,7 +148,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
                   }),
               RaisedButton.icon(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                label: Text("Reject"),
+                label: Text(DataModel.reject),
                 icon: Icon(Icons.highlight_remove),
                 color: Theme.of(context).errorColor,
                 onPressed: () {

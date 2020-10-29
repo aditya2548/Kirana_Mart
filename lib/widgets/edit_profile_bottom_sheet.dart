@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:upi_pay/upi_pay.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,8 +55,7 @@ class _EditProfileState extends State<EditProfile> {
       } catch (error) {
         print(error);
         Fluttertoast.cancel();
-        Fluttertoast.showToast(
-            msg: "Some error occured, please try again later");
+        Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
       } finally {
         Navigator.of(context).pop();
       }
@@ -91,7 +91,7 @@ class _EditProfileState extends State<EditProfile> {
                     Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "NOTE: Changes will take a little time to reflect in your profile",
+                        DataModel.profileChangesTakeTime,
                         style: TextStyle(fontSize: 10, color: Colors.white54),
                       ),
                     ),
@@ -101,14 +101,14 @@ class _EditProfileState extends State<EditProfile> {
                       maxLines: 3,
                       minLines: 1,
                       decoration: InputDecoration(
-                          labelText: "Address",
+                          labelText: DataModel.address,
                           errorStyle: TextStyle(fontSize: 10)),
                       keyboardType: TextInputType.multiline,
                       validator: (value) {
                         if (value == null || value.trim() == "") {
-                          return 'Please enter your address';
+                          return DataModel.enterAddress;
                         } else if (value.length <= 10) {
-                          return 'Address must be atleast 10 characters long';
+                          return DataModel.enterValidAddress;
                         }
                         return null;
                       },
@@ -118,16 +118,16 @@ class _EditProfileState extends State<EditProfile> {
                       initialValue: widget.mobileNumber,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                          labelText: "Mobile Number",
+                          labelText: DataModel.mobileNumber,
                           errorStyle: TextStyle(fontSize: 10)),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.length == 0) {
-                          return 'Please enter mobile number';
+                          return DataModel.enterMobileNumber;
                         } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
                             .hasMatch(value)) {
-                          return 'Please enter valid mobile number';
+                          return DataModel.enterValidMobileNumber;
                         }
                         return null;
                       },
@@ -143,9 +143,9 @@ class _EditProfileState extends State<EditProfile> {
                       textInputAction: TextInputAction.next,
                       validator: (upi) {
                         if (upi == null || upi.trim() == "") {
-                          return "Please provide upi";
+                          return DataModel.enterUpi;
                         } else if (!UpiPay.checkIfUpiAddressIsValid(upi)) {
-                          return "Please provide valid upi-id (kirana@example)";
+                          return DataModel.enterValidUpi;
                         }
                         return null;
                       },
@@ -156,7 +156,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     RaisedButton(
                       child: Text(
-                        "Save changes",
+                        DataModel.saveChanges,
                       ),
                       onPressed: () {
                         _submitProfileEdit();

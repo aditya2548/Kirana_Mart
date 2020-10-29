@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
@@ -108,7 +109,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 ),
                               if (product.quantity == 0)
                                 Text(
-                                  "Sorry, product out of stock :(",
+                                  DataModel.productOutOfStock,
                                   style: TextStyle(color: Colors.red),
                                 ),
                               Text(
@@ -157,7 +158,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                               Container(
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
-                                child: Text("Retailer"),
+                                child: Text(DataModel.retailer),
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
@@ -181,7 +182,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                       padding: EdgeInsets.all(5),
                                       color: Theme.of(context).primaryColorDark,
                                       child: Text(
-                                        'Quantity',
+                                        DataModel.quantity,
                                       ),
                                       margin: EdgeInsets.only(bottom: 15),
                                     ),
@@ -203,8 +204,8 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                                       product.quantity) {
                                                     Fluttertoast.cancel();
                                                     Fluttertoast.showToast(
-                                                        msg:
-                                                            "Sorry, limited stocks available",
+                                                        msg: DataModel
+                                                            .limitedStocksError,
                                                         backgroundColor:
                                                             Colors.red);
                                                     return;
@@ -259,7 +260,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 child: RaisedButton(
                                     color: Theme.of(context).accentColor,
                                     child: Text(
-                                      "ADD TO CART",
+                                      DataModel.addToCart,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -274,7 +275,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
                                 child: Text(
-                                  "Product Details:",
+                                  DataModel.productDetails,
                                 ),
                               ),
                               Container(
@@ -301,7 +302,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
                                 child: Text(
-                                  "Reviews:",
+                                  DataModel.reviews,
                                 ),
                               ),
                               SizedBox(
@@ -310,7 +311,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                               product.getReviewCount == 0
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text("No reviews found."),
+                                      child: Text(DataModel.noReviewsFound),
                                     )
                                   : Container(
                                       height: 200,

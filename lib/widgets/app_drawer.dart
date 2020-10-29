@@ -1,3 +1,5 @@
+import '../screens/home_page_tabs_screen.dart';
+import '../models/data_model.dart';
 import '../screens/pending_payments_admin_screen.dart';
 
 import '../models/key_data_model.dart';
@@ -37,7 +39,7 @@ class AppDrawer extends StatelessWidget {
             duration: Duration(seconds: 1),
           ),
         );
-      } else if (parentName != "Home") {
+      } else if (parentName != DataModel.home) {
         //  Two times so that all the screens do not get stacked up on top of each other
         //  Only the home screen remains always at the bottom while using drawer
         Navigator.of(context).pop();
@@ -82,7 +84,7 @@ class AppDrawer extends StatelessWidget {
                 height: 50,
                 child: Center(
                   child: Text(
-                    "HELLO, FRIEND",
+                    DataModel.helloFriend,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -95,7 +97,7 @@ class AppDrawer extends StatelessWidget {
                   color: Theme.of(context).errorColor,
                   height: 50,
                   child: Text(
-                    "Email isn't verified.\nVerify to unlock features",
+                    DataModel.verifyEmailToUnlockFeatures,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -104,9 +106,9 @@ class AppDrawer extends StatelessWidget {
                 ),
               ListTile(
                 leading: Icon(Icons.home),
-                title: Text("Home"),
+                title: Text(DataModel.home),
                 onTap: () {
-                  checkAndPush("Home", "/home_page_tabs_screen");
+                  checkAndPush(DataModel.home, HomePageTabsScreen.routeName);
                 },
               ),
               Divider(
@@ -116,9 +118,9 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.request_page),
-                title: Text("My Orders"),
+                title: Text(DataModel.myOrders),
                 onTap: () {
-                  checkAndPush("My Orders", OrdersScreen.routeName);
+                  checkAndPush(DataModel.myOrders, OrdersScreen.routeName);
                 },
               ),
               Divider(
@@ -128,9 +130,9 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.shopping_bag_rounded),
-                title: Text("My Cart"),
+                title: Text(DataModel.myCart),
                 onTap: () {
-                  checkAndPush("My Cart", CartScreen.routeName);
+                  checkAndPush(DataModel.myCart, CartScreen.routeName);
                 },
               ),
               Divider(
@@ -140,9 +142,10 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.edit_outlined),
-                title: Text("My Products"),
+                title: Text(DataModel.myProducts),
                 onTap: () {
-                  checkAndPush("My Products", UserProductsScreen.routeName);
+                  checkAndPush(
+                      DataModel.myProducts, UserProductsScreen.routeName);
                 },
               ),
               Divider(
@@ -152,9 +155,10 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.person_outline),
-                title: Text("My Profile"),
+                title: Text(DataModel.myProfile),
                 onTap: () {
-                  checkAndPush("My Profile", UserProfileScreen.routeName);
+                  checkAndPush(
+                      DataModel.myProfile, UserProfileScreen.routeName);
                 },
               ),
               Divider(
@@ -166,9 +170,10 @@ class AppDrawer extends StatelessWidget {
                   KeyDataModel.adminEmail)
                 ListTile(
                   leading: Icon(Icons.done_all),
-                  title: Text("Approve Products"),
+                  title: Text(DataModel.APPROVE_PRODUCTS),
                   onTap: () {
-                    checkAndPush("Approve Products", AdminScreen.routeName);
+                    checkAndPush(
+                        DataModel.APPROVE_PRODUCTS, AdminScreen.routeName);
                   },
                 ),
               if (FirebaseAuth.instance.currentUser.email ==
@@ -182,9 +187,9 @@ class AppDrawer extends StatelessWidget {
                   KeyDataModel.adminEmail)
                 ListTile(
                   leading: Icon(Icons.timelapse),
-                  title: Text("Pending Payments"),
+                  title: Text(DataModel.pendingPayments),
                   onTap: () {
-                    checkAndPush("Pending Payments",
+                    checkAndPush(DataModel.pendingPayments,
                         PendingPaymentsAdminScreen.routeName);
                   },
                 ),
@@ -197,10 +202,10 @@ class AppDrawer extends StatelessWidget {
                 ),
               ListTile(
                 leading: Icon(Icons.notification_important),
-                title: Text("My notifications"),
+                title: Text(DataModel.myNotifications),
                 onTap: () {
                   checkAndPush(
-                      "My notifications", NotificationsScreen.routeName);
+                      DataModel.myNotifications, NotificationsScreen.routeName);
                 },
               ),
 
@@ -211,16 +216,14 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.mail),
-                title: Text("Contact Us"),
+                title: Text(DataModel.contactUs),
                 onTap: () async {
                   var url =
                       "mailto:kirana.mart.grocery@gmail.com?subject=Kirana Mart Query&body=Please provide details regarding your problem.\nWe will contact you shortly.";
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
-                    Fluttertoast.showToast(
-                        msg:
-                            "Sorry for the inconvenience\nPlease try again later");
+                    Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
                   }
                 },
               ),

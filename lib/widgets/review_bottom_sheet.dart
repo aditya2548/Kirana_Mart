@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,8 +87,7 @@ class _NewReviewState extends State<NewReview> {
         );
       } catch (error) {
         Fluttertoast.cancel();
-        Fluttertoast.showToast(
-            msg: "Some error occured, please try again later");
+        Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
       } finally {
         Navigator.of(context).pop();
       }
@@ -129,17 +130,17 @@ class _NewReviewState extends State<NewReview> {
                     initialValue: initialStars,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
-                        labelText: "Stars",
+                        labelText: DataModel.stars,
                         errorStyle: TextStyle(fontSize: 10)),
                     keyboardType: TextInputType.number,
                     validator: (rating) {
                       if (rating == null || rating.trim() == "") {
-                        return "Please provide stars rating";
+                        return DataModel.provideStars;
                       } else if (int.tryParse(rating) == null) {
-                        return "Please provide valid rating";
+                        return DataModel.provideValidStars;
                       } else if (int.parse(rating) < 1 ||
                           double.parse(rating) > 5) {
-                        return "Please provide a rating between 1 and 5";
+                        return DataModel.provideStarsInRange;
                       }
                       return null;
                     },
@@ -154,14 +155,14 @@ class _NewReviewState extends State<NewReview> {
                     initialValue: initialReview,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: InputDecoration(
-                        labelText: "Review",
+                        labelText: DataModel.review,
                         errorStyle: TextStyle(fontSize: 10)),
                     keyboardType: TextInputType.multiline,
                     validator: (desc) {
                       if (desc == null || desc.trim() == "") {
-                        return "Please provide review";
+                        return DataModel.provideReview;
                       } else if (desc.length <= 5) {
-                        return "Review should be > 5 characters";
+                        return DataModel.provideReviewMinLength;
                       }
                       return null;
                     },
@@ -177,7 +178,7 @@ class _NewReviewState extends State<NewReview> {
                   ),
                   RaisedButton(
                     child: Text(
-                      "Add Review",
+                      DataModel.addReview,
                     ),
                     onPressed: () {
                       _submitReview();

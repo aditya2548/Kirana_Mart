@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -72,7 +73,7 @@ class MyOrdersItem extends StatelessWidget {
                                 order.productsList.toList()[index].productId);
                           });
                     },
-                    child: Text("Review"),
+                    child: Text(DataModel.review),
                   ),
                   leading: IconButton(
                       icon: Icon(Icons.call),
@@ -83,8 +84,7 @@ class MyOrdersItem extends StatelessWidget {
                           await launch(url);
                         } else {
                           Fluttertoast.showToast(
-                              msg:
-                                  "Sorry for the inconvenience\nPlease try again later");
+                              msg: DataModel.somethingWentWrong);
                         }
                       }),
                 ),

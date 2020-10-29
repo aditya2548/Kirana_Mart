@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:flutter/material.dart';
 import '../models/fcm_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,7 +66,7 @@ class _PendingPaymentItemState extends State<PendingPaymentItem> {
                                 .incomplete = !value;
                           });
                         }),
-                    Text("Complete payment"),
+                    Text(DataModel.completePayment),
                   ],
                 )
               : Row(
@@ -84,7 +85,7 @@ class _PendingPaymentItemState extends State<PendingPaymentItem> {
                                 .incomplete = !value;
                           });
                         }),
-                    Text("Payment completed"),
+                    Text(DataModel.paymentCompleted),
                   ],
                 )
         ],

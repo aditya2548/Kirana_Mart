@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../screens/signup_screen.dart';
@@ -31,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                 highlightColor: Colors.orange,
                 period: Duration(seconds: 2),
                 child: Text(
-                  "WELCOME TO KIRANA MART",
+                  DataModel.welcomeToKiranaMart,
                   style: TextStyle(
                       color: Colors.orange[900],
                       fontWeight: FontWeight.bold,
@@ -40,7 +41,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             Text(
-              "~~ Your one stop smart shopping resource ~~",
+              DataModel.appTagLine,
               style: TextStyle(
                   color: Colors.teal[100],
                   fontStyle: FontStyle.italic,
@@ -64,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        "Get Started",
+                        DataModel.getStarted,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Spacer(),

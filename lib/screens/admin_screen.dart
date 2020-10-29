@@ -31,7 +31,7 @@ class _AdminScreenState extends State<AdminScreen> {
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-              name: DataModel.approveProducts, icondata: Icons.done_all),
+              name: DataModel.APPROVE_PRODUCTS, icondata: Icons.done_all),
           actions: [
             IconButton(
                 icon: Icon(Icons.refresh),
@@ -41,7 +41,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 })
           ],
         ),
-        drawer: AppDrawer(DataModel.approveProducts),
+        drawer: AppDrawer(DataModel.APPROVE_PRODUCTS),
         body: Consumer<ProductsProvider>(
           builder: (ctx, ordersData, child) => RefreshIndicator(
             onRefresh: () {

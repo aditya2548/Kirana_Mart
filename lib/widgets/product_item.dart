@@ -1,3 +1,4 @@
+import '../models/data_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -28,7 +29,7 @@ class _ProductItemState extends State<ProductItem> {
           color: Colors.red,
           alignment: Alignment.center,
           child: Text(
-            "OUT OF STOCK",
+            DataModel.outOfStock,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         );
@@ -134,7 +135,7 @@ class _ProductItemState extends State<ProductItem> {
                   if (product.quantity < 1) {
                     Fluttertoast.cancel();
                     Fluttertoast.showToast(
-                        msg: "Sorry, product unavailable at the moment",
+                        msg: DataModel.productUnavailable,
                         backgroundColor: Colors.red);
                     return;
                   }

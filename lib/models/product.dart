@@ -38,29 +38,7 @@ class Product with ChangeNotifier {
   final int quantity;
   bool isFav;
   //  Map of reviews user-email as the key (dummy reviews)
-  List<Map<String, Review>> _reviews = [
-    // {
-    //   "userId": Review(
-    //       username: "Aman",
-    //       stars: 5,
-    //       description: "Good",
-    //       dateTime: DateTime(2000))
-    // },
-    // {
-    //   "userId": Review(
-    //       username: "Amit",
-    //       stars: 2,
-    //       description: "Average",
-    //       dateTime: DateTime(2000))
-    // },
-    // {
-    //   "userId": Review(
-    //       username: "Gaurav",
-    //       stars: 1,
-    //       description: "Good",
-    //       dateTime: DateTime.now())
-    // },
-  ];
+  List<Map<String, Review>> _reviews = [];
 
   Product({
     @required this.id,

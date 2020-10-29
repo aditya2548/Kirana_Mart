@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/product_provider.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -83,7 +85,7 @@ class MyCartItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      "Quantity:",
+                      DataModel.quantity,
                     ),
                   ),
                   IconButton(

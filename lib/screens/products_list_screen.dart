@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/lazy_load.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -76,7 +78,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         Container(
           padding: EdgeInsets.only(left: 20),
           child: Text(
-            "Categories",
+            DataModel.categories,
             textAlign: TextAlign.left,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),

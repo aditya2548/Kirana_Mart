@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/auth_provider.dart';
 import '../screens/home_page_tabs_screen.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +28,7 @@ class SignUpScreen extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 color: Theme.of(context).primaryColor,
                 child: Text(
-                  "Login ?",
+                  DataModel.login,
                   style: TextStyle(
                     // fontSize: 20,
                     color: Theme.of(context).highlightColor,
@@ -44,7 +46,7 @@ class SignUpScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                 child: Text(
-                  'Hello, friend!',
+                  DataModel.helloFriend,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -55,7 +57,7 @@ class SignUpScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
                 child: Text(
-                  "Let's get started",
+                  DataModel.letsGetStarted,
                   style: TextStyle(color: Theme.of(context).highlightColor),
                 ),
               ),
@@ -147,7 +149,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       textInputAction: TextInputAction.next,
                       // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: DataModel.name,
                         // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.name,
@@ -155,7 +157,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                         if (value == null ||
                             value.trim() == "" ||
                             value.length < 3) {
-                          return 'Invalid Name!';
+                          return DataModel.invalidName;
                         }
                         return null;
                       },
@@ -168,7 +170,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       // style: TextStyle(fontSize: 10),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'E-Mail',
+                        labelText: DataModel.email,
                         // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -176,7 +178,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                         if (!RegExp(
                                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                             .hasMatch(value)) {
-                          return 'Invalid email!';
+                          return DataModel.invalidEmail;
                         }
                         return null;
                       },
@@ -187,18 +189,18 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       // style: TextStyle(fontSize: 10),
-                      decoration: InputDecoration(
-                        labelText: 'Mobile Number',
-                        // errorStyle: TextStyle(fontSize: 8),
-                      ),
+                      decoration:
+                          InputDecoration(labelText: DataModel.mobileNumber
+                              // errorStyle: TextStyle(fontSize: 8),
+                              ),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.length == 0) {
-                          return 'Please enter mobile number';
+                          return DataModel.enterMobileNumber;
                         } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
                             .hasMatch(value)) {
-                          return 'Please enter valid mobile number';
+                          return DataModel.enterValidMobileNumber;
                         }
                         return null;
                       },
@@ -210,7 +212,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
-                        labelText: 'Address',
+                        labelText: DataModel.address,
                         // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.multiline,
@@ -218,9 +220,9 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       minLines: 1,
                       validator: (value) {
                         if (value == null || value.trim() == "") {
-                          return 'Please enter your address';
+                          return DataModel.enterAddress;
                         } else if (value.length <= 10) {
-                          return 'Address must be atleast 10 characters long';
+                          return DataModel.enterValidAddress;
                         }
                         return null;
                       },
@@ -231,8 +233,8 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     TextFormField(
                       // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
-                          labelText: 'Upi (kirana@example)',
-                          hintText: 'Mandatory for retailers'),
+                          labelText: DataModel.upiHint,
+                          hintText: DataModel.upiMandatory),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       onSaved: (value) {
@@ -243,7 +245,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: DataModel.password,
                         // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
@@ -252,7 +254,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       controller: _passwordController,
                       validator: (value) {
                         if (value.isEmpty || value.length < 6) {
-                          return 'Password must be atleast 6 characters long!';
+                          return DataModel.passwordMinLengthLimitError;
                         }
                         return null;
                       },
@@ -264,7 +266,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                        labelText: 'Confirm Password',
+                        labelText: DataModel.confirmPassword,
                         // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
@@ -272,7 +274,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       obscureText: true,
                       validator: (value) {
                         if (value != _passwordController.text) {
-                          return 'Passwords do not match!';
+                          return DataModel.passwordsDontMatch;
                         }
                         return null;
                       },

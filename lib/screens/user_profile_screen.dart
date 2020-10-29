@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../widgets/custom_app_bar_title.dart';
 
 import '../widgets/edit_profile_bottom_sheet.dart';
@@ -53,7 +55,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-              name: "My Profile", icondata: Icons.person_outline),
+              name: DataModel.myProfile, icondata: Icons.person_outline),
         ),
         body: _mobileNumber == ""
             ? Center(child: CircularProgressIndicator())
@@ -85,7 +87,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               setState(() {});
                             });
                           },
-                          child: Text("Refresh status"),
+                          child: Text(DataModel.refreshStatus),
                         ),
                       if (_user.emailVerified == false)
                         RaisedButton(
@@ -103,7 +105,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
-                                "   Email not verified\nplease click to verify",
+                                DataModel.emailNotVerified,
                                 style: TextStyle(
                                   color: Theme.of(context).highlightColor,
                                 ),
@@ -120,7 +122,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Text(
-                              "Email verified :)",
+                              DataModel.emailVerified,
                               style: TextStyle(
                                 color: Colors.black,
                               ),
@@ -194,7 +196,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             margin: EdgeInsets.only(top: 20),
                             child: RaisedButton(
                               color: Theme.of(context).primaryColor,
-                              child: Text("Edit profile"),
+                              child: Text(DataModel.editProfile),
                               onPressed: () {
                                 showModalBottomSheet(
                                   isScrollControlled: true,
@@ -214,7 +216,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             margin: EdgeInsets.only(top: 20),
                             child: RaisedButton(
                               color: Theme.of(context).errorColor,
-                              child: Text("Sign-out"),
+                              child: Text(DataModel.signOut),
                               onPressed: () {
                                 Provider.of<AuthProvider>(context,
                                         listen: false)
@@ -228,7 +230,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
               ),
-        drawer: AppDrawer("My Profile"),
+        drawer: AppDrawer(DataModel.myProfile),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../widgets/custom_app_bar_title.dart';
 import '../models/fcm_provider.dart';
 import '../widgets/app_drawer.dart';
@@ -23,7 +25,7 @@ class _PendingPaymentsAdminScreenState
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-            name: "Pending Payments",
+            name: DataModel.pendingPayments,
             icondata: Icons.timelapse,
           ),
         ),
@@ -39,11 +41,11 @@ class _PendingPaymentsAdminScreenState
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text("Please wait"),
+                      Text(DataModel.pleaseWait),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            "Please connect to internet.\nChanges will be reflected after internet connection is regained",
+                            DataModel.connectToInternetWarningForChanges,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -53,7 +55,7 @@ class _PendingPaymentsAdminScreenState
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text("Something went wrong\n Please try again later."),
+                child: Text(DataModel.somethingWentWrong),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -63,7 +65,7 @@ class _PendingPaymentsAdminScreenState
                     paymentsData.getPendingPayments.length == 0
                         ? Container(
                             alignment: Alignment.center,
-                            child: Text("No notifications for you now"),
+                            child: Text(DataModel.noNotifications),
                           )
                         : RefreshIndicator(
                             onRefresh: () =>
@@ -81,7 +83,7 @@ class _PendingPaymentsAdminScreenState
             }
           },
         ),
-        drawer: AppDrawer("Pending Payments"),
+        drawer: AppDrawer(DataModel.pendingPayments),
       ),
     );
   }
