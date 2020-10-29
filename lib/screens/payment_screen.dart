@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import '../models/data_model.dart';
+
 import '../dialog/custom_dialog.dart';
 import '../models/cart_provider.dart';
 import '../models/key_data_model.dart';
@@ -40,7 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _myAnimatedWidget = Container(
       height: 300,
       alignment: Alignment.center,
-      key: Key("COD"),
+      key: Key(DataModel.cod),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -51,7 +53,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 codPayment();
               },
               icon: Icon(Icons.monetization_on),
-              label: Text("Confirm purchase"),
+              label: Text(DataModel.confirmPurchase),
             ),
           ),
         ],
@@ -81,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         transactionRef: transactionRef,
       );
     } catch (error) {
-      Fluttertoast.showToast(msg: "Something went wrong, please try later");
+      Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
     } finally {
       //  Save transaction details and send payment details notification to admin, only if transaction was successful
       if (response.status != UpiTransactionStatus.failure) {
@@ -146,7 +148,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     Widget _codWidget = Container(
       height: 300,
       alignment: Alignment.center,
-      key: Key("COD"),
+      key: Key(DataModel.cod),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -157,14 +159,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   codPayment();
                 },
                 icon: Icon(Icons.monetization_on),
-                label: Text("Confirm purchase"),
+                label: Text(DataModel.confirmPurchase),
               )),
         ],
       ),
     );
     //  Widget for upi payment
     Widget _upiWidget = Container(
-      key: Key("UPI"),
+      key: Key(DataModel.upi),
       child: FutureBuilder<List<ApplicationMeta>>(
         future: _appsFuture,
         builder: (context, snapshot) {
@@ -177,8 +179,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: Column(
               children: [
                 Spacer(),
-                if (snapshot.data.length == 0)
-                  Text("Sorry, no UPI apps installed"),
+                if (snapshot.data.length == 0) Text(DataModel.noUpiAppError),
                 GridView.count(
                   crossAxisCount: 3,
                   shrinkWrap: true,
@@ -209,66 +210,69 @@ class _PaymentScreenState extends State<PaymentScreen> {
         },
       ),
     );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Payment"),
-        backgroundColor: Theme.of(context).backgroundColor,
-      ),
-      body: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        margin: EdgeInsets.all(20),
-        elevation: 15,
-        color: Theme.of(context).primaryColor,
-        child: ListView(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 45),
-              padding: EdgeInsets.all(20),
-              color: Theme.of(context).primaryColorDark,
-              alignment: Alignment.center,
-              child: Text(
-                "Total amount: $amount",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(DataModel.payment),
+          backgroundColor: Theme.of(context).backgroundColor,
+        ),
+        body: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          margin: EdgeInsets.all(20),
+          elevation: 15,
+          color: Theme.of(context).primaryColor,
+          child: ListView(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 45),
+                padding: EdgeInsets.all(20),
+                color: Theme.of(context).primaryColorDark,
+                alignment: Alignment.center,
+                child: Text(
+                  "Total amount: $amount",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ),
-            if (_progressBar) LinearProgressIndicator(),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Cash"),
-                  Switch(
-                    value: _switch,
-                    onChanged: (value) {
-                      if (value == false) {
-                        setState(() {
-                          _switch = value;
-                          _myAnimatedWidget = _codWidget;
-                        });
-                      } else {
-                        setState(() {
-                          _switch = value;
-                          _myAnimatedWidget = _upiWidget;
-                        });
-                      }
-                    },
-                  ),
-                  Text("UPI"),
-                ],
+              if (_progressBar) LinearProgressIndicator(),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(DataModel.cash),
+                    Switch(
+                      value: _switch,
+                      onChanged: (value) {
+                        if (value == false) {
+                          setState(() {
+                            _switch = value;
+                            _myAnimatedWidget = _codWidget;
+                          });
+                        } else {
+                          setState(() {
+                            _switch = value;
+                            _myAnimatedWidget = _upiWidget;
+                          });
+                        }
+                      },
+                    ),
+                    Text(DataModel.upi),
+                  ],
+                ),
               ),
-            ),
-            //  aminmated switcher for transition between upi and cod
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              transitionBuilder: (child, animation) =>
-                  ScaleTransition(child: child, scale: animation),
-              child: _myAnimatedWidget,
-            )
-          ],
+              //  aminmated switcher for transition between upi and cod
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(child: child, scale: animation),
+                child: _myAnimatedWidget,
+              )
+            ],
+          ),
         ),
       ),
     );

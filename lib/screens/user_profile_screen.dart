@@ -48,185 +48,188 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: -5,
-        title: CustomAppBarTitle(
-            name: "My Profile", icondata: Icons.person_outline),
-      ),
-      body: _mobileNumber == ""
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.red[900],
-                            highlightColor: Colors.orange,
-                            period: Duration(seconds: 2),
-                            child: Image.asset(
-                                "assets/images/Kirana_mart_logo.png"),
-                          )),
-                    ),
-                    if (_user.emailVerified == false)
-                      RaisedButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.currentUser
-                              .reload()
-                              .then((value) {
-                            setState(() {});
-                          });
-                        },
-                        child: Text("Refresh status"),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: -5,
+          title: CustomAppBarTitle(
+              name: "My Profile", icondata: Icons.person_outline),
+        ),
+        body: _mobileNumber == ""
+            ? Center(child: CircularProgressIndicator())
+            : Center(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.red[900],
+                              highlightColor: Colors.orange,
+                              period: Duration(seconds: 2),
+                              child: Image.asset(
+                                  "assets/images/Kirana_mart_logo.png"),
+                            )),
                       ),
-                    if (_user.emailVerified == false)
-                      RaisedButton(
-                        color: Theme.of(context).errorColor,
-                        onPressed: () {
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .verifyEmail();
-                          setState(() {});
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          width: double.infinity,
-                          alignment: Alignment.center,
+                      if (_user.emailVerified == false)
+                        RaisedButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.currentUser
+                                .reload()
+                                .then((value) {
+                              setState(() {});
+                            });
+                          },
+                          child: Text("Refresh status"),
+                        ),
+                      if (_user.emailVerified == false)
+                        RaisedButton(
                           color: Theme.of(context).errorColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              "   Email not verified\nplease click to verify",
-                              style: TextStyle(
-                                color: Theme.of(context).highlightColor,
+                          onPressed: () {
+                            Provider.of<AuthProvider>(context, listen: false)
+                                .verifyEmail();
+                            setState(() {});
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            color: Theme.of(context).errorColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                "   Email not verified\nplease click to verify",
+                                style: TextStyle(
+                                  color: Theme.of(context).highlightColor,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    if (_user.emailVerified == true)
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        color: Colors.green,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            "Email verified :)",
-                            style: TextStyle(
-                              color: Colors.black,
+                      if (_user.emailVerified == true)
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          color: Colors.green,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "Email verified :)",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ),
+                      SizedBox(
+                        height: 50,
                       ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Card(
-                      elevation: 15,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      color: Theme.of(context).primaryColor,
-                      // width: double.infinity,
-                      // alignment: Alignment.center,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Name: $_name"),
-                      ),
-                    ),
-                    Card(
-                      elevation: 15,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      color: Theme.of(context).primaryColor,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Email: ${_user.email}"),
-                      ),
-                    ),
-                    Card(
-                      elevation: 15,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      color: Theme.of(context).primaryColor,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Address: $_address"),
-                      ),
-                    ),
-                    Card(
-                      elevation: 15,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      color: Theme.of(context).primaryColor,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Mobile Number: $_mobileNumber"),
-                      ),
-                    ),
-                    Card(
-                      elevation: 15,
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      color: Theme.of(context).primaryColor,
-                      child: Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Upi: $_upi"),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: RaisedButton(
-                            color: Theme.of(context).primaryColor,
-                            child: Text("Edit profile"),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                isScrollControlled: true,
-                                context: context,
-                                builder: (_) {
-                                  return EditProfile(
-                                    address: _address,
-                                    mobileNumber: _mobileNumber,
-                                    upi: _upi,
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                      Card(
+                        elevation: 15,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        color: Theme.of(context).primaryColor,
+                        // width: double.infinity,
+                        // alignment: Alignment.center,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Name: $_name"),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: RaisedButton(
-                            color: Theme.of(context).errorColor,
-                            child: Text("Sign-out"),
-                            onPressed: () {
-                              Provider.of<AuthProvider>(context, listen: false)
-                                  .signOutUser(context);
-                            },
-                          ),
+                      ),
+                      Card(
+                        elevation: 15,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        color: Theme.of(context).primaryColor,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Email: ${_user.email}"),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Card(
+                        elevation: 15,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        color: Theme.of(context).primaryColor,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Address: $_address"),
+                        ),
+                      ),
+                      Card(
+                        elevation: 15,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        color: Theme.of(context).primaryColor,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Mobile Number: $_mobileNumber"),
+                        ),
+                      ),
+                      Card(
+                        elevation: 15,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        color: Theme.of(context).primaryColor,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Upi: $_upi"),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: RaisedButton(
+                              color: Theme.of(context).primaryColor,
+                              child: Text("Edit profile"),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (_) {
+                                    return EditProfile(
+                                      address: _address,
+                                      mobileNumber: _mobileNumber,
+                                      upi: _upi,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: RaisedButton(
+                              color: Theme.of(context).errorColor,
+                              child: Text("Sign-out"),
+                              onPressed: () {
+                                Provider.of<AuthProvider>(context,
+                                        listen: false)
+                                    .signOutUser(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-      drawer: AppDrawer("My Profile"),
+        drawer: AppDrawer("My Profile"),
+      ),
     );
   }
 }

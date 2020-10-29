@@ -18,69 +18,71 @@ class _PendingPaymentsAdminScreenState
     extends State<PendingPaymentsAdminScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: -5,
-        title: CustomAppBarTitle(
-          name: "Pending Payments",
-          icondata: Icons.timelapse,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: -5,
+          title: CustomAppBarTitle(
+            name: "Pending Payments",
+            icondata: Icons.timelapse,
+          ),
         ),
-      ),
-      body: FutureBuilder(
-        future: Provider.of<FcmProvider>(context, listen: false)
-            .reloadPendingPayments(),
-        builder: (ctx, dataSnapShot) {
-          if (dataSnapShot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Container(
-                height: 130,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text("Please wait"),
-                    DelayedDisplay(
-                        delay: Duration(seconds: 5),
-                        child: Text(
-                          "Please connect to internet.\nChanges will be reflected after internet connection is regained",
-                          style: TextStyle(fontSize: 7),
-                          textAlign: TextAlign.center,
-                        ))
-                  ],
+        body: FutureBuilder(
+          future: Provider.of<FcmProvider>(context, listen: false)
+              .reloadPendingPayments(),
+          builder: (ctx, dataSnapShot) {
+            if (dataSnapShot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(
+                  height: 130,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text("Please wait"),
+                      DelayedDisplay(
+                          delay: Duration(seconds: 5),
+                          child: Text(
+                            "Please connect to internet.\nChanges will be reflected after internet connection is regained",
+                            style: TextStyle(fontSize: 7),
+                            textAlign: TextAlign.center,
+                          ))
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else if (dataSnapShot.hasError) {
-            return Center(
-              child: Text("Something went wrong\n Please try again later."),
-            );
-          } else {
-            //  Using consumer here as if we use provider here, whole stateless widget gets
-            //  re-rendered again, and we enter an infinite loop
-            return Consumer<FcmProvider>(
-              builder: (ctx, paymentsData, child) =>
-                  paymentsData.getPendingPayments.length == 0
-                      ? Container(
-                          alignment: Alignment.center,
-                          child: Text("No notifications for you now"),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () =>
-                              Provider.of<FcmProvider>(context, listen: false)
-                                  .reloadPendingPayments(),
-                          child: ListView.builder(
-                            itemCount: paymentsData.getPendingPayments.length,
-                            itemBuilder: (ctx, index) => PendingPaymentItem(
-                              paymentsData: paymentsData,
-                              index: index,
+              );
+            } else if (dataSnapShot.hasError) {
+              return Center(
+                child: Text("Something went wrong\n Please try again later."),
+              );
+            } else {
+              //  Using consumer here as if we use provider here, whole stateless widget gets
+              //  re-rendered again, and we enter an infinite loop
+              return Consumer<FcmProvider>(
+                builder: (ctx, paymentsData, child) =>
+                    paymentsData.getPendingPayments.length == 0
+                        ? Container(
+                            alignment: Alignment.center,
+                            child: Text("No notifications for you now"),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () =>
+                                Provider.of<FcmProvider>(context, listen: false)
+                                    .reloadPendingPayments(),
+                            child: ListView.builder(
+                              itemCount: paymentsData.getPendingPayments.length,
+                              itemBuilder: (ctx, index) => PendingPaymentItem(
+                                paymentsData: paymentsData,
+                                index: index,
+                              ),
                             ),
                           ),
-                        ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
+        drawer: AppDrawer("Pending Payments"),
       ),
-      drawer: AppDrawer("Pending Payments"),
     );
   }
 }

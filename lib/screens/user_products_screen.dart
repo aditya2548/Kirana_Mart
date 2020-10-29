@@ -1,8 +1,9 @@
+import '../models/data_model.dart';
+
 import '../widgets/custom_app_bar_title.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:upi_pay/upi_pay.dart';
 
 import '../screens/edit_user_product_screen.dart';
@@ -46,12 +47,14 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
   Widget build(BuildContext context) {
     //  Don't allow adding products if email is not verified or retailer hasn't mentioned his upi id
     if (!FirebaseAuth.instance.currentUser.emailVerified) {
-      return Scaffold(
-        body: Center(
-          child: Container(
-            child: Text(
-              "Please verify email to\nstart selling products",
-              style: TextStyle(color: Theme.of(context).errorColor),
+      return SafeArea(
+        child: Scaffold(
+          body: Center(
+            child: Container(
+              child: Text(
+                DataModel.verifyMailToSell,
+                style: TextStyle(color: Theme.of(context).errorColor),
+              ),
             ),
           ),
         ),
@@ -60,108 +63,122 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
     //  If upiId not mentioned/ invalid, don't allow the user to sell anything
     if (retailerUpiId.trim() == "" ||
         !UpiPay.checkIfUpiAddressIsValid(retailerUpiId)) {
-      return Scaffold(
-        body: Center(
-          child: Container(
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Text(
-                "Valid Upi id must be provided to start selling",
-                style: TextStyle(color: Theme.of(context).errorColor),
+      return SafeArea(
+        child: Scaffold(
+          body: Center(
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Text(
+                  DataModel.validUpiToSell,
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                ),
               ),
             ),
           ),
         ),
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: -5,
-        title: CustomAppBarTitle(
-          name: "My Products",
-          icondata: Icons.edit_outlined,
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.help_outline),
-              onPressed: () {
-                Fluttertoast.cancel();
-                Fluttertoast.showToast(
-                    msg:
-                        "New products and modifications are visible after approval by admin",
-                    gravity: ToastGravity.CENTER,
-                    backgroundColor: Theme.of(context).accentColor,
-                    toastLength: Toast.LENGTH_LONG);
-              }),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => Navigator.of(context)
-                .pushNamed(EditUserProductScreen.routeName),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: -5,
+          title: CustomAppBarTitle(
+            name: DataModel.myProducts,
+            icondata: Icons.edit_outlined,
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () =>
-            Navigator.of(context).pushNamed(EditUserProductScreen.routeName),
-      ),
-      //  RefreshIndicator to re-fetch the products list
-      body: FutureBuilder(
-        future: Provider.of<ProductsProvider>(context, listen: false)
-            .reloadProducts(),
-        builder: (ctx, dataSnapShot) {
-          if (dataSnapShot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Container(
-                height: 130,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text("Please wait"),
-                    DelayedDisplay(
-                        delay: Duration(seconds: 5),
-                        child: Text(
-                          "Please connect to internet.\nChanges will be reflected after internet connection is regained",
-                          style: TextStyle(fontSize: 7),
-                          textAlign: TextAlign.center,
-                        ))
-                  ],
-                ),
-              ),
-            );
-          } else if (dataSnapShot.hasError) {
-            return Center(
-              child: Text("Something went wrong\n Please try again later."),
-            );
-          } else {
-            //  Using consumer here as if we use provider here, whole stateless widget gets
-            //  re-rendered again, and we enter an infinite loop
-            return Consumer<ProductsProvider>(
-              builder: (ctx, ordersData, child) => RefreshIndicator(
-                onRefresh: () {
-                  return Provider.of<ProductsProvider>(context, listen: false)
-                      .reloadProducts();
-                },
-                child: ListView.builder(
-                  itemCount: ordersData.getMyProducts().length,
-                  itemBuilder: (ctx, index) => UserProductItem(
-                    id: ordersData.getMyProducts()[index].id,
-                    title: ordersData.getMyProducts()[index].title,
-                    description: ordersData.getMyProducts()[index].description,
-                    imageUrl: ordersData.getMyProducts()[index].imageUrl,
-                    price: ordersData.getMyProducts()[index].price,
-                    productCategory:
-                        ordersData.getMyProducts()[index].productCategory,
-                    quantity: ordersData.getMyProducts()[index].quantity,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => Navigator.of(context)
+                  .pushNamed(EditUserProductScreen.routeName),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(EditUserProductScreen.routeName),
+        ),
+        //  RefreshIndicator to re-fetch the products list
+        body: FutureBuilder(
+          future: Provider.of<ProductsProvider>(context, listen: false)
+              .reloadProducts(),
+          builder: (ctx, dataSnapShot) {
+            if (dataSnapShot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Container(
+                  height: 130,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text(DataModel.pleaseWait),
+                      DelayedDisplay(
+                          delay: Duration(seconds: 5),
+                          child: Text(
+                            DataModel.connectToInternetWarningForChanges,
+                            style: TextStyle(fontSize: 7),
+                            textAlign: TextAlign.center,
+                          ))
+                    ],
                   ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            } else if (dataSnapShot.hasError) {
+              return Center(
+                child: Text(DataModel.somethingWentWrong),
+              );
+            } else {
+              //  Using consumer here as if we use provider here, whole stateless widget gets
+              //  re-rendered again, and we enter an infinite loop
+              return Consumer<ProductsProvider>(
+                builder: (ctx, ordersData, child) => Column(
+                  children: [
+                    Container(
+                        color: Colors.amber,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        alignment: Alignment.center,
+                        child: Text(
+                          DataModel.productsVisibleAfterVerificationAdmin,
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        )),
+                    Flexible(
+                      child: RefreshIndicator(
+                        onRefresh: () {
+                          return Provider.of<ProductsProvider>(context,
+                                  listen: false)
+                              .reloadProducts();
+                        },
+                        child: ListView.builder(
+                          itemCount: ordersData.getMyProducts().length,
+                          itemBuilder: (ctx, index) => UserProductItem(
+                            id: ordersData.getMyProducts()[index].id,
+                            title: ordersData.getMyProducts()[index].title,
+                            description:
+                                ordersData.getMyProducts()[index].description,
+                            imageUrl:
+                                ordersData.getMyProducts()[index].imageUrl,
+                            price: ordersData.getMyProducts()[index].price,
+                            productCategory: ordersData
+                                .getMyProducts()[index]
+                                .productCategory,
+                            quantity:
+                                ordersData.getMyProducts()[index].quantity,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+        drawer: AppDrawer(DataModel.myProducts),
       ),
-      drawer: AppDrawer("My Products"),
     );
   }
 }

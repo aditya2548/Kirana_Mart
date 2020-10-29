@@ -70,6 +70,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Kirana Mart",
         theme: ThemeData(
           primarySwatch: Colors.teal,

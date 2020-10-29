@@ -10,58 +10,63 @@ class SignUpScreen extends StatelessWidget {
   static const routeName = "/signup_screen";
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 5,
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                "Login ?",
-                style: TextStyle(
-                  // fontSize: 20,
-                  color: Theme.of(context).highlightColor,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColorDark,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 5,
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.routeName);
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                color: Theme.of(context).primaryColor,
+                child: Text(
+                  "Login ?",
+                  style: TextStyle(
+                    // fontSize: 20,
+                    color: Theme.of(context).highlightColor,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-              child: Text(
-                'Hello, friend!',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).highlightColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-              child: Text(
-                "Let's get started",
-                style: TextStyle(color: Theme.of(context).highlightColor),
-              ),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
-                child: SignupAuthCard(),
-              ),
-            ),
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                child: Text(
+                  'Hello, friend!',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                child: Text(
+                  "Let's get started",
+                  style: TextStyle(color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+                  child: SignupAuthCard(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

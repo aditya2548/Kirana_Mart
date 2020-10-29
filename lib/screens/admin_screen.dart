@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../widgets/custom_app_bar_title.dart';
 import '../models/product_provider.dart';
 import '../widgets/app_drawer.dart';
@@ -24,46 +26,49 @@ class _AdminScreenState extends State<AdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: -5,
-        title: CustomAppBarTitle(
-            name: "Approve Products", icondata: Icons.done_all),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                Provider.of<ProductsProvider>(context, listen: false)
-                    .reloadPendingProducts();
-              })
-        ],
-      ),
-      drawer: AppDrawer("Approve Products"),
-      body: Consumer<ProductsProvider>(
-        builder: (ctx, ordersData, child) => RefreshIndicator(
-          onRefresh: () {
-            return Provider.of<ProductsProvider>(context, listen: false)
-                .reloadPendingProducts();
-          },
-          child: ordersData.getPendingProductItems.length <= 0
-              ? Center(
-                  child: Text("No Pending Products"),
-                )
-              : ListView.builder(
-                  itemCount: ordersData.getPendingProductItems.length,
-                  itemBuilder: (ctx, index) => PendingUserProductItem(
-                    id: ordersData.getPendingProductItems[index].id,
-                    title: ordersData.getPendingProductItems[index].title,
-                    description:
-                        ordersData.getPendingProductItems[index].description,
-                    imageUrl: ordersData.getPendingProductItems[index].imageUrl,
-                    price: ordersData.getPendingProductItems[index].price,
-                    productCategory: ordersData
-                        .getPendingProductItems[index].productCategory,
-                    retailerId:
-                        ordersData.getPendingProductItems[index].retailerId,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: -5,
+          title: CustomAppBarTitle(
+              name: DataModel.approveProducts, icondata: Icons.done_all),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  Provider.of<ProductsProvider>(context, listen: false)
+                      .reloadPendingProducts();
+                })
+          ],
+        ),
+        drawer: AppDrawer(DataModel.approveProducts),
+        body: Consumer<ProductsProvider>(
+          builder: (ctx, ordersData, child) => RefreshIndicator(
+            onRefresh: () {
+              return Provider.of<ProductsProvider>(context, listen: false)
+                  .reloadPendingProducts();
+            },
+            child: ordersData.getPendingProductItems.length <= 0
+                ? Center(
+                    child: Text(DataModel.noPendingProducts),
+                  )
+                : ListView.builder(
+                    itemCount: ordersData.getPendingProductItems.length,
+                    itemBuilder: (ctx, index) => PendingUserProductItem(
+                      id: ordersData.getPendingProductItems[index].id,
+                      title: ordersData.getPendingProductItems[index].title,
+                      description:
+                          ordersData.getPendingProductItems[index].description,
+                      imageUrl:
+                          ordersData.getPendingProductItems[index].imageUrl,
+                      price: ordersData.getPendingProductItems[index].price,
+                      productCategory: ordersData
+                          .getPendingProductItems[index].productCategory,
+                      retailerId:
+                          ordersData.getPendingProductItems[index].retailerId,
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );

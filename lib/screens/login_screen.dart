@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/key_data_model.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -16,58 +18,62 @@ class LoginScreen extends StatelessWidget {
   static const routeName = "/login_screen";
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 5,
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(SignUpScreen.routeName);
-              },
-              child: Container(
-                padding: EdgeInsets.all(10),
-                color: Theme.of(context).primaryColor,
-                child: Text(
-                  "Sign Up ?",
-                  style: TextStyle(
-                    // fontSize: 13,
-                    color: Theme.of(context).highlightColor,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColorDark,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 5,
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(SignUpScreen.routeName);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  color: Theme.of(context).primaryColor,
+                  child: Text(
+                    DataModel.signup,
+                    style: TextStyle(
+                      // fontSize: 13,
+                      color: Theme.of(context).highlightColor,
+                    ),
                   ),
-                ),
-              )),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-              child: Text(
-                'Welcome Back!',
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).highlightColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-              child: Text("Howdy, let's authenticate",
-                  style: TextStyle(
-                      // fontSize: 10,
-                      color: Theme.of(context).highlightColor)),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
-                child: LoginAuthCard(),
-              ),
-            ),
+                )),
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                child: Text(
+                  DataModel.welcomeBack,
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                child: Text(DataModel.howdyAuthenticate,
+                    style: TextStyle(
+                        // fontSize: 10,
+                        color: Theme.of(context).highlightColor)),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+                  child: LoginAuthCard(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -151,7 +157,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         // style: TextStyle(fontSize: 10),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          labelText: 'E-Mail',
+                          labelText: DataModel.email,
                           // errorStyle: TextStyle(fontSize: 8),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -159,7 +165,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                           if (!RegExp(
                                   r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                               .hasMatch(value)) {
-                            return 'Invalid email!';
+                            return DataModel.invalidEmail;
                           }
                           return null;
                         },
@@ -171,7 +177,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         // style: TextStyle(fontSize: 10),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: DataModel.password,
                           // errorStyle: TextStyle(fontSize: 8),
                         ),
                         textInputAction: TextInputAction.next,
@@ -180,7 +186,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         controller: _passwordController,
                         validator: (value) {
                           if (value.isEmpty || value.length < 6) {
-                            return 'Password must be atleast 6 characters long!';
+                            return DataModel.passwordMinLengthLimitError;
                           }
                           return null;
                         },
@@ -224,7 +230,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
               CustomDialog.resetPasswordDialog(context);
             },
             child: Text(
-              'Forgot Password ?',
+              DataModel.forgotPassword,
               style: TextStyle(
                   // fontSize: 12,
                   color: Theme.of(context).accentColor),
