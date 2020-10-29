@@ -163,21 +163,6 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                     Text(
                       DataModel.fav,
                     ),
-                    // SizedBox(
-                    //   width: 5,
-                    // ),
-                    // Badge(
-                    //   badgeColor: Colors.green,
-                    //   animationDuration: Duration(milliseconds: 200),
-                    //   animationType: BadgeAnimationType.scale,
-                    //   badgeContent: Text(
-                    //     count.toString(),
-                    //     style: TextStyle(
-                    //       color: Colors.white,
-                    //       // fontSize: 10,
-                    //     ),
-                    //   ),
-                    // )
                   ],
                 ),
               ),

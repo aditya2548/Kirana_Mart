@@ -63,7 +63,7 @@ class ProductsProvider with ChangeNotifier {
   bool _hasMoreProducts = true;
 
   //  number of products to be loaded at once
-  int _productsPerPage = 8;
+  int _productsPerPage = 20;
 
   //  List of all pending products for approval by admin
   List<Product> _pendingProducts = [];
@@ -198,6 +198,7 @@ class ProductsProvider with ChangeNotifier {
     try {
       pageProducts.snapshots().listen((event) {
         if (event.docChanges == null || event.docs.isEmpty) {
+          _hasMoreProducts = false;
           return;
         }
         List<Product> allProducts;

@@ -1,5 +1,6 @@
+import '../models/lazy_load.dart';
+
 import '../dialog/custom_dialog.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 import '../models/product_provider.dart';
 import '../widgets/product_item.dart';
@@ -60,7 +61,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Column(
       children: [
         if (isLoading) LinearProgressIndicator(),
-        LazyLoadScrollView(
+        LazyLoading(
           onEndOfPage: () => _loadMore(),
           child: RefreshIndicator(
             onRefresh: () {

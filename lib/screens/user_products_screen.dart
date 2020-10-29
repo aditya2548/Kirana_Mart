@@ -103,7 +103,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         //  RefreshIndicator to re-fetch the products list
         body: FutureBuilder(
           future: Provider.of<ProductsProvider>(context, listen: false)
-              .reloadProducts(),
+              .fetchProductsRealTime(),
           builder: (ctx, dataSnapShot) {
             if (dataSnapShot.connectionState == ConnectionState.waiting) {
               return Center(
