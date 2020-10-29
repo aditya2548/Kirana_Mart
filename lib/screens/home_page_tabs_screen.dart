@@ -1,3 +1,5 @@
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../models/data_model.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -57,6 +59,19 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
     });
     Provider.of<CartProvider>(context, listen: false).fetchCartItems();
     super.initState();
+  }
+
+  DateTime currentBackPressTime;
+  //  Function to check whether user double pressed back within 2 seconds
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: DataModel.exitWarning);
+      return Future.value(false);
+    }
+    return Future.value(true);
   }
 
   @override
@@ -168,33 +183,37 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
               ),
             ]),
           ),
-          body: TabBarView(
-            children: [
-              //  If progressBar is true, that means products are loading
-              //  So ahow a progress bar, else show products list screen
-              _progressBar
-                  ? Center(
-                      child: Container(
-                        height: 130,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            CircularProgressIndicator(),
-                            Text(DataModel.loadingProducts),
-                            DelayedDisplay(
-                                delay: Duration(seconds: 5),
-                                child: Text(
-                                  DataModel.connectToInternetWarningForProducts,
-                                  style: TextStyle(fontSize: 7),
-                                  textAlign: TextAlign.center,
-                                ))
-                          ],
+          body: WillPopScope(
+            onWillPop: onWillPop,
+            child: TabBarView(
+              children: [
+                //  If progressBar is true, that means products are loading
+                //  So ahow a progress bar, else show products list screen
+                _progressBar
+                    ? Center(
+                        child: Container(
+                          height: 130,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              CircularProgressIndicator(),
+                              Text(DataModel.loadingProducts),
+                              DelayedDisplay(
+                                  delay: Duration(seconds: 5),
+                                  child: Text(
+                                    DataModel
+                                        .connectToInternetWarningForProducts,
+                                    style: TextStyle(fontSize: 7),
+                                    textAlign: TextAlign.center,
+                                  ))
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  : ProductsListScreen(),
-              FavoritesScreen(),
-            ],
+                      )
+                    : ProductsListScreen(),
+                FavoritesScreen(),
+              ],
+            ),
           ),
           drawer: AppDrawer(DataModel.home),
         ),

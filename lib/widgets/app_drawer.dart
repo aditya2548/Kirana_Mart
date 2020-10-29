@@ -39,6 +39,12 @@ class AppDrawer extends StatelessWidget {
             duration: Duration(seconds: 1),
           ),
         );
+        //  If going back to home, remove previous home
+      } else if (name == DataModel.home) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
       } else if (parentName != DataModel.home) {
         //  Two times so that all the screens do not get stacked up on top of each other
         //  Only the home screen remains always at the bottom while using drawer
@@ -92,10 +98,10 @@ class AppDrawer extends StatelessWidget {
               //  If email isn't verified, show a red container on app bar
               if (FirebaseAuth.instance.currentUser.emailVerified == false)
                 Container(
-                  margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
                   width: double.infinity,
                   color: Theme.of(context).errorColor,
                   height: 50,
+                  alignment: Alignment.center,
                   child: Text(
                     DataModel.verifyEmailToUnlockFeatures,
                     style: TextStyle(

@@ -144,4 +144,6 @@ class DataModel {
   static const add = "ADD";
   static const edit = "Edit";
   static const delete = "Delete";
+
+  static const exitWarning = "Double click to exit app";
 }
