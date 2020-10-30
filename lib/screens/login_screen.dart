@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   color: Theme.of(context).primaryColor,
                   child: Text(
-                    DataModel.signup,
+                    DataModel.SIGNUP,
                     style: TextStyle(
                       // fontSize: 13,
                       color: Theme.of(context).highlightColor,
@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                 child: Text(
-                  DataModel.welcomeBack,
+                  DataModel.WELCOME_BACK,
                   style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class LoginScreen extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-                child: Text(DataModel.howdyAuthenticate,
+                child: Text(DataModel.HOWDY_AUTHENTICATE,
                     style: TextStyle(
                         // fontSize: 10,
                         color: Theme.of(context).highlightColor)),
@@ -157,7 +157,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         // style: TextStyle(fontSize: 10),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          labelText: DataModel.email,
+                          labelText: DataModel.EMAIL,
                           // errorStyle: TextStyle(fontSize: 8),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -165,7 +165,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                           if (!RegExp(
                                   r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                               .hasMatch(value)) {
-                            return DataModel.invalidEmail;
+                            return DataModel.INVALID_EMAIL;
                           }
                           return null;
                         },
@@ -177,7 +177,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         // style: TextStyle(fontSize: 10),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
-                          labelText: DataModel.password,
+                          labelText: DataModel.PASSWORD,
                           // errorStyle: TextStyle(fontSize: 8),
                         ),
                         textInputAction: TextInputAction.next,
@@ -186,7 +186,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         controller: _passwordController,
                         validator: (value) {
                           if (value.isEmpty || value.length < 6) {
-                            return DataModel.passwordMinLengthLimitError;
+                            return DataModel.PASSWORD_MIN_LENGTH_LIMIT_ERROR;
                           }
                           return null;
                         },
@@ -230,7 +230,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
               CustomDialog.resetPasswordDialog(context);
             },
             child: Text(
-              DataModel.forgotPassword,
+              DataModel.FORGOT_PASSWORD,
               style: TextStyle(
                   // fontSize: 12,
                   color: Theme.of(context).accentColor),

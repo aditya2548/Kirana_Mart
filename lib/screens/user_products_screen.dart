@@ -52,7 +52,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           body: Center(
             child: Container(
               child: Text(
-                DataModel.verifyMailToSell,
+                DataModel.VERIFY_MAIL_TO_SELL,
                 style: TextStyle(color: Theme.of(context).errorColor),
               ),
             ),
@@ -70,7 +70,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Text(
-                  DataModel.validUpiToSell,
+                  DataModel.VALID_UPI_TO_SELL,
                   style: TextStyle(color: Theme.of(context).errorColor),
                 ),
               ),
@@ -84,7 +84,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-            name: DataModel.myProducts,
+            name: DataModel.MY_PRODUCTS,
             icondata: Icons.edit_outlined,
           ),
           actions: [
@@ -113,11 +113,11 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -127,7 +127,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text(DataModel.somethingWentWrong),
+                child: Text(DataModel.SOMETHING_WENT_WRONG),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -141,7 +141,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                             EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         alignment: Alignment.center,
                         child: Text(
-                          DataModel.productsVisibleAfterVerificationAdmin,
+                          DataModel.PRODUCTS_VISIBLE_AFTER_ADMIN_VERIFICATION,
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         )),
@@ -177,7 +177,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
             }
           },
         ),
-        drawer: AppDrawer(DataModel.myProducts),
+        drawer: AppDrawer(DataModel.MY_PRODUCTS),
       ),
     );
   }

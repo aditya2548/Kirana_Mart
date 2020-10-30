@@ -39,7 +39,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     id: null,
     title: "",
     description: "",
-    imageUrl: DataModel.defaultImageUrl,
+    imageUrl: DataModel.DEFAULT_IMAGE_URL,
     price: 0,
     productCategory: ProductCategory.HouseHold,
     retailerId: FirebaseAuth.instance.currentUser.uid,
@@ -66,7 +66,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
   var _initialTitle = "";
   var _initialPrice = "";
   var _initialDescription = "";
-  var _initialImageUrl = DataModel.defaultImageUrl;
+  var _initialImageUrl = DataModel.DEFAULT_IMAGE_URL;
 
   @override
   void didChangeDependencies() {
@@ -116,11 +116,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
         //  Can't use context directly as it throws error
         //  We need to fetch context from form globalkey
         //  Also check if present image is the default image, or previous one exists in case product is edited
-        if (_image == null && _initialImageUrl == DataModel.defaultImageUrl) {
+        if (_image == null && _initialImageUrl == DataModel.DEFAULT_IMAGE_URL) {
           Scaffold.of(_formKey.currentContext).showSnackBar(
             SnackBar(
               content: Text(
-                DataModel.pleaseSelectImageError,
+                DataModel.PLEASE_SELECT_IMAGE_ERROR,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
@@ -204,8 +204,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_productId == null
-              ? DataModel.addProduct
-              : DataModel.editProduct),
+              ? DataModel.ADD_PRODUCT
+              : DataModel.EDIT_PRODUCT),
           actions: [
             IconButton(icon: Icon(Icons.save_rounded), onPressed: saveProduct)
           ],
@@ -220,11 +220,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -248,7 +248,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           // style: TextStyle(fontSize: 10),
                           decoration: InputDecoration(
-                            labelText: DataModel.productName,
+                            labelText: DataModel.PRODUCT_NAME,
                             errorStyle: TextStyle(fontSize: 8),
                           ),
                           textInputAction: TextInputAction.next,
@@ -268,11 +268,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           //  null returned in validator->input is correct
                           validator: (title) {
                             if (title == null || title.trim() == "") {
-                              return DataModel.provideProductNameError;
+                              return DataModel.PROVIDE_PROVIDER_NAME_ERROR;
                             } else if (title.length < 3) {
-                              return DataModel.productNameMinLengthError;
+                              return DataModel.PRODUCT_NAME_MIN_LENGTH_ERROR;
                             } else if (title.length > 25) {
-                              return DataModel.productNameMaxLengthError;
+                              return DataModel.PRODUCT_NAME_MAX_LENGTH_ERROR;
                             }
                             return null;
                           },
@@ -283,7 +283,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           focusNode: _priceFocusNode,
                           // style: TextStyle(fontSize: 10),
                           decoration: InputDecoration(
-                              labelText: DataModel.productPriceRs,
+                              labelText: DataModel.PRODUCT_PRICE_RS,
                               errorStyle: TextStyle(fontSize: 10)),
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
@@ -302,11 +302,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           ),
                           validator: (price) {
                             if (price == null || price.trim() == "") {
-                              return DataModel.providePriceError;
+                              return DataModel.PROVIDE_PRICE_ERROR;
                             } else if (double.tryParse(price) == null) {
-                              return DataModel.provideValidPriceError;
+                              return DataModel.PROVIDE_VALID_PRICE_ERROR;
                             } else if (double.parse(price) <= 0) {
-                              return DataModel.providePositivePriceError;
+                              return DataModel.PROVIDE_POSITIVE_PRICE_ERROR;
                             }
                             return null;
                           },
@@ -319,7 +319,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           maxLines: 3,
                           minLines: 1,
                           decoration: InputDecoration(
-                              labelText: DataModel.productDescription,
+                              labelText: DataModel.PRODUCT_DESCRIPTION,
                               errorStyle: TextStyle(fontSize: 10)),
                           keyboardType: TextInputType.multiline,
                           onSaved: (desc) => _editedProduct = Product(
@@ -335,7 +335,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           ),
                           validator: (desc) {
                             if (desc == null || desc.trim() == "") {
-                              return DataModel.provideDescriptionError;
+                              return DataModel.PROVIDE_DESCRIPTION_ERROR;
                             } else if (desc.length <= 15) {
                               return DataModel.descriptionMinLengthError;
                             }
@@ -349,7 +349,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              DataModel.productCategory,
+                              DataModel.PRODUCT_CATEGORY,
                               // style: TextStyle(fontSize: 10),
                             ),
                             SizedBox(
@@ -436,7 +436,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                         ),
                         RaisedButton(
                           padding: EdgeInsets.all(5),
-                          child: Text(DataModel.submit),
+                          child: Text(DataModel.SUBMIT),
                           onPressed: saveProduct,
                         )
                       ],

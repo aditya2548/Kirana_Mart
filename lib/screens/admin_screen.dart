@@ -50,7 +50,7 @@ class _AdminScreenState extends State<AdminScreen> {
             },
             child: ordersData.getPendingProductItems.length <= 0
                 ? Center(
-                    child: Text(DataModel.noPendingProducts),
+                    child: Text(DataModel.NO_PENDING_PRODUCTS),
                   )
                 : ListView.builder(
                     itemCount: ordersData.getPendingProductItems.length,

@@ -66,7 +66,7 @@ class _PendingPaymentItemState extends State<PendingPaymentItem> {
                                 .incomplete = !value;
                           });
                         }),
-                    Text(DataModel.completePayment),
+                    Text(DataModel.PAYMENT_PENDING),
                   ],
                 )
               : Row(
@@ -85,7 +85,7 @@ class _PendingPaymentItemState extends State<PendingPaymentItem> {
                                 .incomplete = !value;
                           });
                         }),
-                    Text(DataModel.paymentCompleted),
+                    Text(DataModel.PAYMENT_COMPLETED),
                   ],
                 )
         ],

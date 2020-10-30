@@ -85,7 +85,7 @@ class MyCartItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      DataModel.quantity,
+                      DataModel.QUANTITY,
                     ),
                   ),
                   IconButton(

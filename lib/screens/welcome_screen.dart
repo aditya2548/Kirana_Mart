@@ -32,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                 highlightColor: Colors.orange,
                 period: Duration(seconds: 2),
                 child: Text(
-                  DataModel.welcomeToKiranaMart,
+                  DataModel.WELCOME_TO_KIRANA_MART,
                   style: TextStyle(
                       color: Colors.orange[900],
                       fontWeight: FontWeight.bold,
@@ -41,7 +41,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             Text(
-              DataModel.appTagLine,
+              DataModel.APP_TAGLINE,
               style: TextStyle(
                   color: Colors.teal[100],
                   fontStyle: FontStyle.italic,
@@ -65,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        DataModel.getStarted,
+                        DataModel.GET_STARTED,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Spacer(),

@@ -25,7 +25,7 @@ class _PendingPaymentsAdminScreenState
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-            name: DataModel.pendingPayments,
+            name: DataModel.PENDING_PAYMENTS,
             icondata: Icons.timelapse,
           ),
         ),
@@ -41,11 +41,11 @@ class _PendingPaymentsAdminScreenState
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -55,7 +55,7 @@ class _PendingPaymentsAdminScreenState
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text(DataModel.somethingWentWrong),
+                child: Text(DataModel.SOMETHING_WENT_WRONG),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -65,7 +65,7 @@ class _PendingPaymentsAdminScreenState
                     paymentsData.getPendingPayments.length == 0
                         ? Container(
                             alignment: Alignment.center,
-                            child: Text(DataModel.noNotifications),
+                            child: Text(DataModel.NO_NOTIFICATIONS),
                           )
                         : RefreshIndicator(
                             onRefresh: () =>
@@ -83,7 +83,7 @@ class _PendingPaymentsAdminScreenState
             }
           },
         ),
-        drawer: AppDrawer(DataModel.pendingPayments),
+        drawer: AppDrawer(DataModel.PENDING_PAYMENTS),
       ),
     );
   }

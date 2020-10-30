@@ -73,7 +73,7 @@ class MyOrdersItem extends StatelessWidget {
                                 order.productsList.toList()[index].productId);
                           });
                     },
-                    child: Text(DataModel.review),
+                    child: Text(DataModel.REVIEW),
                   ),
                   leading: IconButton(
                       icon: Icon(Icons.call),
@@ -84,7 +84,7 @@ class MyOrdersItem extends StatelessWidget {
                           await launch(url);
                         } else {
                           Fluttertoast.showToast(
-                              msg: DataModel.somethingWentWrong);
+                              msg: DataModel.SOMETHING_WENT_WRONG);
                         }
                       }),
                 ),

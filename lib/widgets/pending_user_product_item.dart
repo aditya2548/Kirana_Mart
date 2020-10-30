@@ -60,7 +60,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
       if (reason.trim() == "") {
         Fluttertoast.cancel();
         Fluttertoast.showToast(
-            msg: DataModel.provideRejectionReason,
+            msg: DataModel.PROVIDE_REJECTION_REASON,
             backgroundColor: Theme.of(context).errorColor,
             fontSize: 12);
         return;
@@ -93,7 +93,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              DataModel.productCategory,
+              DataModel.PRODUCT_CATEGORY,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -111,7 +111,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              DataModel.productDetails,
+              DataModel.PRODUCT_DETAILS,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -128,7 +128,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Divider(),
           TextField(
             decoration: InputDecoration(
-              hintText: DataModel.enterRejectionReason,
+              hintText: DataModel.ENTER_REJECTION_REASON,
             ),
             controller: myController,
           ),
@@ -136,7 +136,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               RaisedButton.icon(
-                  label: Text(DataModel.accept),
+                  label: Text(DataModel.ACCEPT),
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   color: Theme.of(context).primaryColorDark,
                   icon: Icon(
@@ -148,7 +148,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
                   }),
               RaisedButton.icon(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                label: Text(DataModel.reject),
+                label: Text(DataModel.REJECT),
                 icon: Icon(Icons.highlight_remove),
                 color: Theme.of(context).errorColor,
                 onPressed: () {

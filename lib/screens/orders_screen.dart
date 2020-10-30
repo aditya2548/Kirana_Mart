@@ -26,7 +26,7 @@ class OrdersScreen extends StatelessWidget {
     final appBar = AppBar(
       titleSpacing: -5,
       title: CustomAppBarTitle(
-        name: DataModel.myOrders,
+        name: DataModel.MY_ORDERS,
         icondata: Icons.request_page,
       ),
     );
@@ -45,11 +45,11 @@ class OrdersScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -59,7 +59,7 @@ class OrdersScreen extends StatelessWidget {
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text(DataModel.somethingWentWrong),
+                child: Text(DataModel.SOMETHING_WENT_WRONG),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -94,7 +94,7 @@ class OrdersScreen extends StatelessWidget {
             }
           },
         ),
-        drawer: AppDrawer(DataModel.myOrders),
+        drawer: AppDrawer(DataModel.MY_ORDERS),
       ),
     );
   }

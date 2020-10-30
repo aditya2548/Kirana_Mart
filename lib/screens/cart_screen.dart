@@ -25,7 +25,7 @@ class CartScreen extends StatelessWidget {
         appBar: AppBar(
           titleSpacing: -5,
           title: CustomAppBarTitle(
-              name: DataModel.myCart, icondata: Icons.shopping_bag_rounded),
+              name: DataModel.MY_CART, icondata: Icons.shopping_bag_rounded),
         ),
         body: FutureBuilder(
           future: Provider.of<OrdersProvider>(context, listen: false)
@@ -39,11 +39,11 @@ class CartScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -53,7 +53,7 @@ class CartScreen extends StatelessWidget {
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text(DataModel.somethingWentWrong),
+                child: Text(DataModel.SOMETHING_WENT_WRONG),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -65,7 +65,7 @@ class CartScreen extends StatelessWidget {
                       Container(
                         width: double.infinity,
                         alignment: Alignment.center,
-                        child: Text(DataModel.verifyMailToOrder),
+                        child: Text(DataModel.VERIFY_MAIL_TO_ORDER),
                         color: Theme.of(context).errorColor,
                       ),
                     Card(
@@ -91,7 +91,7 @@ class CartScreen extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Text(DataModel.total),
+                            Text(DataModel.TOTAL),
                             Container(
                               child: Text(
                                   "Rs. ${cartData.getTotalCartAmount.toStringAsFixed(0)}"),
@@ -120,7 +120,7 @@ class CartScreen extends StatelessWidget {
             }
           },
         ),
-        drawer: AppDrawer(DataModel.myCart),
+        drawer: AppDrawer(DataModel.MY_CART),
       ),
     );
   }
@@ -161,7 +161,7 @@ class _OrderButtonState extends State<OrderButton> {
       label: _progressBar == true
           ? CircularProgressIndicator()
           : Text(
-              DataModel.placeOrder,
+              DataModel.PLACE_ORDER,
               style: TextStyle(fontSize: 12),
             ),
     );

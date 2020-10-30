@@ -1,149 +1,147 @@
 // Data model to store all the strings
 class DataModel {
   static const APPROVE_PRODUCTS = "Approve Products";
-  static const noPendingProducts = "No Pending Products";
-  static const pleaseWait = "Please wait";
-  static const total = " Total: ";
-  static const placeOrder = "PLACE ORDER";
-  static const defaultImageUrl =
+  static const NO_PENDING_PRODUCTS = "No Pending Products";
+  static const PLEASE_WAIT = "Please wait";
+  static const TOTAL = " Total: ";
+  static const PLACE_ORDER = "PLACE ORDER";
+  static const DEFAULT_IMAGE_URL =
       "https://bitsofco.de/content/images/2018/12/broken-1.png";
 
-  //  Errors
-  static const pleaseSelectImageError =
-      "Please select an image from camera/gallery";
-  static const provideProductNameError = "Please provide a product name";
-  static const productNameMinLengthError =
-      "Product name should be > 3 characters";
-  static const productNameMaxLengthError =
-      "Product name should be < 25 characters";
-  static const providePriceError = "Please provide price";
-  static const provideValidPriceError = "Please provide a valid price";
-  static const providePositivePriceError = "Please provide a price > 0";
-  static const provideDescriptionError = "Please provide product description";
-  static const descriptionMinLengthError =
-      "Description should be > 15 characters";
-  static const connectToInternetWarningForChanges =
-      "Please connect to internet.\nChanges will be reflected after internet connection is regained";
-  static const connectToInternetWarningForProducts =
-      "Please connect to internet.\nProducts will be visible after internet connection is regained";
-  static const somethingWentWrong =
-      "Something went wrong\n Please try again later.";
-  static const noUpiAppError = "Sorry, no UPI apps installed";
-  static const limitedStocksError = "Sorry, limited stocks available";
-  static const outOfStock = "OUT OF STOCK";
-  static const provideRejectionReason = "Please provide a reason for rejection";
-  static const productUnavailable = "Sorry, product unavailable at the moment";
-
-  static const addProduct = "Add Product";
-  static const editProduct = "Edit Product";
-  static const productName = "Product name";
-  static const productPriceRs = "Product price (Rs.)";
-  static const productDescription = "Product description";
-  static const productCategory = "Product Category:";
-  static const submit = "Submit";
-  static const kiranaMartTwoLined = "Kirana\nMart";
-  static const home = "Home";
-  static const fav = "Fav";
-  static const loadingProducts = "Loading products";
+  static const ADD_PRODUCT = "Add Product";
+  static const EDIT_PRODUCT = "Edit Product";
+  static const PRODUCT_NAME = "Product name";
+  static const PRODUCT_PRICE_RS = "Product price (Rs.)";
+  static const PRODUCT_DESCRIPTION = "Product description";
+  static const PRODUCT_CATEGORY = "Product Category:";
+  static const SUBMIT = "Submit";
+  static const KIRANA_MART_TWO_LINED = "Kirana\nMart";
+  static const HOME = "Home";
+  static const FAV = "Fav";
+  static const LOADING_PRODUCTS = "Loading products";
 
   //  Login and signup
-  static const signup = "Sign Up ?";
-  static const welcomeBack = "Welcome Back!";
-  static const howdyAuthenticate = "Howdy, let's authenticate";
-  static const email = "E-Mail";
-  static const invalidEmail = "Invalid email!";
-  static const password = "Password";
-  static const passwordMinLengthLimitError =
-      "Password must be atleast 6 characters long!";
-  static const confirmPassword = "Confirm Password";
-  static const passwordsDontMatch = "Passwords do not match!";
-  static const forgotPassword = "Forgot Password ?";
-  static const login = "Login ?";
-  static const helloFriend = "Hello, friend!";
-  static const letsGetStarted = "Let's get started";
-  static const name = "Name";
-  static const invalidName = "Invalid Name!";
-  static const mobileNumber = "Mobile Number";
-  static const enterMobileNumber = "Please enter mobile number";
-  static const enterValidMobileNumber = "Please enter valid mobile number";
-  static const address = "Address";
-  static const enterAddress = "Please enter your address";
-  static const enterValidAddress = "Address must be atleast 10 characters long";
-  static const upiHint = "Upi (kirana@example)";
-  static const upiMandatory = "Mandatory for retailers";
-  static const enterUpi = "Please enter upi-id";
-  static const enterValidUpi = "Please enter valid upi-id (kirana@example)";
-  static const saveChanges = "Save changes";
+  static const SIGNUP = "Sign Up ?";
+  static const WELCOME_BACK = "Welcome Back!";
+  static const HOWDY_AUTHENTICATE = "Howdy, let's authenticate";
+  static const EMAIL = "E-Mail";
+  static const PASSWORD = "Password";
+  static const CONFIRM_PASSWORD = "Confirm Password";
+  static const FORGOT_PASSWORD = "Forgot Password ?";
+  static const LOGIN = "Login ?";
+  static const HELLO_FRIEND = "Hello, friend!";
+  static const LETS_GET_STARTED = "Let's get started";
+  static const NAME = "Name";
+  static const INVALID_NAME = "Invalid Name!";
+  static const MOBILE_NUMBER = "Mobile Number";
+  static const ADDRESS = "Address";
+  static const UPI_HINT = "Upi (kirana@example)";
+  static const UPI_MANDATORY = "Mandatory for retailers";
+  static const SAVE_CHANGES = "Save changes";
 
-  //  Verify email
-  static const verifyMailToSell =
+  static const VERIFY_MAIL_TO_SELL =
       "Please verify email to\nstart selling products";
-  static const verifyMailToOrder = "Please verify email to place order";
-  static const verifyEmailToUnlockFeatures =
+  static const VERIFY_MAIL_TO_ORDER = "Please verify email to place order";
+  static const VERIFY_MAIL_TO_UNLOCK_FEATURES =
       "Email isn't verified.\nVerify to unlock features";
-
-  static const validUpiToSell =
+  static const VALID_UPI_TO_SELL =
       "Valid Upi id must be provided to start selling";
-
-  static const productsVisibleAfterVerificationAdmin =
+  static const PRODUCTS_VISIBLE_AFTER_ADMIN_VERIFICATION =
       "New products/edits are visible after admin approval";
 
-  static const noNotifications = "No notifications for you now";
+  static const NO_NOTIFICATIONS = "No notifications for you now";
+  static const MY_CART = "My Cart";
+  static const MY_PRODUCTS = "My Products";
+  static const MY_ORDERS = "My Orders";
+  static const MY_NOTIFICATIONS = "My Notifications";
+  static const MY_PROFILE = "My Profile";
+  static const CONTACT_US = "Contact Us";
 
-  static const myCart = "My Cart";
-  static const myProducts = "My Products";
-  static const myOrders = "My Orders";
-  static const myNotifications = "My Notifications";
+  static const COD = "COD";
+  static const UPI = "UPI";
+  static const CONFIRM_PURCHASE = "Confirm purchase";
+  static const PAYMENT = "Payment";
+  static const CASH = "Cash";
 
-  static const cod = "COD";
-  static const upi = "UPI";
-  static const confirmPurchase = "Confirm purchase";
-  static const payment = "Payment";
-  static const cash = "Cash";
+  static const PENDING_PAYMENTS = "Pending Payments";
+  static const PRODUCT_OUT_OF_STOCK = "Sorry, product out of stock :(";
+  static const RETAILER = "Retailer";
+  static const QUANTITY = "Quantity";
 
-  static const pendingPayments = "Pending Payments";
-  static const productOutOfStock = "Sorry, product out of stock :(";
-  static const retailer = "Retailer";
-  static const quantity = "Quantity";
-
-  static const addToCart = "ADD TO CART";
-  static const productDetails = "Product Details:";
-  static const reviews = "Reviews:";
-  static const noReviewsFound = "No reviews found.";
-  static const categories = "Categories";
-  static const myProfile = "My Profile";
-  static const refreshStatus = "Refresh status";
-  static const emailNotVerified =
+  static const ADD_TO_CART = "ADD TO CART";
+  static const PRODUCT_DETAILS = "Product Details:";
+  static const REVIEWS = "Reviews:";
+  static const NO_REVIEWS_FOUND = "No reviews found.";
+  static const CATEGORIES = "Categories";
+  static const REFRESH_STATUS = "Refresh status";
+  static const EMAIL_NOT_VERIFIED =
       "   Email not verified\nplease click to verify";
-  static const emailVerified = "Email verified :)";
-  static const editProfile = "Edit profile";
-  static const signOut = "Sign-out";
+  static const EMAIL_VERIFIED = "Email verified :)";
+  static const EDIT_PROFILE = "Edit profile";
+  static const SIGN_OUT = "Sign-out";
 
-  static const welcomeToKiranaMart = "WELCOME TO KIRANA MART";
-  static const appTagLine = "~~ Your one stop smart shopping resource ~~";
-  static const getStarted = "Get Started";
+  static const WELCOME_TO_KIRANA_MART = "WELCOME TO KIRANA MART";
+  static const APP_TAGLINE = "~~ Your one stop smart shopping resource ~~";
+  static const GET_STARTED = "Get Started";
 
-  static const contactUs = "Contact Us";
-  static const profileChangesTakeTime =
+  static const PROFILE_CHANGES_TAKE_TIME =
       "NOTE: Changes will take a little time to reflect in your profile";
 
-  static const review = "Review";
-  static const provideReview = "Please provide review";
-  static const provideReviewMinLength = "Review should be > 5 characters";
-  static const addReview = "Add Review";
-  static const completePayment = "Payment pending";
-  static const paymentCompleted = "Payment completed";
-  static const enterRejectionReason = "Enter a rejection reason";
-  static const accept = "Accept";
-  static const reject = "Reject";
-  static const stars = "Stars";
-  static const provideStars = "Please provide stars rating";
-  static const provideValidStars = "Please provide valid rating";
-  static const provideStarsInRange = "Please provide a rating between 1 and 5";
-  static const provideValidQuantity = "Please provide a valid quantity";
-  static const add = "ADD";
-  static const edit = "Edit";
-  static const delete = "Delete";
+  static const REVIEW = "Review";
+  static const ADD_REVIEW = "Add Review";
+  static const PAYMENT_PENDING = "Payment pending";
+  static const PAYMENT_COMPLETED = "Payment completed";
+  static const ACCEPT = "Accept";
+  static const REJECT = "Reject";
+  static const ADD = "ADD";
+  static const EDIT = "Edit";
+  static const DELETE = "Delete";
+  static const STARS = "Stars";
 
-  static const exitWarning = "Double click to exit app";
+  //  Errors and hints
+  static const PLEASE_SELECT_IMAGE_ERROR =
+      "Please select an image from camera/gallery";
+  static const PROVIDE_PROVIDER_NAME_ERROR = "Please provide a product name";
+  static const PRODUCT_NAME_MIN_LENGTH_ERROR =
+      "Product name should be > 3 characters";
+  static const PRODUCT_NAME_MAX_LENGTH_ERROR =
+      "Product name should be < 25 characters";
+  static const PROVIDE_PRICE_ERROR = "Please provide price";
+  static const PROVIDE_VALID_PRICE_ERROR = "Please provide a valid price";
+  static const PROVIDE_POSITIVE_PRICE_ERROR = "Please provide a price > 0";
+  static const PROVIDE_DESCRIPTION_ERROR = "Please provide product description";
+  static const descriptionMinLengthError =
+      "Description should be > 15 characters";
+  static const CONNECT_TO_INTERNET_WARNING_FOR_CHANGES =
+      "Please connect to internet.\nChanges will be reflected after internet connection is regained";
+  static const CONNECT_TO_INTERNET_WARNING_FOR_PRODUCTS =
+      "Please connect to internet.\nProducts will be visible after internet connection is regained";
+  static const SOMETHING_WENT_WRONG =
+      "Something went wrong\n Please try again later.";
+  static const NO_UPI_APP_ERROR = "Sorry, no UPI apps installed";
+  static const LIMITED_STOCKS_ERROR = "Sorry, limited stocks available";
+  static const OUT_OF_STOCK = "OUT OF STOCK";
+  static const PROVIDE_REJECTION_REASON =
+      "Please provide a reason for rejection";
+  static const PRODUCT_UNAVAILABLE = "Sorry, product unavailable at the moment";
+  static const PRODUCT_REVIEW = "Please provide review";
+  static const PRODUCT_REVIEW_MIN_LENGTH = "Review should be > 5 characters";
+  static const ENTER_REJECTION_REASON = "Enter a rejection reason";
+  static const PROVIDE_STARS = "Please provide stars rating";
+  static const PROVIDE_VALID_STARS = "Please provide valid rating";
+  static const PROVIDE_STARS_IN_RANGE =
+      "Please provide a rating between 1 and 5";
+  static const PROVIDE_VALID_QUNATITY = "Please provide a valid quantity";
+  static const EXIT_WARNING = "Double click to exit app";
+  static const INVALID_EMAIL = "Invalid email!";
+  static const PASSWORD_MIN_LENGTH_LIMIT_ERROR =
+      "Password must be atleast 6 characters long!";
+  static const PASSWORD_DONT_MATCH = "Passwords do not match!";
+  static const ENTER_OBILE_NUMBER = "Please enter mobile number";
+  static const ENTER_VALID_MOBILE_NUMBER = "Please enter valid mobile number";
+  static const ENTER_ADDRESS = "Please enter your address";
+  static const ENTER_VALID_ADDRESS =
+      "Address must be atleast 10 characters long";
+  static const ENTER_UPI = "Please enter upi-id";
+  static const ENTER_VALID_UPI = "Please enter valid upi-id (kirana@example)";
 }

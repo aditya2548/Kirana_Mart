@@ -40,12 +40,12 @@ class AppDrawer extends StatelessWidget {
           ),
         );
         //  If going back to home, remove previous home
-      } else if (name == DataModel.home) {
+      } else if (name == DataModel.HOME) {
         Navigator.of(context).pop();
         Navigator.of(context).pop();
         Navigator.of(context).pop();
         Navigator.of(context).pushNamed(routeName);
-      } else if (parentName != DataModel.home) {
+      } else if (parentName != DataModel.HOME) {
         //  Two times so that all the screens do not get stacked up on top of each other
         //  Only the home screen remains always at the bottom while using drawer
         Navigator.of(context).pop();
@@ -90,7 +90,7 @@ class AppDrawer extends StatelessWidget {
                 height: 50,
                 child: Center(
                   child: Text(
-                    DataModel.helloFriend,
+                    DataModel.HELLO_FRIEND,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -103,7 +103,7 @@ class AppDrawer extends StatelessWidget {
                   height: 50,
                   alignment: Alignment.center,
                   child: Text(
-                    DataModel.verifyEmailToUnlockFeatures,
+                    DataModel.VERIFY_MAIL_TO_UNLOCK_FEATURES,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -112,9 +112,9 @@ class AppDrawer extends StatelessWidget {
                 ),
               ListTile(
                 leading: Icon(Icons.home),
-                title: Text(DataModel.home),
+                title: Text(DataModel.HOME),
                 onTap: () {
-                  checkAndPush(DataModel.home, HomePageTabsScreen.routeName);
+                  checkAndPush(DataModel.HOME, HomePageTabsScreen.routeName);
                 },
               ),
               Divider(
@@ -124,9 +124,9 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.request_page),
-                title: Text(DataModel.myOrders),
+                title: Text(DataModel.MY_ORDERS),
                 onTap: () {
-                  checkAndPush(DataModel.myOrders, OrdersScreen.routeName);
+                  checkAndPush(DataModel.MY_ORDERS, OrdersScreen.routeName);
                 },
               ),
               Divider(
@@ -136,9 +136,9 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.shopping_bag_rounded),
-                title: Text(DataModel.myCart),
+                title: Text(DataModel.MY_CART),
                 onTap: () {
-                  checkAndPush(DataModel.myCart, CartScreen.routeName);
+                  checkAndPush(DataModel.MY_CART, CartScreen.routeName);
                 },
               ),
               Divider(
@@ -148,10 +148,10 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.edit_outlined),
-                title: Text(DataModel.myProducts),
+                title: Text(DataModel.MY_PRODUCTS),
                 onTap: () {
                   checkAndPush(
-                      DataModel.myProducts, UserProductsScreen.routeName);
+                      DataModel.MY_PRODUCTS, UserProductsScreen.routeName);
                 },
               ),
               Divider(
@@ -161,10 +161,10 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.person_outline),
-                title: Text(DataModel.myProfile),
+                title: Text(DataModel.MY_PROFILE),
                 onTap: () {
                   checkAndPush(
-                      DataModel.myProfile, UserProfileScreen.routeName);
+                      DataModel.MY_PROFILE, UserProfileScreen.routeName);
                 },
               ),
               Divider(
@@ -193,9 +193,9 @@ class AppDrawer extends StatelessWidget {
                   KeyDataModel.adminEmail)
                 ListTile(
                   leading: Icon(Icons.timelapse),
-                  title: Text(DataModel.pendingPayments),
+                  title: Text(DataModel.PENDING_PAYMENTS),
                   onTap: () {
-                    checkAndPush(DataModel.pendingPayments,
+                    checkAndPush(DataModel.PENDING_PAYMENTS,
                         PendingPaymentsAdminScreen.routeName);
                   },
                 ),
@@ -208,10 +208,10 @@ class AppDrawer extends StatelessWidget {
                 ),
               ListTile(
                 leading: Icon(Icons.notification_important),
-                title: Text(DataModel.myNotifications),
+                title: Text(DataModel.MY_NOTIFICATIONS),
                 onTap: () {
-                  checkAndPush(
-                      DataModel.myNotifications, NotificationsScreen.routeName);
+                  checkAndPush(DataModel.MY_NOTIFICATIONS,
+                      NotificationsScreen.routeName);
                 },
               ),
 
@@ -222,14 +222,14 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.mail),
-                title: Text(DataModel.contactUs),
+                title: Text(DataModel.CONTACT_US),
                 onTap: () async {
                   var url =
                       "mailto:kirana.mart.grocery@gmail.com?subject=Kirana Mart Query&body=Please provide details regarding your problem.\nWe will contact you shortly.";
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
-                    Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
+                    Fluttertoast.showToast(msg: DataModel.SOMETHING_WENT_WRONG);
                   }
                 },
               ),

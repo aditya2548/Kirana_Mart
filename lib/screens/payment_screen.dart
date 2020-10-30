@@ -42,7 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _myAnimatedWidget = Container(
       height: 300,
       alignment: Alignment.center,
-      key: Key(DataModel.cod),
+      key: Key(DataModel.COD),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -53,7 +53,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 codPayment();
               },
               icon: Icon(Icons.monetization_on),
-              label: Text(DataModel.confirmPurchase),
+              label: Text(DataModel.CONFIRM_PURCHASE),
             ),
           ),
         ],
@@ -83,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         transactionRef: transactionRef,
       );
     } catch (error) {
-      Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
+      Fluttertoast.showToast(msg: DataModel.SOMETHING_WENT_WRONG);
     } finally {
       //  Save transaction details and send payment details notification to admin, only if transaction was successful
       if (response.status != UpiTransactionStatus.failure) {
@@ -148,7 +148,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     Widget _codWidget = Container(
       height: 300,
       alignment: Alignment.center,
-      key: Key(DataModel.cod),
+      key: Key(DataModel.COD),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -159,14 +159,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   codPayment();
                 },
                 icon: Icon(Icons.monetization_on),
-                label: Text(DataModel.confirmPurchase),
+                label: Text(DataModel.CONFIRM_PURCHASE),
               )),
         ],
       ),
     );
     //  Widget for upi payment
     Widget _upiWidget = Container(
-      key: Key(DataModel.upi),
+      key: Key(DataModel.UPI),
       child: FutureBuilder<List<ApplicationMeta>>(
         future: _appsFuture,
         builder: (context, snapshot) {
@@ -179,7 +179,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: Column(
               children: [
                 Spacer(),
-                if (snapshot.data.length == 0) Text(DataModel.noUpiAppError),
+                if (snapshot.data.length == 0) Text(DataModel.NO_UPI_APP_ERROR),
                 GridView.count(
                   crossAxisCount: 3,
                   shrinkWrap: true,
@@ -213,7 +213,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(DataModel.payment),
+          title: Text(DataModel.PAYMENT),
           backgroundColor: Theme.of(context).backgroundColor,
         ),
         body: Card(
@@ -243,7 +243,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(DataModel.cash),
+                    Text(DataModel.CASH),
                     Switch(
                       value: _switch,
                       onChanged: (value) {
@@ -260,7 +260,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         }
                       },
                     ),
-                    Text(DataModel.upi),
+                    Text(DataModel.UPI),
                   ],
                 ),
               ),

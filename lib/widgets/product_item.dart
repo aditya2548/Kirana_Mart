@@ -29,7 +29,7 @@ class _ProductItemState extends State<ProductItem> {
           color: Colors.red,
           alignment: Alignment.center,
           child: Text(
-            DataModel.outOfStock,
+            DataModel.OUT_OF_STOCK,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         );
@@ -135,7 +135,7 @@ class _ProductItemState extends State<ProductItem> {
                   if (product.quantity < 1) {
                     Fluttertoast.cancel();
                     Fluttertoast.showToast(
-                        msg: DataModel.productUnavailable,
+                        msg: DataModel.PRODUCT_UNAVAILABLE,
                         backgroundColor: Colors.red);
                     return;
                   }

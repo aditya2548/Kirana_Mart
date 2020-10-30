@@ -21,7 +21,7 @@ class NotificationsScreen extends StatelessWidget {
             titleSpacing: -5,
             title: CustomAppBarTitle(
               icondata: Icons.notification_important,
-              name: DataModel.myNotifications,
+              name: DataModel.MY_NOTIFICATIONS,
             )),
         body: FutureBuilder(
           future:
@@ -35,11 +35,11 @@ class NotificationsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularProgressIndicator(),
-                      Text(DataModel.pleaseWait),
+                      Text(DataModel.PLEASE_WAIT),
                       DelayedDisplay(
                           delay: Duration(seconds: 5),
                           child: Text(
-                            DataModel.connectToInternetWarningForChanges,
+                            DataModel.CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
                             style: TextStyle(fontSize: 7),
                             textAlign: TextAlign.center,
                           ))
@@ -49,7 +49,7 @@ class NotificationsScreen extends StatelessWidget {
               );
             } else if (dataSnapShot.hasError) {
               return Center(
-                child: Text(DataModel.somethingWentWrong),
+                child: Text(DataModel.SOMETHING_WENT_WRONG),
               );
             } else {
               //  Using consumer here as if we use provider here, whole stateless widget gets
@@ -60,7 +60,7 @@ class NotificationsScreen extends StatelessWidget {
                         0
                     ? Container(
                         alignment: Alignment.center,
-                        child: Text(DataModel.noNotifications),
+                        child: Text(DataModel.NO_NOTIFICATIONS),
                       )
                     : RefreshIndicator(
                         onRefresh: () =>
@@ -104,7 +104,7 @@ class NotificationsScreen extends StatelessWidget {
             }
           },
         ),
-        drawer: AppDrawer(DataModel.myNotifications),
+        drawer: AppDrawer(DataModel.MY_NOTIFICATIONS),
       ),
     );
   }

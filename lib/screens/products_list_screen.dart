@@ -78,7 +78,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
         Container(
           padding: EdgeInsets.only(left: 20),
           child: Text(
-            DataModel.categories,
+            DataModel.CATEGORIES,
             textAlign: TextAlign.left,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),

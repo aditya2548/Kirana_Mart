@@ -74,7 +74,7 @@ class _UserProductItemState extends State<UserProductItem> {
           int.tryParse(updatedQuantity) == null ||
           int.parse(updatedQuantity) <= 0) {
         Fluttertoast.cancel();
-        Fluttertoast.showToast(msg: DataModel.provideValidQuantity);
+        Fluttertoast.showToast(msg: DataModel.PROVIDE_VALID_QUNATITY);
         return;
       }
       Provider.of<ProductsProvider>(context, listen: false).addProductQuantity(
@@ -115,7 +115,7 @@ class _UserProductItemState extends State<UserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              DataModel.productCategory,
+              DataModel.PRODUCT_CATEGORY,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -133,7 +133,7 @@ class _UserProductItemState extends State<UserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              DataModel.productDetails,
+              DataModel.PRODUCT_DETAILS,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -172,7 +172,7 @@ class _UserProductItemState extends State<UserProductItem> {
                     submitQuantity();
                   },
                   icon: Icon(Icons.add),
-                  label: Text(DataModel.add),
+                  label: Text(DataModel.ADD),
                   color: Colors.green,
                 ),
               ],
@@ -182,7 +182,7 @@ class _UserProductItemState extends State<UserProductItem> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               RaisedButton.icon(
-                label: Text(DataModel.edit),
+                label: Text(DataModel.EDIT),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 color: Theme.of(context).primaryColorDark,
                 icon: Icon(
@@ -195,7 +195,7 @@ class _UserProductItemState extends State<UserProductItem> {
               ),
               RaisedButton.icon(
                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                label: Text(DataModel.delete),
+                label: Text(DataModel.DELETE),
                 icon: Icon(
                   Icons.delete_forever,
                 ),

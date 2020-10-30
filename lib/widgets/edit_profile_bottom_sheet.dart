@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
       } catch (error) {
         print(error);
         Fluttertoast.cancel();
-        Fluttertoast.showToast(msg: DataModel.somethingWentWrong);
+        Fluttertoast.showToast(msg: DataModel.SOMETHING_WENT_WRONG);
       } finally {
         Navigator.of(context).pop();
       }
@@ -91,7 +91,7 @@ class _EditProfileState extends State<EditProfile> {
                     Container(
                       alignment: Alignment.center,
                       child: Text(
-                        DataModel.profileChangesTakeTime,
+                        DataModel.PROFILE_CHANGES_TAKE_TIME,
                         style: TextStyle(fontSize: 10, color: Colors.white54),
                       ),
                     ),
@@ -101,14 +101,14 @@ class _EditProfileState extends State<EditProfile> {
                       maxLines: 3,
                       minLines: 1,
                       decoration: InputDecoration(
-                          labelText: DataModel.address,
+                          labelText: DataModel.ADDRESS,
                           errorStyle: TextStyle(fontSize: 10)),
                       keyboardType: TextInputType.multiline,
                       validator: (value) {
                         if (value == null || value.trim() == "") {
-                          return DataModel.enterAddress;
+                          return DataModel.ENTER_ADDRESS;
                         } else if (value.length <= 10) {
-                          return DataModel.enterValidAddress;
+                          return DataModel.ENTER_VALID_ADDRESS;
                         }
                         return null;
                       },
@@ -118,16 +118,16 @@ class _EditProfileState extends State<EditProfile> {
                       initialValue: widget.mobileNumber,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                          labelText: DataModel.mobileNumber,
+                          labelText: DataModel.MOBILE_NUMBER,
                           errorStyle: TextStyle(fontSize: 10)),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.length == 0) {
-                          return DataModel.enterMobileNumber;
+                          return DataModel.ENTER_OBILE_NUMBER;
                         } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
                             .hasMatch(value)) {
-                          return DataModel.enterValidMobileNumber;
+                          return DataModel.ENTER_VALID_MOBILE_NUMBER;
                         }
                         return null;
                       },
@@ -143,9 +143,9 @@ class _EditProfileState extends State<EditProfile> {
                       textInputAction: TextInputAction.next,
                       validator: (upi) {
                         if (upi == null || upi.trim() == "") {
-                          return DataModel.enterUpi;
+                          return DataModel.ENTER_UPI;
                         } else if (!UpiPay.checkIfUpiAddressIsValid(upi)) {
-                          return DataModel.enterValidUpi;
+                          return DataModel.ENTER_VALID_UPI;
                         }
                         return null;
                       },
@@ -156,7 +156,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     RaisedButton(
                       child: Text(
-                        DataModel.saveChanges,
+                        DataModel.SAVE_CHANGES,
                       ),
                       onPressed: () {
                         _submitProfileEdit();

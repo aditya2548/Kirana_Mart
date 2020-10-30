@@ -68,7 +68,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > Duration(seconds: 2)) {
       currentBackPressTime = now;
-      Fluttertoast.showToast(msg: DataModel.exitWarning);
+      Fluttertoast.showToast(msg: DataModel.EXIT_WARNING);
       return Future.value(false);
     }
     return Future.value(true);
@@ -102,7 +102,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Text(
-                      DataModel.kiranaMartTwoLined,
+                      DataModel.KIRANA_MART_TWO_LINED,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -162,7 +162,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                       width: 5,
                     ),
                     Text(
-                      DataModel.home,
+                      DataModel.HOME,
                     )
                   ],
                 ),
@@ -176,7 +176,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                       width: 5,
                     ),
                     Text(
-                      DataModel.fav,
+                      DataModel.FAV,
                     ),
                   ],
                 ),
@@ -197,12 +197,12 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               CircularProgressIndicator(),
-                              Text(DataModel.loadingProducts),
+                              Text(DataModel.LOADING_PRODUCTS),
                               DelayedDisplay(
                                   delay: Duration(seconds: 5),
                                   child: Text(
                                     DataModel
-                                        .connectToInternetWarningForProducts,
+                                        .CONNECT_TO_INTERNET_WARNING_FOR_PRODUCTS,
                                     style: TextStyle(fontSize: 7),
                                     textAlign: TextAlign.center,
                                   ))
@@ -215,7 +215,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
               ],
             ),
           ),
-          drawer: AppDrawer(DataModel.home),
+          drawer: AppDrawer(DataModel.HOME),
         ),
       ),
     );

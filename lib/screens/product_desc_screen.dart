@@ -109,7 +109,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 ),
                               if (product.quantity == 0)
                                 Text(
-                                  DataModel.productOutOfStock,
+                                  DataModel.PRODUCT_OUT_OF_STOCK,
                                   style: TextStyle(color: Colors.red),
                                 ),
                               Text(
@@ -158,7 +158,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                               Container(
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
-                                child: Text(DataModel.retailer),
+                                child: Text(DataModel.RETAILER),
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
@@ -182,7 +182,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                       padding: EdgeInsets.all(5),
                                       color: Theme.of(context).primaryColorDark,
                                       child: Text(
-                                        DataModel.quantity,
+                                        DataModel.QUANTITY,
                                       ),
                                       margin: EdgeInsets.only(bottom: 15),
                                     ),
@@ -205,7 +205,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                                     Fluttertoast.cancel();
                                                     Fluttertoast.showToast(
                                                         msg: DataModel
-                                                            .limitedStocksError,
+                                                            .LIMITED_STOCKS_ERROR,
                                                         backgroundColor:
                                                             Colors.red);
                                                     return;
@@ -260,7 +260,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 child: RaisedButton(
                                     color: Theme.of(context).accentColor,
                                     child: Text(
-                                      DataModel.addToCart,
+                                      DataModel.ADD_TO_CART,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -275,7 +275,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
                                 child: Text(
-                                  DataModel.productDetails,
+                                  DataModel.PRODUCT_DETAILS,
                                 ),
                               ),
                               Container(
@@ -302,7 +302,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                 padding: EdgeInsets.all(5),
                                 color: Theme.of(context).primaryColorDark,
                                 child: Text(
-                                  DataModel.reviews,
+                                  DataModel.REVIEWS,
                                 ),
                               ),
                               SizedBox(
@@ -311,7 +311,7 @@ class _ProductDescriptionState extends State<ProductDescription> {
                               product.getReviewCount == 0
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(DataModel.noReviewsFound),
+                                      child: Text(DataModel.NO_REVIEWS_FOUND),
                                     )
                                   : Container(
                                       height: 200,
