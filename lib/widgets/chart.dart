@@ -87,11 +87,12 @@ class ChartBar extends StatelessWidget {
             height: constraint.maxHeight * 0.6,
             width: 15,
             child: Stack(
+              alignment: Alignment.bottomCenter,
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).accentColor,
+                      color: Colors.pink[900],
                       width: 1,
                     ),
                     color: Theme.of(context).backgroundColor,
@@ -99,15 +100,16 @@ class ChartBar extends StatelessWidget {
                   ),
                 ),
                 FractionallySizedBox(
-                    heightFactor: totalAmountSpent != 0
-                        ? amountSpent / totalAmountSpent
-                        : 0.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    )),
+                  heightFactor: totalAmountSpent != 0
+                      ? amountSpent / totalAmountSpent
+                      : 0.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.pink,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

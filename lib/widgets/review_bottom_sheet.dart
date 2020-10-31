@@ -121,7 +121,7 @@ class _NewReviewState extends State<NewReview> {
                 children: [
                   Container(
                     height: 5,
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.pink,
                   ),
                   SizedBox(
                     height: 15,
@@ -183,7 +183,7 @@ class _NewReviewState extends State<NewReview> {
                     onPressed: () {
                       _submitReview();
                     },
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.pink,
                   ),
                 ],
               ),

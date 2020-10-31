@@ -132,30 +132,33 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
             ),
             controller: myController,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              RaisedButton.icon(
-                  label: Text(DataModel.ACCEPT),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  color: Theme.of(context).primaryColorDark,
-                  icon: Icon(
-                    Icons.done_all,
-                  ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton.icon(
+                    label: Text(DataModel.ACCEPT),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    color: Theme.of(context).primaryColorDark,
+                    icon: Icon(
+                      Icons.done_all,
+                    ),
+                    onPressed: () {
+                      Provider.of<ProductsProvider>(context, listen: false)
+                          .approveProduct(widget.id, context);
+                    }),
+                RaisedButton.icon(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  label: Text(DataModel.REJECT),
+                  icon: Icon(Icons.highlight_remove),
+                  color: Theme.of(context).errorColor,
                   onPressed: () {
-                    Provider.of<ProductsProvider>(context, listen: false)
-                        .approveProduct(widget.id, context);
-                  }),
-              RaisedButton.icon(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                label: Text(DataModel.REJECT),
-                icon: Icon(Icons.highlight_remove),
-                color: Theme.of(context).errorColor,
-                onPressed: () {
-                  sendRejectionReason();
-                },
-              ),
-            ],
+                    sendRejectionReason();
+                  },
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 10,

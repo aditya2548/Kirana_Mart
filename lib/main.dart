@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.teal,
           brightness: Brightness.dark,
-          accentColor: Colors.blue,
+          accentColor: Colors.pink[300],
           primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
           highlightColor: Colors.white,

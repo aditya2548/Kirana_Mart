@@ -58,46 +58,88 @@ class NotificationsScreen extends StatelessWidget {
                 builder: (ctx, messageData, child) => messageData
                             .getMessages.length ==
                         0
-                    ? Container(
-                        alignment: Alignment.center,
-                        child: Text(DataModel.NO_NOTIFICATIONS),
+                    ? Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Container(
+                            color: Colors.black,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.elliptical(1200, 2200),
+                              ),
+                              color: Colors.grey[900],
+                            ),
+                            width: MediaQuery.of(context).size.width - 1.5,
+                            height: double.maxFinite,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(DataModel.NO_NOTIFICATIONS),
+                          ),
+                        ],
                       )
                     : RefreshIndicator(
                         onRefresh: () =>
                             Provider.of<FcmProvider>(context, listen: false)
                                 .reloadMessages(),
-                        child: ListView.builder(
-                          itemCount: messageData.getMessages.length,
-                          itemBuilder: (ctx, index) => Container(
-                            margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                            child: Container(
-                              color:
-                                  messageData.getMessages[index].error == true
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              color: Colors.black,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.elliptical(1200, 2200),
+                                ),
+                                color: Colors.grey[900],
+                              ),
+                              width: MediaQuery.of(context).size.width - 1.5,
+                              height: double.maxFinite,
+                            ),
+                            ListView.builder(
+                              itemCount: messageData.getMessages.length,
+                              itemBuilder: (ctx, index) => Container(
+                                margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                  color: messageData.getMessages[index].error ==
+                                          true
                                       ? Colors.pink[900]
                                       : Theme.of(context).primaryColor,
-                              child: ExpansionTile(
-                                tilePadding: EdgeInsets.all(5),
-                                childrenPadding: EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
-                                title: Container(
-                                    child: Text(
-                                  messageData.getMessages[index].title,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )),
-                                subtitle: Text(
-                                  DateFormat("dd MMM yyyy, HH:mm").format(
-                                      messageData.getMessages[index].dateTime),
                                 ),
-                                children: [
-                                  Text(messageData.getMessages[index].body)
-                                ],
-                                leading:
-                                    messageData.getMessages[index].error == true
-                                        ? Icon(Icons.warning)
-                                        : Icon(Icons.tag_faces),
+                                child: ExpansionTile(
+                                  tilePadding: EdgeInsets.all(5),
+                                  childrenPadding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 20),
+                                  title: Container(
+                                      child: Text(
+                                    messageData.getMessages[index].title,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )),
+                                  subtitle: Text(
+                                    DateFormat("dd MMM yyyy, HH:mm").format(
+                                        messageData
+                                            .getMessages[index].dateTime),
+                                  ),
+                                  children: [
+                                    Text(messageData.getMessages[index].body)
+                                  ],
+                                  leading:
+                                      messageData.getMessages[index].error ==
+                                              true
+                                          ? Icon(Icons.warning)
+                                          : Icon(Icons.tag_faces),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
               );

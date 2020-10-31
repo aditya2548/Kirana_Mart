@@ -133,43 +133,64 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
               //  Using consumer here as if we use provider here, whole stateless widget gets
               //  re-rendered again, and we enter an infinite loop
               return Consumer<ProductsProvider>(
-                builder: (ctx, ordersData, child) => Column(
+                builder: (ctx, ordersData, child) => Stack(
+                  alignment: Alignment.topRight,
                   children: [
                     Container(
-                        color: Colors.amber,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        alignment: Alignment.center,
-                        child: Text(
-                          DataModel.PRODUCTS_VISIBLE_AFTER_ADMIN_VERIFICATION,
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        )),
-                    Flexible(
-                      child: RefreshIndicator(
-                        onRefresh: () {
-                          return Provider.of<ProductsProvider>(context,
-                                  listen: false)
-                              .reloadProducts();
-                        },
-                        child: ListView.builder(
-                          itemCount: ordersData.getMyProducts().length,
-                          itemBuilder: (ctx, index) => UserProductItem(
-                            id: ordersData.getMyProducts()[index].id,
-                            title: ordersData.getMyProducts()[index].title,
-                            description:
-                                ordersData.getMyProducts()[index].description,
-                            imageUrl:
-                                ordersData.getMyProducts()[index].imageUrl,
-                            price: ordersData.getMyProducts()[index].price,
-                            productCategory: ordersData
-                                .getMyProducts()[index]
-                                .productCategory,
-                            quantity:
-                                ordersData.getMyProducts()[index].quantity,
+                      color: Colors.black,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.elliptical(1200, 2200),
+                        ),
+                        color: Colors.grey[900],
+                      ),
+                      width: MediaQuery.of(context).size.width - 1.5,
+                      height: double.maxFinite,
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                            color: Colors.amber,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            alignment: Alignment.center,
+                            child: Text(
+                              DataModel
+                                  .PRODUCTS_VISIBLE_AFTER_ADMIN_VERIFICATION,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                        Flexible(
+                          child: RefreshIndicator(
+                            onRefresh: () {
+                              return Provider.of<ProductsProvider>(context,
+                                      listen: false)
+                                  .reloadProducts();
+                            },
+                            child: ListView.builder(
+                              itemCount: ordersData.getMyProducts().length,
+                              itemBuilder: (ctx, index) => UserProductItem(
+                                id: ordersData.getMyProducts()[index].id,
+                                title: ordersData.getMyProducts()[index].title,
+                                description: ordersData
+                                    .getMyProducts()[index]
+                                    .description,
+                                imageUrl:
+                                    ordersData.getMyProducts()[index].imageUrl,
+                                price: ordersData.getMyProducts()[index].price,
+                                productCategory: ordersData
+                                    .getMyProducts()[index]
+                                    .productCategory,
+                                quantity:
+                                    ordersData.getMyProducts()[index].quantity,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),

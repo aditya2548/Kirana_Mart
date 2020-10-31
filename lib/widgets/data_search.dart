@@ -10,6 +10,7 @@ class DataSearch extends SearchDelegate<Product> {
   ThemeData appBarTheme(BuildContext context) {
     return ThemeData(
       primaryColor: Theme.of(context).primaryColor,
+      // primaryColor: Colors.pink,
       primaryIconTheme: IconThemeData(
         color: Colors.white,
       ),

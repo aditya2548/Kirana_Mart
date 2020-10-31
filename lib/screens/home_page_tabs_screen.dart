@@ -91,7 +91,7 @@ class _HomePageTabsScreenState extends State<HomePageTabsScreen> {
             titleSpacing: -5, //  appicon closer to hamburger
             title: Shimmer.fromColors(
               baseColor: Colors.white,
-              highlightColor: Colors.amber,
+              highlightColor: Colors.grey,
               period: Duration(seconds: 2),
               child: Row(
                 children: [

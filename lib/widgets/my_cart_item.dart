@@ -56,7 +56,7 @@ class MyCartItem extends StatelessWidget {
           leading: Container(
             margin: EdgeInsets.all(5),
             decoration:
-                BoxDecoration(color: Colors.teal, border: Border.all(width: 1)),
+                BoxDecoration(color: Colors.pink, border: Border.all(width: 1)),
             padding: EdgeInsets.all(10),
             child: Text(
               "Rs. ${price * quantity}",

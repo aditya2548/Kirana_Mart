@@ -55,6 +55,8 @@ class MyOrdersItem extends StatelessWidget {
             itemBuilder: (ctx, index) => Container(
               child: Card(
                 elevation: 10,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6))),
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: ListTile(
                   dense: true,
@@ -76,6 +78,7 @@ class MyOrdersItem extends StatelessWidget {
                     child: Text(DataModel.REVIEW),
                   ),
                   leading: IconButton(
+                      color: Theme.of(context).primaryColorDark,
                       icon: Icon(Icons.call),
                       onPressed: () async {
                         var url =

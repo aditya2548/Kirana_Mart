@@ -59,60 +59,81 @@ class CartScreen extends StatelessWidget {
               //  Using consumer here as if we use provider here, whole stateless widget gets
               //  re-rendered again, and we enter an infinite loop
               return Consumer<CartProvider>(
-                builder: (ctx, cartData, child) => Column(
+                builder: (ctx, cartData, child) => Stack(
+                  alignment: Alignment.topRight,
                   children: [
-                    if (!FirebaseAuth.instance.currentUser.emailVerified)
-                      Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Text(DataModel.VERIFY_MAIL_TO_ORDER),
-                        color: Theme.of(context).errorColor,
+                    Container(
+                      color: Colors.black,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.elliptical(1200, 2200),
+                        ),
+                        color: Colors.grey[900],
                       ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            stops: [
-                              0.01,
-                              0.5,
-                            ],
-                            colors: [
-                              Theme.of(context).primaryColorDark,
-                              Theme.of(context).primaryColor,
-                            ],
+                      width: MediaQuery.of(context).size.width - 1.5,
+                      height: double.maxFinite,
+                    ),
+                    Column(
+                      children: [
+                        if (!FirebaseAuth.instance.currentUser.emailVerified)
+                          Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Text(DataModel.VERIFY_MAIL_TO_ORDER),
+                            color: Theme.of(context).errorColor,
+                          ),
+                        Card(
+                          margin: EdgeInsets.all(10),
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                stops: [
+                                  0.01,
+                                  0.6,
+                                ],
+                                colors: [
+                                  Colors.pink[900],
+                                  Colors.pink[300],
+                                ],
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(DataModel.TOTAL),
+                                Container(
+                                  child: Text(
+                                      "Rs. ${cartData.getTotalCartAmount.toStringAsFixed(0)}"),
+                                ),
+                                Spacer(),
+                                OrderButton(cartData: cartData),
+                              ],
+                            ),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Text(DataModel.TOTAL),
-                            Container(
-                              child: Text(
-                                  "Rs. ${cartData.getTotalCartAmount.toStringAsFixed(0)}"),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: cartData.getCartItemCount,
+                            itemBuilder: (ctx, index) => MyCartItem(
+                              productId:
+                                  cartData.getCardItemsList[index].productId,
+                              id: cartData.getCardItemsList[index].id,
+                              price:
+                                  cartData.getCardItemsList[index].pricePerUnit,
+                              quantity:
+                                  cartData.getCardItemsList[index].quantity,
+                              title: cartData.getCardItemsList[index].title,
                             ),
-                            Spacer(),
-                            OrderButton(cartData: cartData),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: cartData.getCartItemCount,
-                        itemBuilder: (ctx, index) => MyCartItem(
-                          productId: cartData.getCardItemsList[index].productId,
-                          id: cartData.getCardItemsList[index].id,
-                          price: cartData.getCardItemsList[index].pricePerUnit,
-                          quantity: cartData.getCardItemsList[index].quantity,
-                          title: cartData.getCardItemsList[index].title,
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -156,13 +177,19 @@ class _OrderButtonState extends State<OrderButton> {
               : () {
                   Navigator.of(context).pushNamed(PaymentScreen.routeName);
                 },
-      color: Theme.of(context).primaryColor,
+      color: Colors.pink[900],
+      padding: EdgeInsets.all(5),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(6),
+        ),
+      ),
       icon: Icon(Icons.assignment_turned_in),
       label: _progressBar == true
           ? CircularProgressIndicator()
           : Text(
               DataModel.PLACE_ORDER,
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
     );
   }

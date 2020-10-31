@@ -142,7 +142,7 @@ class _ProductItemState extends State<ProductItem> {
                   cartItems.addItemWithQuantity(
                       product.id, product.price, product.title, 1, context);
                 },
-                color: Theme.of(context).accentColor,
+                color: Colors.yellow,
               ),
             ],
           ),

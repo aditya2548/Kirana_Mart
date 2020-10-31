@@ -30,11 +30,17 @@ class _PendingPaymentItemState extends State<PendingPaymentItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(6),
+        ),
+        color:
+            widget.paymentsData.getPendingPayments[widget.index].incomplete ==
+                    true
+                ? Colors.pink[900]
+                : Theme.of(context).primaryColor,
+      ),
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      color: widget.paymentsData.getPendingPayments[widget.index].incomplete ==
-              true
-          ? Colors.pink[900]
-          : Theme.of(context).primaryColor,
       child: ExpansionTile(
         tilePadding: EdgeInsets.all(5),
         childrenPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),

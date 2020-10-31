@@ -59,176 +59,197 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
         body: _mobileNumber == ""
             ? Center(child: CircularProgressIndicator())
-            : Center(
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: SizedBox(
-                            height: 70,
-                            width: 70,
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.red[900],
-                              highlightColor: Colors.orange,
-                              period: Duration(seconds: 2),
-                              child: Image.asset(
-                                  "assets/images/Kirana_mart_logo.png"),
-                            )),
+            : Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    color: Colors.black,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.elliptical(1200, 2200),
                       ),
-                      if (_user.emailVerified == false)
-                        RaisedButton(
-                          onPressed: () {
-                            FirebaseAuth.instance.currentUser
-                                .reload()
-                                .then((value) {
-                              setState(() {});
-                            });
-                          },
-                          child: Text(DataModel.REFRESH_STATUS),
-                        ),
-                      if (_user.emailVerified == false)
-                        RaisedButton(
-                          color: Theme.of(context).errorColor,
-                          onPressed: () {
-                            Provider.of<AuthProvider>(context, listen: false)
-                                .verifyEmail();
-                            setState(() {});
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            color: Theme.of(context).errorColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                DataModel.EMAIL_NOT_VERIFIED,
-                                style: TextStyle(
-                                  color: Theme.of(context).highlightColor,
+                      color: Colors.grey[900],
+                    ),
+                    width: MediaQuery.of(context).size.width - 1.5,
+                    height: double.maxFinite,
+                  ),
+                  SingleChildScrollView(
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20.0),
+                              child: SizedBox(
+                                  height: 70,
+                                  width: 70,
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.red[900],
+                                    highlightColor: Colors.orange,
+                                    period: Duration(seconds: 2),
+                                    child: Image.asset(
+                                        "assets/images/Kirana_mart_logo.png"),
+                                  )),
+                            ),
+                            if (_user.emailVerified == false)
+                              RaisedButton(
+                                onPressed: () {
+                                  FirebaseAuth.instance.currentUser
+                                      .reload()
+                                      .then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: Text(DataModel.REFRESH_STATUS),
+                              ),
+                            if (_user.emailVerified == false)
+                              RaisedButton(
+                                color: Theme.of(context).errorColor,
+                                onPressed: () {
+                                  Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .verifyEmail();
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  color: Theme.of(context).errorColor,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      DataModel.EMAIL_NOT_VERIFIED,
+                                      style: TextStyle(
+                                        color: Theme.of(context).highlightColor,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
+                            if (_user.emailVerified == true)
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                color: Colors.green,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    DataModel.EMAIL_VERIFIED,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            SizedBox(
+                              height: 50,
                             ),
-                          ),
-                        ),
-                      if (_user.emailVerified == true)
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          color: Colors.green,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              DataModel.EMAIL_VERIFIED,
-                              style: TextStyle(
-                                color: Colors.black,
+                            Card(
+                              elevation: 15,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              color: Theme.of(context).primaryColor,
+                              // width: double.infinity,
+                              // alignment: Alignment.center,
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Name: $_name"),
                               ),
                             ),
-                          ),
-                        ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      Card(
-                        elevation: 15,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        color: Theme.of(context).primaryColor,
-                        // width: double.infinity,
-                        // alignment: Alignment.center,
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Name: $_name"),
-                        ),
-                      ),
-                      Card(
-                        elevation: 15,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        color: Theme.of(context).primaryColor,
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Email: ${_user.email}"),
-                        ),
-                      ),
-                      Card(
-                        elevation: 15,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        color: Theme.of(context).primaryColor,
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Address: $_address"),
-                        ),
-                      ),
-                      Card(
-                        elevation: 15,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        color: Theme.of(context).primaryColor,
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Mobile Number: $_mobileNumber"),
-                        ),
-                      ),
-                      Card(
-                        elevation: 15,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        color: Theme.of(context).primaryColor,
-                        child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Upi: $_upi"),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: RaisedButton(
+                            Card(
+                              elevation: 15,
+                              margin: EdgeInsets.symmetric(vertical: 8),
                               color: Theme.of(context).primaryColor,
-                              child: Text(DataModel.EDIT_PROFILE),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (_) {
-                                    return EditProfile(
-                                      address: _address,
-                                      mobileNumber: _mobileNumber,
-                                      upi: _upi,
-                                    );
-                                  },
-                                );
-                              },
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Email: ${_user.email}"),
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: RaisedButton(
-                              color: Theme.of(context).errorColor,
-                              child: Text(DataModel.SIGN_OUT),
-                              onPressed: () {
-                                Provider.of<AuthProvider>(context,
-                                        listen: false)
-                                    .signOutUser(context);
-                              },
+                            Card(
+                              elevation: 15,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              color: Theme.of(context).primaryColor,
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Address: $_address"),
+                              ),
                             ),
-                          ),
-                        ],
+                            Card(
+                              elevation: 15,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              color: Theme.of(context).primaryColor,
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Mobile Number: $_mobileNumber"),
+                              ),
+                            ),
+                            Card(
+                              elevation: 15,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              color: Theme.of(context).primaryColor,
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Upi: $_upi"),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(top: 20),
+                                  child: RaisedButton(
+                                    color: Theme.of(context).primaryColor,
+                                    child: Text(DataModel.EDIT_PROFILE),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (_) {
+                                          return EditProfile(
+                                            address: _address,
+                                            mobileNumber: _mobileNumber,
+                                            upi: _upi,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 20),
+                                  child: RaisedButton(
+                                    color: Theme.of(context).errorColor,
+                                    child: Text(DataModel.SIGN_OUT),
+                                    onPressed: () {
+                                      Provider.of<AuthProvider>(context,
+                                              listen: false)
+                                          .signOutUser(context);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
         drawer: AppDrawer(DataModel.MY_PROFILE),
       ),

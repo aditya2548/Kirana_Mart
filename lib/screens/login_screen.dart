@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.pink[900],
                   child: Text(
                     DataModel.SIGNUP,
                     style: TextStyle(
@@ -118,13 +118,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
     });
     if (loginResult == "Logged In") {
       Navigator.pop(context);
-      final _firebaseUser = context.read<User>();
-      //  If user is admin
-      if (_firebaseUser.email == KeyDataModel.adminEmail)
-        Navigator.of(context).pushReplacementNamed(AdminScreen.routeName);
-      else
-        Navigator.of(context)
-            .pushReplacementNamed(HomePageTabsScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(HomePageTabsScreen.routeName);
     }
   }
 
@@ -214,7 +208,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
               onPressed: () {
                 _submit();
               },
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Colors.pink[900],
               child: Icon(
                 Icons.arrow_forward,
                 color: Theme.of(context).highlightColor,

@@ -52,6 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               onPressed: () {
                 codPayment();
               },
+              color: Colors.pink[900],
               icon: Icon(Icons.monetization_on),
               label: Text(DataModel.CONFIRM_PURCHASE),
             ),
@@ -158,6 +159,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 onPressed: () {
                   codPayment();
                 },
+                color: Colors.pink[900],
                 icon: Icon(Icons.monetization_on),
                 label: Text(DataModel.CONFIRM_PURCHASE),
               )),
@@ -214,65 +216,78 @@ class _PaymentScreenState extends State<PaymentScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(DataModel.PAYMENT),
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Colors.grey[900],
         ),
-        body: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          margin: EdgeInsets.all(20),
-          elevation: 15,
-          color: Theme.of(context).primaryColor,
-          child: ListView(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 45),
-                padding: EdgeInsets.all(20),
-                color: Theme.of(context).primaryColorDark,
-                alignment: Alignment.center,
-                child: Text(
-                  "Total amount: $amount",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              if (_progressBar) LinearProgressIndicator(),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(DataModel.CASH),
-                    Switch(
-                      value: _switch,
-                      onChanged: (value) {
-                        if (value == false) {
-                          setState(() {
-                            _switch = value;
-                            _myAnimatedWidget = _codWidget;
-                          });
-                        } else {
-                          setState(() {
-                            _switch = value;
-                            _myAnimatedWidget = _upiWidget;
-                          });
-                        }
-                      },
+        body: Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            Container(
+              width: double.maxFinite,
+              color: Colors.black,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width / 2,
+              color: Colors.pink[900],
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              margin: EdgeInsets.all(20),
+              elevation: 15,
+              color: Colors.teal[900],
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 45),
+                    padding: EdgeInsets.all(20),
+                    color: Theme.of(context).primaryColorDark,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Total amount: $amount",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text(DataModel.UPI),
-                  ],
-                ),
+                  ),
+                  if (_progressBar) LinearProgressIndicator(),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(DataModel.CASH),
+                        Switch(
+                          value: _switch,
+                          onChanged: (value) {
+                            if (value == false) {
+                              setState(() {
+                                _switch = value;
+                                _myAnimatedWidget = _codWidget;
+                              });
+                            } else {
+                              setState(() {
+                                _switch = value;
+                                _myAnimatedWidget = _upiWidget;
+                              });
+                            }
+                          },
+                        ),
+                        Text(DataModel.UPI),
+                      ],
+                    ),
+                  ),
+                  //  aminmated switcher for transition between upi and cod
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder: (child, animation) =>
+                        ScaleTransition(child: child, scale: animation),
+                    child: _myAnimatedWidget,
+                  )
+                ],
               ),
-              //  aminmated switcher for transition between upi and cod
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                transitionBuilder: (child, animation) =>
-                    ScaleTransition(child: child, scale: animation),
-                child: _myAnimatedWidget,
-              )
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

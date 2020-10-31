@@ -26,7 +26,7 @@ class SignUpScreen extends StatelessWidget {
               },
               child: Container(
                 padding: EdgeInsets.all(10),
-                color: Theme.of(context).primaryColor,
+                color: Colors.pink[900],
                 child: Text(
                   DataModel.LOGIN,
                   style: TextStyle(
@@ -301,7 +301,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
             onPressed: () {
               _submit();
             },
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Colors.pink[900],
             child: Icon(
               Icons.arrow_forward,
               color: Theme.of(context).highlightColor,

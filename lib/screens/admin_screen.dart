@@ -49,24 +49,60 @@ class _AdminScreenState extends State<AdminScreen> {
                   .reloadPendingProducts();
             },
             child: ordersData.getPendingProductItems.length <= 0
-                ? Center(
-                    child: Text(DataModel.NO_PENDING_PRODUCTS),
+                ? Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                        color: Colors.black,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.elliptical(1200, 2200),
+                          ),
+                          color: Colors.grey[900],
+                        ),
+                        width: MediaQuery.of(context).size.width - 1.5,
+                        height: double.maxFinite,
+                      ),
+                      Center(
+                        child: Text(DataModel.NO_PENDING_PRODUCTS),
+                      ),
+                    ],
                   )
-                : ListView.builder(
-                    itemCount: ordersData.getPendingProductItems.length,
-                    itemBuilder: (ctx, index) => PendingUserProductItem(
-                      id: ordersData.getPendingProductItems[index].id,
-                      title: ordersData.getPendingProductItems[index].title,
-                      description:
-                          ordersData.getPendingProductItems[index].description,
-                      imageUrl:
-                          ordersData.getPendingProductItems[index].imageUrl,
-                      price: ordersData.getPendingProductItems[index].price,
-                      productCategory: ordersData
-                          .getPendingProductItems[index].productCategory,
-                      retailerId:
-                          ordersData.getPendingProductItems[index].retailerId,
-                    ),
+                : Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                        color: Colors.black,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.elliptical(1200, 2200),
+                          ),
+                          color: Colors.grey[900],
+                        ),
+                        width: MediaQuery.of(context).size.width - 1.5,
+                        height: double.maxFinite,
+                      ),
+                      ListView.builder(
+                        itemCount: ordersData.getPendingProductItems.length,
+                        itemBuilder: (ctx, index) => PendingUserProductItem(
+                          id: ordersData.getPendingProductItems[index].id,
+                          title: ordersData.getPendingProductItems[index].title,
+                          description: ordersData
+                              .getPendingProductItems[index].description,
+                          imageUrl:
+                              ordersData.getPendingProductItems[index].imageUrl,
+                          price: ordersData.getPendingProductItems[index].price,
+                          productCategory: ordersData
+                              .getPendingProductItems[index].productCategory,
+                          retailerId: ordersData
+                              .getPendingProductItems[index].retailerId,
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ),

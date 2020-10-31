@@ -65,28 +65,46 @@ class OrdersScreen extends StatelessWidget {
               //  Using consumer here as if we use provider here, whole stateless widget gets
               //  re-rendered again, and we enter an infinite loop
               return Consumer<OrdersProvider>(
-                builder: (ctx, ordersData, child) => Column(
+                builder: (ctx, ordersData, child) => Stack(
+                  alignment: Alignment.topRight,
                   children: [
                     Container(
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.3,
-                      child: Chart(ordersData.getLastWeekOrders),
+                      color: Colors.black,
                     ),
-                    Flexible(
-                      child: RefreshIndicator(
-                        onRefresh: () {
-                          return Provider.of<OrdersProvider>(context,
-                                  listen: false)
-                              .reloadOrders();
-                        },
-                        child: ListView.builder(
-                          itemCount: ordersData.getOrdersList.length,
-                          itemBuilder: (ctx, index) => MyOrdersItem(
-                              ordersData.getOrdersList.toList()[index]),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.elliptical(1200, 2200),
                         ),
+                        color: Colors.grey[900],
                       ),
+                      width: MediaQuery.of(context).size.width - 1.5,
+                      height: double.maxFinite,
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          height: (mediaQuery.size.height -
+                                  appBar.preferredSize.height -
+                                  mediaQuery.padding.top) *
+                              0.3,
+                          child: Chart(ordersData.getLastWeekOrders),
+                        ),
+                        Flexible(
+                          child: RefreshIndicator(
+                            onRefresh: () {
+                              return Provider.of<OrdersProvider>(context,
+                                      listen: false)
+                                  .reloadOrders();
+                            },
+                            child: ListView.builder(
+                              itemCount: ordersData.getOrdersList.length,
+                              itemBuilder: (ctx, index) => MyOrdersItem(
+                                  ordersData.getOrdersList.toList()[index]),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

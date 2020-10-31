@@ -83,7 +83,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Container(
                       height: 5,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.pink[900],
                     ),
                     SizedBox(
                       height: 15,
@@ -161,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                       onPressed: () {
                         _submitProfileEdit();
                       },
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.pink[900],
                     ),
                   ],
                 ),
