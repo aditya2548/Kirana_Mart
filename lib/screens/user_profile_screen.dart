@@ -101,7 +101,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   FirebaseAuth.instance.currentUser
                                       .reload()
                                       .then((value) {
-                                    setState(() {});
+                                    //  Re-built page after refreshing auth token
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context)
+                                        .pushNamed(UserProfileScreen.routeName);
                                   });
                                 },
                                 child: Text(DataModel.REFRESH_STATUS),
