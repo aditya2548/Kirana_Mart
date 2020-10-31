@@ -359,6 +359,7 @@ class ProductsProvider with ChangeNotifier {
                 imageRef.delete().then(
                   (_) {
                     docRef.delete();
+                    _productItems.removeWhere((element) => element.id == id);
                   },
                 );
               },
