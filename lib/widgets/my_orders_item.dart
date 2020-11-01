@@ -1,4 +1,8 @@
+import '../models/data_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../widgets/review_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
 import '../models/orders_provider.dart';
@@ -18,8 +22,8 @@ class MyOrdersItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = order.productsList.length == 1
-        ? " ${order.productsList.length} product. Total amount: Rs.${order.amount}"
-        : " ${order.productsList.length} products. Total amount: Rs.${order.amount}";
+        ? " ${order.productsList.length} product. Total cost: Rs.${order.amount}"
+        : " ${order.productsList.length} products. Total cost: Rs.${order.amount}";
     return Card(
       elevation: 20,
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -32,13 +36,16 @@ class MyOrdersItem extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              // fontSize: 11,
+            ),
           ),
         ),
         subtitle: Center(
           child: Text(
             "Date: ${DateFormat("dd MMM yyyy, HH:mm").format(order.dateTime)} ",
-            style: TextStyle(fontSize: 10),
+            // style: TextStyle(fontSize: 10),
           ),
         ),
         children: [
@@ -48,19 +55,41 @@ class MyOrdersItem extends StatelessWidget {
             itemBuilder: (ctx, index) => Container(
               child: Card(
                 elevation: 10,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6))),
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: ListTile(
+                  dense: true,
                   title: Text(order.productsList.toList()[index].title),
                   subtitle: Text(
-                      "Rs. ${order.productsList.toList()[index].pricePerUnit} x ${order.productsList.toList()[index].quantity}"),
+                      "RetailerRs. ${order.productsList.toList()[index].pricePerUnit} x ${order.productsList.toList()[index].quantity}"),
                   trailing: FlatButton(
                     color: Theme.of(context).primaryColorDark,
                     onPressed: () {
-                      Fluttertoast.cancel();
-                      Fluttertoast.showToast(msg: "Feature coming soon");
+                      //  Bottom sheet to add/update product review
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (_) {
+                            return NewReview(
+                                order.productsList.toList()[index].productId);
+                          });
                     },
-                    child: Text("Review product"),
+                    child: Text(DataModel.REVIEW),
                   ),
+                  leading: IconButton(
+                      color: Theme.of(context).primaryColorDark,
+                      icon: Icon(Icons.call),
+                      onPressed: () async {
+                        var url =
+                            "tel:${order.productsList.toList()[index].retailerNumber}";
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: DataModel.SOMETHING_WENT_WRONG);
+                        }
+                      }),
                 ),
               ),
             ),

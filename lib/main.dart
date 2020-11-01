@@ -1,3 +1,10 @@
+import './screens/pending_payments_admin_screen.dart';
+
+import './screens/payment_screen.dart';
+
+import './models/fcm_provider.dart';
+import './screens/notifications_screen.dart';
+
 import './screens/admin_screen.dart';
 import './screens/user_profile_screen.dart';
 
@@ -57,14 +64,18 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider(
           create: (ctx) => ctx.read<AuthProvider>().authStateChanges,
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FcmProvider(),
+        ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Kirana Mart",
         theme: ThemeData(
           primarySwatch: Colors.teal,
           brightness: Brightness.dark,
-          accentColor: Colors.blue,
+          accentColor: Colors.pink[300],
           primaryColor: Colors.teal[900],
           fontFamily: "QuickSand",
           highlightColor: Colors.white,
@@ -86,6 +97,10 @@ class MyApp extends StatelessWidget {
           WelcomeScreen.routeName: (ctx) => WelcomeScreen(),
           AdminScreen.routeName: (ctx) => AdminScreen(),
           UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
+          NotificationsScreen.routeName: (ctx) => NotificationsScreen(),
+          PaymentScreen.routeName: (ctx) => PaymentScreen(),
+          PendingPaymentsAdminScreen.routeName: (ctx) =>
+              PendingPaymentsAdminScreen(),
         },
       ),
     );
@@ -97,13 +112,12 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //  initialize the fcm provider
+    Provider.of<FcmProvider>(context, listen: false).initialize();
     //  To check whether user is logged in before or not
     final _firebaseUser = context.watch<User>();
-
     if (_firebaseUser == null)
       return WelcomeScreen();
-    else if (_firebaseUser.email == "aditya2512sharma@gmail.com")
-      return AdminScreen();
     else
       return HomePageTabsScreen();
   }

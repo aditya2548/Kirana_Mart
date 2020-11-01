@@ -1,3 +1,7 @@
+import '../models/data_model.dart';
+
+import '../models/key_data_model.dart';
+
 import '../dialog/custom_dialog.dart';
 
 import '../screens/admin_screen.dart';
@@ -14,57 +18,62 @@ class LoginScreen extends StatelessWidget {
   static const routeName = "/login_screen";
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 5,
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(SignUpScreen.routeName);
-              },
-              child: Container(
-                padding: EdgeInsets.all(10),
-                color: Theme.of(context).primaryColor,
-                child: Text(
-                  "Sign Up ?",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Theme.of(context).highlightColor,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColorDark,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 5,
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(SignUpScreen.routeName);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  color: Colors.pink[900],
+                  child: Text(
+                    DataModel.SIGNUP,
+                    style: TextStyle(
+                      // fontSize: 13,
+                      color: Theme.of(context).highlightColor,
+                    ),
                   ),
-                ),
-              )),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-              child: Text(
-                'Welcome Back!',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).highlightColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-              child: Text("Howdy, let's authenticate",
-                  style: TextStyle(
-                      fontSize: 10, color: Theme.of(context).highlightColor)),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
-                child: LoginAuthCard(),
-              ),
-            ),
+                )),
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                child: Text(
+                  DataModel.WELCOME_BACK,
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                child: Text(DataModel.HOWDY_AUTHENTICATE,
+                    style: TextStyle(
+                        // fontSize: 10,
+                        color: Theme.of(context).highlightColor)),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+                  child: LoginAuthCard(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -109,13 +118,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
     });
     if (loginResult == "Logged In") {
       Navigator.pop(context);
-      final _firebaseUser = context.read<User>();
-      //  If user is admin
-      if (_firebaseUser.email == "aditya2512sharma@gmail.com")
-        Navigator.of(context).pushReplacementNamed(AdminScreen.routeName);
-      else
-        Navigator.of(context)
-            .pushReplacementNamed(HomePageTabsScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(HomePageTabsScreen.routeName);
     }
   }
 
@@ -145,18 +148,18 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                     children: <Widget>[
                       TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          labelText: 'E-Mail',
-                          errorStyle: TextStyle(fontSize: 8),
+                          labelText: DataModel.EMAIL,
+                          // errorStyle: TextStyle(fontSize: 8),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (!RegExp(
                                   r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                               .hasMatch(value)) {
-                            return 'Invalid email!';
+                            return DataModel.INVALID_EMAIL;
                           }
                           return null;
                         },
@@ -165,11 +168,11 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         },
                       ),
                       TextFormField(
-                        style: TextStyle(fontSize: 10),
+                        // style: TextStyle(fontSize: 10),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
-                          labelText: 'Password',
-                          errorStyle: TextStyle(fontSize: 8),
+                          labelText: DataModel.PASSWORD,
+                          // errorStyle: TextStyle(fontSize: 8),
                         ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.visiblePassword,
@@ -177,7 +180,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
                         controller: _passwordController,
                         validator: (value) {
                           if (value.isEmpty || value.length < 6) {
-                            return 'Password must be atleast 6 characters long!';
+                            return DataModel.PASSWORD_MIN_LENGTH_LIMIT_ERROR;
                           }
                           return null;
                         },
@@ -205,7 +208,7 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
               onPressed: () {
                 _submit();
               },
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Colors.pink[900],
               child: Icon(
                 Icons.arrow_forward,
                 color: Theme.of(context).highlightColor,
@@ -221,9 +224,10 @@ class _LoginAuthCardState extends State<LoginAuthCard> {
               CustomDialog.resetPasswordDialog(context);
             },
             child: Text(
-              'Forgot Password ?',
-              style:
-                  TextStyle(fontSize: 12, color: Theme.of(context).accentColor),
+              DataModel.FORGOT_PASSWORD,
+              style: TextStyle(
+                  // fontSize: 12,
+                  color: Theme.of(context).accentColor),
             ),
           ),
         ),

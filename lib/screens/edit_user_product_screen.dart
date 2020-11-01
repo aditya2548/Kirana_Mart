@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import '../models/data_model.dart';
+
+import '../models/fcm_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -36,7 +39,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     id: null,
     title: "",
     description: "",
-    imageUrl: "https://bitsofco.de/content/images/2018/12/broken-1.png",
+    imageUrl: DataModel.DEFAULT_IMAGE_URL,
     price: 0,
     productCategory: ProductCategory.HouseHold,
     retailerId: FirebaseAuth.instance.currentUser.uid,
@@ -63,8 +66,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
   var _initialTitle = "";
   var _initialPrice = "";
   var _initialDescription = "";
-  var _initialImageUrl =
-      "https://bitsofco.de/content/images/2018/12/broken-1.png";
+  var _initialImageUrl = DataModel.DEFAULT_IMAGE_URL;
 
   @override
   void didChangeDependencies() {
@@ -101,8 +103,6 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
       }
       setState(() {
         _image = File(image.path);
-        print("\nPath is\n");
-        print(_image.path.split('/').last);
       });
     }
 
@@ -116,13 +116,11 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
         //  Can't use context directly as it throws error
         //  We need to fetch context from form globalkey
         //  Also check if present image is the default image, or previous one exists in case product is edited
-        if (_image == null &&
-            _initialImageUrl ==
-                "https://bitsofco.de/content/images/2018/12/broken-1.png") {
+        if (_image == null && _initialImageUrl == DataModel.DEFAULT_IMAGE_URL) {
           Scaffold.of(_formKey.currentContext).showSnackBar(
             SnackBar(
               content: Text(
-                "Please select an image from camera/gallery",
+                DataModel.PLEASE_SELECT_IMAGE_ERROR,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
@@ -176,6 +174,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           try {
             await Provider.of<ProductsProvider>(context, listen: false)
                 .updateProduct(_editedProduct.id, _editedProduct);
+            await Provider.of<FcmProvider>(context, listen: false)
+                .sendMessageToAdmin(_editedProduct.title);
           } catch (error) {
             await CustomDialog.generalErrorDialog(context);
           }
@@ -185,6 +185,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
           try {
             await Provider.of<ProductsProvider>(context, listen: false)
                 .addProduct(_editedProduct);
+            await Provider.of<FcmProvider>(context, listen: false)
+                .sendMessageToAdmin(_editedProduct.title);
           } catch (error) {
             await CustomDialog.generalErrorDialog(context);
           }
@@ -198,243 +200,298 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_productId == null ? "Add product" : "Edit product"),
-        actions: [
-          IconButton(icon: Icon(Icons.save_rounded), onPressed: saveProduct)
-        ],
-      ),
-      body: _progressBar == true
-          ?
-          //  visible when saving product
-          Center(
-              child: Container(
-                height: 130,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text("Please wait"),
-                    DelayedDisplay(
-                        delay: Duration(seconds: 5),
-                        child: Text(
-                          "Please connect to internet.\nChanges will be reflected after internet connection is regained",
-                          style: TextStyle(fontSize: 7),
-                          textAlign: TextAlign.center,
-                        ))
-                  ],
-                ),
-              ),
-            )
-          //  Main body
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-              child: Form(
-                  //  Used SingleChildScrollView with column instead of listview
-                  //  as listview dynamically removes and re-adds widget
-                  //  So we might loose data if say, we are in landscape mode
-                  key: _formKey,
-                  child: SingleChildScrollView(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_productId == null
+              ? DataModel.ADD_PRODUCT
+              : DataModel.EDIT_PRODUCT),
+          actions: [
+            IconButton(icon: Icon(Icons.save_rounded), onPressed: saveProduct)
+          ],
+        ),
+        body: _progressBar == true
+            ?
+            //  visible when saving product
+            Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    color: Colors.black,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.elliptical(1200, 2200),
+                      ),
+                      color: Colors.grey[900],
+                    ),
+                    width: MediaQuery.of(context).size.width - 1.5,
+                    height: double.maxFinite,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 130,
                       child: Column(
-                    children: [
-                      TextFormField(
-                        initialValue: _initialTitle,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: TextStyle(fontSize: 10),
-                        decoration: InputDecoration(
-                            labelText: "Product name",
-                            errorStyle: TextStyle(fontSize: 8)),
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) => FocusScope.of(context)
-                            .requestFocus(_priceFocusNode),
-                        onSaved: (title) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: title,
-                          description: _editedProduct.description,
-                          imageUrl: _editedProduct.imageUrl,
-                          price: _editedProduct.price,
-                          productCategory: _editedProduct.productCategory,
-                          isFav: _editedProduct.isFav,
-                          retailerId: FirebaseAuth.instance.currentUser.uid,
-                          quantity: 0,
-                        ),
-                        //  null returned in validator->input is correct
-                        validator: (title) {
-                          if (title == null || title.trim() == "") {
-                            return "Please provide a product name";
-                          } else if (title.length < 3) {
-                            return "Product name should be > 3 characters";
-                          } else if (title.length > 25) {
-                            return "Product name should be < 25 characters";
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        initialValue: _initialPrice,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        focusNode: _priceFocusNode,
-                        style: TextStyle(fontSize: 10),
-                        decoration: InputDecoration(
-                            labelText: "Product price (Rs.)",
-                            errorStyle: TextStyle(fontSize: 10)),
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) => FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode),
-                        onSaved: (price) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          description: _editedProduct.description,
-                          imageUrl: _editedProduct.imageUrl,
-                          price: double.parse(price),
-                          productCategory: _editedProduct.productCategory,
-                          isFav: _editedProduct.isFav,
-                          retailerId: FirebaseAuth.instance.currentUser.uid,
-                          quantity: 0,
-                        ),
-                        validator: (price) {
-                          if (price == null || price.trim() == "") {
-                            return "Please provide price";
-                          } else if (double.tryParse(price) == null) {
-                            return "Please provide a valid price";
-                          } else if (double.parse(price) <= 0) {
-                            return "Please provide a price > 0";
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        initialValue: _initialDescription,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        focusNode: _descriptionFocusNode,
-                        style: TextStyle(fontSize: 10),
-                        maxLines: 3,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                            labelText: "Product description",
-                            errorStyle: TextStyle(fontSize: 10)),
-                        keyboardType: TextInputType.multiline,
-                        onSaved: (desc) => _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          description: desc,
-                          imageUrl: _editedProduct.imageUrl,
-                          price: _editedProduct.price,
-                          productCategory: _editedProduct.productCategory,
-                          isFav: _editedProduct.isFav,
-                          retailerId: FirebaseAuth.instance.currentUser.uid,
-                          quantity: 0,
-                        ),
-                        validator: (desc) {
-                          if (desc == null || desc.trim() == "") {
-                            return "Please provide product description";
-                          } else if (desc.length <= 15) {
-                            return "Description should be > 15 characters";
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(
-                            "Product Category:",
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          DropdownButton<String>(
-                            items: ProductCategory.values
-                                .map((e) => DropdownMenuItem<String>(
-                                    value: Product.productCattoString(e),
-                                    child: Text(
-                                      Product.productCattoString(e),
-                                      style: TextStyle(fontSize: 10),
-                                    )))
-                                .toList(),
-                            onChanged: (selected) {
-                              //  This line added to stop focus from going back to last textformfield
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              setState(() {
-                                _initialProductCategory = selected;
-                                _editedProduct = Product(
-                                  id: _editedProduct.id,
-                                  title: _editedProduct.title,
-                                  description: _editedProduct.description,
-                                  imageUrl: _editedProduct.imageUrl,
-                                  price: _editedProduct.price,
-                                  productCategory:
-                                      Product.stringtoProductCat(selected),
-                                  isFav: _editedProduct.isFav,
-                                  retailerId:
-                                      FirebaseAuth.instance.currentUser.uid,
-                                  quantity: 0,
-                                );
-                              });
-                            },
-                            value: _initialProductCategory,
-                          ),
+                          CircularProgressIndicator(),
+                          Text(DataModel.PLEASE_WAIT),
+                          DelayedDisplay(
+                              delay: Duration(seconds: 5),
+                              child: Text(
+                                DataModel
+                                    .CONNECT_TO_INTERNET_WARNING_FOR_CHANGES,
+                                style: TextStyle(fontSize: 7),
+                                textAlign: TextAlign.center,
+                              ))
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
+                    ),
+                  ),
+                ],
+              )
+            //  Main body
+            : Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    color: Colors.black,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.elliptical(1200, 2200),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: 160,
-                            width: 160,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
+                      color: Colors.grey[900],
+                    ),
+                    width: MediaQuery.of(context).size.width - 1.5,
+                    height: double.maxFinite,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                    child: Form(
+                        //  Used SingleChildScrollView with column instead of listview
+                        //  as listview dynamically removes and re-adds widget
+                        //  So we might loose data if say, we are in landscape mode
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                            TextFormField(
+                              initialValue: _initialTitle,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              // style: TextStyle(fontSize: 10),
+                              decoration: InputDecoration(
+                                labelText: DataModel.PRODUCT_NAME,
+                                errorStyle: TextStyle(fontSize: 8),
                               ),
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) => FocusScope.of(context)
+                                  .requestFocus(_priceFocusNode),
+                              onSaved: (title) => _editedProduct = Product(
+                                id: _editedProduct.id,
+                                title: title,
+                                description: _editedProduct.description,
+                                imageUrl: _editedProduct.imageUrl,
+                                price: _editedProduct.price,
+                                productCategory: _editedProduct.productCategory,
+                                isFav: _editedProduct.isFav,
+                                retailerId:
+                                    FirebaseAuth.instance.currentUser.uid,
+                                quantity: 0,
+                              ),
+                              //  null returned in validator->input is correct
+                              validator: (title) {
+                                if (title == null || title.trim() == "") {
+                                  return DataModel.PROVIDE_PROVIDER_NAME_ERROR;
+                                } else if (title.length < 3) {
+                                  return DataModel
+                                      .PRODUCT_NAME_MIN_LENGTH_ERROR;
+                                } else if (title.length > 25) {
+                                  return DataModel
+                                      .PRODUCT_NAME_MAX_LENGTH_ERROR;
+                                }
+                                return null;
+                              },
                             ),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            child: _image != null
-                                ? Image.file(
-                                    _image,
-                                    fit: BoxFit.fill,
-                                  )
-                                : Image.network(
-                                    _initialImageUrl,
-                                    fit: BoxFit.fill,
+                            TextFormField(
+                              initialValue: _initialPrice,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              focusNode: _priceFocusNode,
+                              // style: TextStyle(fontSize: 10),
+                              decoration: InputDecoration(
+                                  labelText: DataModel.PRODUCT_PRICE_RS,
+                                  errorStyle: TextStyle(fontSize: 10)),
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) => FocusScope.of(context)
+                                  .requestFocus(_descriptionFocusNode),
+                              onSaved: (price) => _editedProduct = Product(
+                                id: _editedProduct.id,
+                                title: _editedProduct.title,
+                                description: _editedProduct.description,
+                                imageUrl: _editedProduct.imageUrl,
+                                price: double.parse(price),
+                                productCategory: _editedProduct.productCategory,
+                                isFav: _editedProduct.isFav,
+                                retailerId:
+                                    FirebaseAuth.instance.currentUser.uid,
+                                quantity: 0,
+                              ),
+                              validator: (price) {
+                                if (price == null || price.trim() == "") {
+                                  return DataModel.PROVIDE_PRICE_ERROR;
+                                } else if (double.tryParse(price) == null) {
+                                  return DataModel.PROVIDE_VALID_PRICE_ERROR;
+                                } else if (double.parse(price) <= 0) {
+                                  return DataModel.PROVIDE_POSITIVE_PRICE_ERROR;
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              initialValue: _initialDescription,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              focusNode: _descriptionFocusNode,
+                              // style: TextStyle(fontSize: 10),
+                              maxLines: 3,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                  labelText: DataModel.PRODUCT_DESCRIPTION,
+                                  errorStyle: TextStyle(fontSize: 10)),
+                              keyboardType: TextInputType.multiline,
+                              onSaved: (desc) => _editedProduct = Product(
+                                id: _editedProduct.id,
+                                title: _editedProduct.title,
+                                description: desc,
+                                imageUrl: _editedProduct.imageUrl,
+                                price: _editedProduct.price,
+                                productCategory: _editedProduct.productCategory,
+                                isFav: _editedProduct.isFav,
+                                retailerId:
+                                    FirebaseAuth.instance.currentUser.uid,
+                                quantity: 0,
+                              ),
+                              validator: (desc) {
+                                if (desc == null || desc.trim() == "") {
+                                  return DataModel.PROVIDE_DESCRIPTION_ERROR;
+                                } else if (desc.length <= 15) {
+                                  return DataModel.descriptionMinLengthError;
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  DataModel.PRODUCT_CATEGORY,
+                                  // style: TextStyle(fontSize: 10),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                DropdownButton<String>(
+                                  items: ProductCategory.values
+                                      .map((e) => DropdownMenuItem<String>(
+                                          value: Product.productCattoString(e),
+                                          child: Text(
+                                            Product.productCattoString(e),
+                                            // style: TextStyle(fontSize: 10),
+                                          )))
+                                      .toList(),
+                                  onChanged: (selected) {
+                                    //  This line added to stop focus from going back to last textformfield
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    setState(() {
+                                      _initialProductCategory = selected;
+                                      _editedProduct = Product(
+                                        id: _editedProduct.id,
+                                        title: _editedProduct.title,
+                                        description: _editedProduct.description,
+                                        imageUrl: _editedProduct.imageUrl,
+                                        price: _editedProduct.price,
+                                        productCategory:
+                                            Product.stringtoProductCat(
+                                                selected),
+                                        isFav: _editedProduct.isFav,
+                                        retailerId: FirebaseAuth
+                                            .instance.currentUser.uid,
+                                        quantity: 0,
+                                      );
+                                    });
+                                  },
+                                  value: _initialProductCategory,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 160,
+                                  width: 160,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2,
+                                    ),
                                   ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.camera,
-                              size: 30,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  child: _image != null
+                                      ? Image.file(
+                                          _image,
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Image.network(
+                                          _initialImageUrl,
+                                          fit: BoxFit.fill,
+                                        ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.camera,
+                                    size: 30,
+                                  ),
+                                  onPressed: () =>
+                                      getImage(CAMERA_REQUEST_CODE),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.insert_photo,
+                                    size: 30,
+                                  ),
+                                  onPressed: () =>
+                                      getImage(GALLERY_REQUEST_CODE),
+                                ),
+                              ],
                             ),
-                            onPressed: () => getImage(CAMERA_REQUEST_CODE),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.insert_photo,
-                              size: 30,
+                            SizedBox(
+                              height: 20,
                             ),
-                            onPressed: () => getImage(GALLERY_REQUEST_CODE),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      RaisedButton(
-                        padding: EdgeInsets.all(5),
-                        child: Text("Submit"),
-                        onPressed: saveProduct,
-                      )
-                    ],
-                  ))),
-            ),
+                            RaisedButton(
+                              color: Colors.pink,
+                              padding: EdgeInsets.all(5),
+                              child: Text(DataModel.SUBMIT),
+                              onPressed: saveProduct,
+                            )
+                          ],
+                        ))),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }

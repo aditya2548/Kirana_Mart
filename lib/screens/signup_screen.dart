@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/auth_provider.dart';
 import '../screens/home_page_tabs_screen.dart';
 import 'package:provider/provider.dart';
@@ -10,57 +12,63 @@ class SignUpScreen extends StatelessWidget {
   static const routeName = "/signup_screen";
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColorDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 5,
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
-              color: Theme.of(context).primaryColor,
-              child: Text(
-                "Login ?",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Theme.of(context).highlightColor,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColorDark,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 5,
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.routeName);
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                color: Colors.pink[900],
+                child: Text(
+                  DataModel.LOGIN,
+                  style: TextStyle(
+                    // fontSize: 20,
+                    color: Theme.of(context).highlightColor,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-              child: Text(
-                'Hello, friend!',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).highlightColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-              child: Text("Let's get started",
-                  style: TextStyle(
-                      fontSize: 10, color: Theme.of(context).highlightColor)),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
-                child: SignupAuthCard(),
-              ),
-            ),
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                child: Text(
+                  DataModel.HELLO_FRIEND,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                child: Text(
+                  DataModel.LETS_GET_STARTED,
+                  style: TextStyle(color: Theme.of(context).highlightColor),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+                  child: SignupAuthCard(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -85,6 +93,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
     'mobileNumber': '',
     'address': '',
     'password': '',
+    'upi': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -138,17 +147,17 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
-                        labelText: 'Name',
-                        errorStyle: TextStyle(fontSize: 8),
+                        labelText: DataModel.NAME,
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.name,
                       validator: (value) {
                         if (value == null ||
                             value.trim() == "" ||
                             value.length < 3) {
-                          return 'Invalid Name!';
+                          return DataModel.INVALID_NAME;
                         }
                         return null;
                       },
@@ -158,18 +167,18 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'E-Mail',
-                        errorStyle: TextStyle(fontSize: 8),
+                        labelText: DataModel.EMAIL,
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (!RegExp(
                                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                             .hasMatch(value)) {
-                          return 'Invalid email!';
+                          return DataModel.INVALID_EMAIL;
                         }
                         return null;
                       },
@@ -179,19 +188,19 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
-                      decoration: InputDecoration(
-                        labelText: 'Mobile Number',
-                        errorStyle: TextStyle(fontSize: 8),
-                      ),
+                      // style: TextStyle(fontSize: 10),
+                      decoration:
+                          InputDecoration(labelText: DataModel.MOBILE_NUMBER
+                              // errorStyle: TextStyle(fontSize: 8),
+                              ),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value.length == 0) {
-                          return 'Please enter mobile number';
-                        } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                          return DataModel.ENTER_OBILE_NUMBER;
+                        } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
                             .hasMatch(value)) {
-                          return 'Please enter valid mobile number';
+                          return DataModel.ENTER_VALID_MOBILE_NUMBER;
                         }
                         return null;
                       },
@@ -201,19 +210,19 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       decoration: InputDecoration(
-                        labelText: 'Address',
-                        errorStyle: TextStyle(fontSize: 8),
+                        labelText: DataModel.ADDRESS,
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
                       minLines: 1,
                       validator: (value) {
                         if (value == null || value.trim() == "") {
-                          return 'Please enter your address';
+                          return DataModel.ENTER_ADDRESS;
                         } else if (value.length <= 10) {
-                          return 'Address must be atleast 10 characters long';
+                          return DataModel.ENTER_VALID_ADDRESS;
                         }
                         return null;
                       },
@@ -222,11 +231,22 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       },
                     ),
                     TextFormField(
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
+                      decoration: InputDecoration(
+                          labelText: DataModel.UPI_HINT,
+                          hintText: DataModel.UPI_MANDATORY),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        _authData['upi'] = value;
+                      },
+                    ),
+                    TextFormField(
+                      // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        errorStyle: TextStyle(fontSize: 8),
+                        labelText: DataModel.PASSWORD,
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.visiblePassword,
@@ -234,7 +254,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       controller: _passwordController,
                       validator: (value) {
                         if (value.isEmpty || value.length < 6) {
-                          return 'Password must be atleast 6 characters long!';
+                          return DataModel.PASSWORD_MIN_LENGTH_LIMIT_ERROR;
                         }
                         return null;
                       },
@@ -243,21 +263,23 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
                       },
                     ),
                     TextFormField(
-                      style: TextStyle(fontSize: 10),
+                      // style: TextStyle(fontSize: 10),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        errorStyle: TextStyle(fontSize: 8),
+                        labelText: DataModel.CONFIRM_PASSWORD,
+                        // errorStyle: TextStyle(fontSize: 8),
                       ),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
                       validator: (value) {
                         if (value != _passwordController.text) {
-                          return 'Passwords do not match!';
+                          return DataModel.PASSWORD_DONT_MATCH;
                         }
                         return null;
                       },
+                      onFieldSubmitted: (_) =>
+                          FocusScope.of(context).requestFocus(FocusNode()),
                     ),
                     SizedBox(
                       height: 8,
@@ -279,7 +301,7 @@ class _SignupAuthCardState extends State<SignupAuthCard> {
             onPressed: () {
               _submit();
             },
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Colors.pink[900],
             child: Icon(
               Icons.arrow_forward,
               color: Theme.of(context).highlightColor,

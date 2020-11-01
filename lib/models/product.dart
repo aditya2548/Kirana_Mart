@@ -1,5 +1,10 @@
+import '../models/fcm_provider.dart';
+
+import '../models/product_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum ProductCategory {
   CookingEssentials,
@@ -17,7 +22,9 @@ class Review {
   final String description;
   @required
   final int stars;
-  Review({this.username, this.description, this.stars});
+  @required
+  final DateTime dateTime;
+  Review({this.username, this.description, this.stars, this.dateTime});
 }
 
 class Product with ChangeNotifier {
@@ -31,11 +38,7 @@ class Product with ChangeNotifier {
   final int quantity;
   bool isFav;
   //  Map of reviews user-email as the key (dummy reviews)
-  List<Map<String, Review>> _reviews = [
-    {"userId": Review(username: "Aman", stars: 5, description: "Good")},
-    {"userId": Review(username: "Amit", stars: 2, description: "Average")},
-    {"userId": Review(username: "Gaurav", stars: 1, description: "Good")},
-  ];
+  List<Map<String, Review>> _reviews = [];
 
   Product({
     @required this.id,
@@ -84,16 +87,31 @@ class Product with ChangeNotifier {
   }
 
 //  function to toggle favourite status and to notify to all the listeners of product
-  Future<void> toggleFav() async {
+//  We inverted the fav status in the product item itself
+//  Also subscribe to topic(product ID), when added to fav, and un-subscribe if removed from fav
+  Future<void> toggleFav(BuildContext context) async {
+    if (isFav == false) {
+      Provider.of<ProductsProvider>(context, listen: false).removeFav(id);
+      await Provider.of<FcmProvider>(context, listen: false)
+          .unsubscribeFromTopic(id);
+    } else {
+      Provider.of<ProductsProvider>(context, listen: false).addFav(id);
+      await Provider.of<FcmProvider>(context, listen: false)
+          .subscribeToTopic(id);
+    }
     try {
-      final DocumentReference docRef =
-          FirebaseFirestore.instance.collection("Products").doc(id);
-
-      await docRef.update(
+      // final DocumentReference docRef =
+      //     FirebaseFirestore.instance.collection("Products").doc(id);
+      final CollectionReference collectionReference = FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyFav");
+      await collectionReference.doc(id).set(
         {
-          "isFav": !isFav,
+          "isFav": isFav,
         },
       );
+      Provider.of<ProductsProvider>(context, listen: false).fetchFavsRealTime();
     } catch (error) {
       throw error;
     }
@@ -119,5 +137,27 @@ class Product with ChangeNotifier {
   //  Function to get the review's list
   List<Map<String, Review>> get getReviews {
     return [..._reviews];
+  }
+
+  //  Function to fetch reviews from firestore
+  Future fetchAllReviews() async {
+    _reviews = [];
+    var snapshot = await FirebaseFirestore.instance
+        .collection("Products")
+        .doc(id)
+        .collection("Reviews")
+        .get();
+    print(snapshot.docs.length);
+    snapshot.docs.forEach((element) {
+      _reviews.add({
+        element.id: Review(
+          dateTime: DateTime.parse(element.data()["dateTime"]),
+          username: element.data()["username"],
+          stars: element.data()["stars"],
+          description: element.data()["description"],
+        ),
+      });
+    });
+    notifyListeners();
   }
 }

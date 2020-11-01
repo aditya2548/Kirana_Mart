@@ -1,7 +1,9 @@
+import '../models/fcm_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../models/cart_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -35,8 +37,10 @@ class OrdersProvider with ChangeNotifier {
   //  Using current datetime converted to Iso8601String for easy retreival
   //  Document containing totalAmount, date, collection of cartitems
   //  Also, reduce appropriate quantity from stock
+  //  boolean upi to determine whether cost was paid online or through cod
 
-  Future<void> addOrder(List<CartItem> productsList, double amount) async {
+  Future<void> addOrder(List<CartItem> productsList, double amount,
+      BuildContext context, bool upi) async {
     print("add order");
     try {
       final CollectionReference c = FirebaseFirestore.instance
@@ -53,20 +57,39 @@ class OrdersProvider with ChangeNotifier {
         },
       );
 
-      productsList.forEach((element) {
-        prod.doc(element.productId).update({
-          "quantity": FieldValue.increment(-1 * element.quantity),
-        });
-        c.doc(docRef.id).collection("productsList").add(
-          {
-            "id": element.id,
-            "title": element.title,
-            "quantity": element.quantity,
-            "pricePerUnit": element.pricePerUnit,
-            "productId": element.productId,
-          },
-        );
-      });
+      productsList.forEach(
+        (element) async {
+          await prod.doc(element.productId).update({
+            "quantity": FieldValue.increment(-1 * element.quantity),
+          });
+          //  Send product running low in stock to subscribed users(quantity<=10)
+          //  Also, send low stock message to retailer
+          await prod.doc(element.productId).get().then((value) {
+            if (value.data()["quantity"] <= 10) {
+              Provider.of<FcmProvider>(context, listen: false)
+                  .sendLowStockAlertToSubscribers(
+                      element.productId, element.title);
+              Provider.of<FcmProvider>(context, listen: false)
+                  .sendLowStockMessageToRetailer(element.productId,
+                      value.data()["quantity"], element.title);
+            }
+          });
+          await c.doc(docRef.id).collection("productsList").add(
+            {
+              "id": element.id,
+              "title": element.title,
+              "quantity": element.quantity,
+              "pricePerUnit": element.pricePerUnit,
+              "productId": element.productId,
+              "retailerNumber": element.retailerNumber,
+            },
+          );
+
+          await Provider.of<FcmProvider>(context, listen: false)
+              .sendSaleMessageToRetailer(element.productId, element.quantity,
+                  element.quantity * element.pricePerUnit, upi);
+        },
+      );
     }
     //  throw the error to the screen/widget using the method
     catch (error) {
@@ -104,6 +127,7 @@ class OrdersProvider with ChangeNotifier {
                     quantity: element.data()["quantity"],
                     pricePerUnit: element.data()["pricePerUnit"],
                     productId: element.data()["productId"],
+                    retailerNumber: element.data()["retailerNumber"],
                   ),
                 );
               });

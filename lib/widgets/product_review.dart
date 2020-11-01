@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../models/product.dart';
 import 'package:flutter/material.dart';
 
@@ -9,25 +11,24 @@ class ProductReview extends StatelessWidget {
   //  Function to fetch color as per rating
   Color getColor(int stars) {
     switch (stars) {
-      case 0:
-        return Colors.redAccent[700];
       case 1:
-        return Colors.deepOrange;
+        return Colors.redAccent[700];
       case 2:
-        return Colors.amber;
+        return Colors.deepOrange;
       case 3:
-        return Colors.lime;
+        return Colors.amber;
       case 4:
         return Colors.lightGreen;
       case 5:
         return Colors.green[800];
       default:
-        return Colors.black;
+        return Colors.white;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var date = DateFormat("dd MMM yyyy").format(review.dateTime);
     return Card(
       elevation: 10,
       child: Container(
@@ -47,11 +48,11 @@ class ProductReview extends StatelessWidget {
                 children: [
                   Text(
                     review.stars.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   ),
                   Icon(
                     Icons.star,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ],
               ),
@@ -59,11 +60,16 @@ class ProductReview extends StatelessWidget {
             Container(
               child: Column(
                 children: [
-                  Text(
-                    "User: ${review.username}",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    width: 200,
+                    child: Text(
+                      "User: ${review.username}, Date: $date",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 10,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Container(

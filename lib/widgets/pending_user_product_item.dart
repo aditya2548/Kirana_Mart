@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import '../models/data_model.dart';
+
 import '../models/product_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,8 @@ class PendingUserProductItem extends StatefulWidget {
   final String description;
   @required
   final ProductCategory productCategory;
+  @required
+  final String retailerId;
 
   PendingUserProductItem({
     this.id,
@@ -32,6 +36,7 @@ class PendingUserProductItem extends StatefulWidget {
     this.price,
     this.imageUrl,
     this.productCategory,
+    this.retailerId,
   });
 
   @override
@@ -55,14 +60,13 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
       if (reason.trim() == "") {
         Fluttertoast.cancel();
         Fluttertoast.showToast(
-            msg: "Please provide a reason for rejection",
+            msg: DataModel.PROVIDE_REJECTION_REASON,
             backgroundColor: Theme.of(context).errorColor,
             fontSize: 12);
         return;
       }
-      print(reason);
-      Provider.of<ProductsProvider>(context, listen: false)
-          .declineProduct(widget.id);
+      Provider.of<ProductsProvider>(context, listen: false).declineProduct(
+          widget.id, context, reason, widget.retailerId, widget.title);
     }
 
     return Card(
@@ -83,13 +87,13 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
         ),
         subtitle: Text(
           "Price per item: Rs. ${widget.price}",
-          style: TextStyle(fontSize: 10),
+          // style: TextStyle(fontSize: 10),
         ),
         children: [
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              "Product category:",
+              DataModel.PRODUCT_CATEGORY,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -107,7 +111,7 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: Text(
-              "Product description:",
+              DataModel.PRODUCT_DETAILS,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 15,
@@ -124,34 +128,37 @@ class _PendingUserProductItemState extends State<PendingUserProductItem> {
           Divider(),
           TextField(
             decoration: InputDecoration(
-              hintText: 'Enter a rejection reason',
+              hintText: DataModel.ENTER_REJECTION_REASON,
             ),
             controller: myController,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              RaisedButton.icon(
-                  label: Text("Accept"),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  color: Theme.of(context).primaryColorDark,
-                  icon: Icon(
-                    Icons.done_all,
-                  ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton.icon(
+                    label: Text(DataModel.ACCEPT),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    color: Theme.of(context).primaryColorDark,
+                    icon: Icon(
+                      Icons.done_all,
+                    ),
+                    onPressed: () {
+                      Provider.of<ProductsProvider>(context, listen: false)
+                          .approveProduct(widget.id, context);
+                    }),
+                RaisedButton.icon(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  label: Text(DataModel.REJECT),
+                  icon: Icon(Icons.highlight_remove),
+                  color: Theme.of(context).errorColor,
                   onPressed: () {
-                    Provider.of<ProductsProvider>(context, listen: false)
-                        .approveProduct(widget.id);
-                  }),
-              RaisedButton.icon(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                label: Text("Reject"),
-                icon: Icon(Icons.highlight_remove),
-                color: Theme.of(context).errorColor,
-                onPressed: () {
-                  sendRejectionReason();
-                },
-              ),
-            ],
+                    sendRejectionReason();
+                  },
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 10,

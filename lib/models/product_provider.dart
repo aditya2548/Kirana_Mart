@@ -1,5 +1,8 @@
+import '../models/fcm_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../dialog/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,56 +12,33 @@ import 'package:flutter/material.dart';
 
 class ProductsProvider with ChangeNotifier {
   //  private list of products(private so that anyone cannot alter it without notifying listeners)
-  List<Product> _productItems = [
-    // Product(
-    //   id: 'p1',
-    //   title: 'Ketchup',
-    //   description:
-    //       "tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup tomato ketchup",
-    //   price: 50,
-    //   imageUrl:
-    //       'https://assets.sainsburys-groceries.co.uk/gol/3304846/1/640x640.jpg',
-    //   productCategory: ProductCategory.PackagedFoods,
-    // ),
-    // Product(
-    //   id: 'p2',
-    //   title: 'Soap',
-    //   description: 'herbal soap',
-    //   price: 60,
-    //   imageUrl:
-    //       'https://rukminim1.flixcart.com/image/352/352/jyg5lzk0/soap/q/g/9/5-375-oil-clear-glow-soap-bar-75-gms-pack-of-5-pears-original-imafhmwfhus6hnzf.jpeg?q=70',
-    //   productCategory: ProductCategory.PersonalCare,
-    // ),
-    // Product(
-    //   id: 'p3',
-    //   title: 'Coffee',
-    //   description: 'freshly brewed coffee.',
-    //   price: 150,
-    //   imageUrl:
-    //       'https://www.cancer.org/content/dam/cancer-org/images/photographs/single-use/espresso-coffee-cup-with-beans-on-table-restricted.jpg',
-    //   productCategory: ProductCategory.Beverages,
-    // ),
-    // Product(
-    //   id: 'p4',
-    //   title: 'Kurkure',
-    //   description: 'ready to eat snack',
-    //   price: 20,
-    //   imageUrl:
-    //       'https://5.imimg.com/data5/WT/SB/MB/SELLER-77460638/kurkure-500x500.jpg',
-    //   productCategory: ProductCategory.PackagedFoods,
-    // ),
-  ];
+  List<Product> _productItems = [];
+
+  //  Stores documentSnashot of last fetched document(lazy loading)
+  DocumentSnapshot _lastDocument;
+
+  //   List of List of products that contain paged product lists
+  //   so that we can update a particular previous page if needed
+  List<List<Product>> _allPagedProducts = List<List<Product>>();
+
+  //  boolean to know whether we have more products available or not
+  bool _hasMoreProducts = true;
+
+  //  number of products to be loaded at once
+  int _productsPerPage = 30;
 
   //  List of all pending products for approval by admin
   List<Product> _pendingProducts = [];
 
-  //  function to get a copy of list of products
+  //  function to get a copy of list of products sorted by title
   List<Product> get getProductItems {
+    _productItems.sort((a, b) => a.title.compareTo(b.title));
     return [..._productItems];
   }
 
   //  Function for getting list of products based upon the search query
   List<Product> getProductItemsOnSearch(String search) {
+    reloadProducts();
     return _productItems
         .where((element) =>
             element.title.toLowerCase().contains(search.toLowerCase()))
@@ -75,7 +55,19 @@ class ProductsProvider with ChangeNotifier {
 
   //  function to get a copy of list of favorite products
   List<Product> get getFavoriteProductItems {
-    return _productItems.where((element) => element.isFav).toList();
+    return getProductItems.where((element) => element.isFav).toList();
+  }
+
+  //  Remove a product from favs locally
+  void removeFav(id) {
+    getFavoriteProductItems.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
+
+  //  Add a product to favs locally
+  void addFav(id) {
+    getFavoriteProductItems.add(getProductFromId(id));
+    notifyListeners();
   }
 
   //  function to get a product when id is provided
@@ -101,10 +93,12 @@ class ProductsProvider with ChangeNotifier {
           "price": product.price,
           "productCategory":
               Product.productCattoString(product.productCategory),
-          "isFav": product.isFav,
+          // "isFav": product.isFav,
           "retailerId": product.retailerId,
         },
       );
+      Fluttertoast.showToast(
+          msg: "Product will be added after appoval by admin");
     }
     //  throw the error to the screen/widget using the method
     catch (error) {
@@ -112,23 +106,67 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  //  Function to freshly load the products list
+  //  On formation on screen, or on refresh
+  bool reloading = false;
+  Future<void> fetchProductsRealTime() async {
+    _hasMoreProducts = true;
+    reloading = true;
+    _lastDocument = null;
+    await listenToProductsRealTime();
+    reloading = false;
+  }
+
+  //  Request for more products if needed
+  Future<void> requestMoreData() async {
+    return await listenToProductsRealTime();
+  }
+
+  //  get data whether more products are available or not
+  bool moreProductsAvailable() {
+    return _hasMoreProducts;
+  }
+
   //  Function to fetch products from firestore in real-time
   //  Add changes in update/add/delete products are handled here to show effect
-  Future<void> fetchProductsRealTime() async {
-    print("fetch");
-
-    final CollectionReference c =
-        FirebaseFirestore.instance.collection("Products");
+  //  Also, changes to fav of any user are also shown
+  //  Products fetched in pages of 20 products per page
+  Future<void> listenToProductsRealTime() async {
+    var pageProducts = FirebaseFirestore.instance
+        .collection("Products")
+        .orderBy("title")
+        .limit(_productsPerPage);
+    if (reloading) {
+      return;
+    }
+    //  if requesting more products
+    if (_lastDocument != null) {
+      pageProducts = pageProducts.startAfterDocument(_lastDocument);
+    }
+    //  If no more data, return
+    if (!_hasMoreProducts) {
+      return false;
+    }
+    // if (reloading) {
+    //   _allPagedProducts = List<List<Product>>();
+    //   reloading = false;
+    // }
+    //  We got data to load now!!
+    //  Index of page to be requested
+    var _currentRequestIndex = _allPagedProducts.length;
 
     List<Product> _fetchedProducts = [];
+
+    //  Listen and fetch products
     try {
-      c.snapshots().listen((event) {
-        if (event.docChanges == null) {
+      pageProducts.snapshots().listen((event) {
+        if (event.docChanges == null || event.docs.isEmpty) {
+          _hasMoreProducts = false;
           return;
         }
+        List<Product> allProducts;
         event.docChanges.forEach((element) {
           if (element.type == DocumentChangeType.added) {
-            print("add");
             _fetchedProducts.add(
               Product(
                 id: element.doc.id,
@@ -143,7 +181,6 @@ class ProductsProvider with ChangeNotifier {
               ),
             );
           } else if (element.type == DocumentChangeType.modified) {
-            print("modify");
             final modifyIndex =
                 _fetchedProducts.indexWhere((el) => el.id == element.doc.id);
             _fetchedProducts[modifyIndex] = Product(
@@ -154,19 +191,74 @@ class ProductsProvider with ChangeNotifier {
               price: element.doc.data()["price"],
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
-              isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
               quantity: element.doc.data()["quantity"],
             );
           } else if (element.type == DocumentChangeType.removed) {
-            print("remove");
             _fetchedProducts.removeWhere((el) => el.id == element.doc.id);
           }
-          print(_fetchedProducts.length);
-          _productItems = _fetchedProducts;
-          notifyListeners();
-          reloadProducts();
+
+          //  If current request index is less than the length of allPagedProducts
+          //  it means, we're modifying changes made to previous fetched product
+          var pageExits = _currentRequestIndex < _allPagedProducts.length;
+
+          if (pageExits) {
+            _allPagedProducts[_currentRequestIndex] = _fetchedProducts;
+          } else {
+            _allPagedProducts.add(_fetchedProducts);
+          }
+
+          //  Fold to fetch all the products from the list of (paged list of products)
+          allProducts = _allPagedProducts.fold<List<Product>>(List<Product>(),
+              (initialValue, pageItems) => initialValue..addAll(pageItems));
+
+          if (_currentRequestIndex == _allPagedProducts.length - 1) {
+            _lastDocument = event.docs.last;
+          }
+          _hasMoreProducts = _fetchedProducts.length == _productsPerPage;
+
+          // reloadProducts();
         });
+        // _productItems = _fetchedProducts;
+        print(
+            "Lazy Loading fetched: ${_fetchedProducts.length}, total: ${allProducts.length}");
+        // _productItems = allProducts.toSet().toList();
+        //  To avoid data duplicacy
+        final ids = allProducts.map((e) => e.id).toSet();
+        allProducts.retainWhere((x) => ids.remove(x.id));
+        _productItems = allProducts;
+        print(
+            "Lazy Loading fetched: ${_fetchedProducts.length}, total: ${allProducts.length}");
+        fetchFavsRealTime();
+
+        notifyListeners();
+      });
+    } catch (error) {
+      throw error;
+    }
+    return true;
+  }
+
+  //  To listen to changes in fav
+  Future<void> fetchFavsRealTime() async {
+    final CollectionReference favReference = FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("MyFav");
+    try {
+      favReference.snapshots().listen((event) {
+        if (event.docChanges == null) {
+          return;
+        }
+        // reloadProducts();
+        // fetchProductsRealTime();
+        event.docChanges.forEach((element) {
+          var index = _productItems
+              .indexWhere((product) => product.id == element.doc.id);
+          if (index != -1)
+            _productItems[index].isFav = element.doc.data()["isFav"];
+        });
+        // requestMoreData();
       });
     } catch (error) {
       throw error;
@@ -181,10 +273,24 @@ class ProductsProvider with ChangeNotifier {
           FirebaseFirestore.instance.collection("Products");
 
       final value = await c.get();
-      final List<Product> _fetchedProducts = [];
+      List<Product> _fetchedProducts = [];
       if (value.docs == null) {
         return;
       }
+      List<String> isFav = [];
+      await FirebaseFirestore.instance
+          .collection("User")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("MyFav")
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          if (element.data()["isFav"] == true) {
+            isFav.add(element.id);
+          }
+        });
+        // isFav.add(value)
+      });
       value.docs.forEach((element) {
         _fetchedProducts.add(Product(
           id: element.id,
@@ -194,11 +300,14 @@ class ProductsProvider with ChangeNotifier {
           price: element.data()["price"],
           productCategory:
               Product.stringtoProductCat(element.data()["productCategory"]),
-          isFav: element.data()["isFav"],
+          // isFav: element.data()["isFav"],
+          isFav: isFav.contains(element.id),
           retailerId: element.data()["retailerId"],
           quantity: element.data()["quantity"],
         ));
       });
+      _fetchedProducts = _fetchedProducts.toSet().toList();
+      _fetchedProducts.sort((a, b) => a.title.compareTo(b.title));
       _productItems = _fetchedProducts;
       notifyListeners();
     } catch (error) {
@@ -226,10 +335,12 @@ class ProductsProvider with ChangeNotifier {
           "price": product.price,
           "productCategory":
               Product.productCattoString(product.productCategory),
-          "isFav": product.isFav,
+          // "isFav": product.isFav,
           "retailerId": product.retailerId,
         },
       );
+      Fluttertoast.showToast(
+          msg: "Edits will be visible after approval by admin");
     } catch (error) {
       throw error;
     }
@@ -256,6 +367,7 @@ class ProductsProvider with ChangeNotifier {
                 imageRef.delete().then(
                   (_) {
                     docRef.delete();
+                    _productItems.removeWhere((element) => element.id == id);
                   },
                 );
               },
@@ -323,7 +435,7 @@ class ProductsProvider with ChangeNotifier {
               price: element.doc.data()["price"],
               productCategory: Product.stringtoProductCat(
                   element.doc.data()["productCategory"]),
-              isFav: _fetchedProducts[modifyIndex].isFav,
+              // isFav: _fetchedProducts[modifyIndex].isFav,
               retailerId: element.doc.data()["retailerId"],
               quantity: element.doc.data()["quantity"],
             );
@@ -348,9 +460,12 @@ class ProductsProvider with ChangeNotifier {
 
   //  Product approved by admin
   //  Add to all products, remove from pending products
-  Future<void> approveProduct(String id) async {
+  Future<void> approveProduct(String id, BuildContext context) async {
     final DocumentReference docRef =
         FirebaseFirestore.instance.collection("Products").doc(id);
+
+    //  flag to know whether product modified or added
+    bool flag = true;
 
     final _updatedData = await FirebaseFirestore.instance
         .collection("PendingProducts")
@@ -360,6 +475,7 @@ class ProductsProvider with ChangeNotifier {
       (value) {
         //  If product was modified
         if (value.exists) {
+          flag = false;
           String _fetchedImageUrl = value.data()["imageUrl"];
 
           docRef.set(
@@ -369,8 +485,9 @@ class ProductsProvider with ChangeNotifier {
               "imageUrl": _updatedData.data()["imageUrl"],
               "price": _updatedData.data()["price"],
               "productCategory": _updatedData.data()["productCategory"],
-              "isFav": _updatedData.data()["isFav"],
+              // "isFav": _updatedData.data()["isFav"],
               "retailerId": _updatedData.data()["retailerId"],
+              "quantity": value.data()["quantity"],
             },
           );
           //  if image is also modified, delete previous image from Firebase Storage
@@ -393,8 +510,9 @@ class ProductsProvider with ChangeNotifier {
               "imageUrl": _updatedData.data()["imageUrl"],
               "price": _updatedData.data()["price"],
               "productCategory": _updatedData.data()["productCategory"],
-              "isFav": _updatedData.data()["isFav"],
+              // "isFav": _updatedData.data()["isFav"],
               "retailerId": _updatedData.data()["retailerId"],
+              "quantity": 0,
             },
           );
         }
@@ -404,22 +522,64 @@ class ProductsProvider with ChangeNotifier {
             .doc(id)
             .delete();
       },
-    );
+    ).then((value) {
+      var provider = Provider.of<FcmProvider>(context, listen: false);
+      //  If product was added, send addition notification
+      if (flag) {
+        provider.sendProductAcceptedMessage(
+            _updatedData.data()["retailerId"], _updatedData.data()["title"]);
+      }
+      //  else send modification notification
+      else {
+        provider.sendProductModifiedMessage(
+            _updatedData.data()["retailerId"], _updatedData.data()["title"]);
+      }
+    });
   }
 
   //  Product declined by admin
-  Future<void> declineProduct(String id) async {
-    //  Remove the item from pendingProducts
-    FirebaseFirestore.instance.collection("PendingProducts").doc(id).delete();
+  Future<void> declineProduct(String id, BuildContext context, String reason,
+      String retailerId, String productTitle) async {
+    //  Remove the item from pendingProducts and send notification to user
+    //  First remove the image from firebase storage
+    Provider.of<FcmProvider>(context, listen: false)
+        .sendProductRejectionReason(retailerId, productTitle, reason);
+    final DocumentReference docRef =
+        FirebaseFirestore.instance.collection("PendingProducts").doc(id);
+    docRef.get().then(
+      (value) {
+        //  If that product is present in collection
+        if (value.exists) {
+          FirebaseStorage.instance
+              .getReferenceFromUrl(value.data()["imageUrl"])
+              .then(
+            (imageRef) {
+              imageRef.delete().then(
+                (_) {
+                  docRef.delete();
+                },
+              );
+            },
+          );
+        }
+        docRef.delete();
+      },
+    );
   }
 
   //  Function to add product stock
-  Future<void> addProductQuantity(String productId, int newQuantity) async {
+  Future<void> addProductQuantity(String productId, int oldQuantity,
+      int addedQuantity, String title, BuildContext context) async {
     await FirebaseFirestore.instance
         .collection("Products")
         .doc(productId)
         .update(
-      {"quantity": newQuantity},
+      {"quantity": oldQuantity + addedQuantity},
     );
+    if (oldQuantity == 0) {
+      await Provider.of<FcmProvider>(context, listen: false)
+          .sendProductInStockToSubscribers(productId, title);
+    }
+    notifyListeners();
   }
 }

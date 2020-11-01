@@ -1,3 +1,5 @@
+import '../models/data_model.dart';
+
 import '../models/product_provider.dart';
 
 import '../dialog/custom_dialog.dart';
@@ -54,7 +56,7 @@ class MyCartItem extends StatelessWidget {
           leading: Container(
             margin: EdgeInsets.all(5),
             decoration:
-                BoxDecoration(color: Colors.teal, border: Border.all(width: 1)),
+                BoxDecoration(color: Colors.pink, border: Border.all(width: 1)),
             padding: EdgeInsets.all(10),
             child: Text(
               "Rs. ${price * quantity}",
@@ -72,7 +74,7 @@ class MyCartItem extends StatelessWidget {
           ),
           subtitle: Text(
             "Price per item: Rs. $price ",
-            style: TextStyle(fontSize: 10),
+            // style: TextStyle(fontSize: 10),
           ),
           children: [
             Padding(
@@ -83,7 +85,7 @@ class MyCartItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      "Quantity:",
+                      DataModel.QUANTITY,
                     ),
                   ),
                   IconButton(
@@ -94,7 +96,12 @@ class MyCartItem extends StatelessWidget {
                       onPressed: () {
                         Provider.of<CartProvider>(context, listen: false)
                             .addItemWithQuantity(
-                                productId, price, title, 1, context);
+                          productId,
+                          price,
+                          title,
+                          1,
+                          context,
+                        );
                       }),
                   Container(
                       padding: EdgeInsets.all(10),

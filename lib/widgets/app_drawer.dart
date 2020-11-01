@@ -1,3 +1,12 @@
+import '../screens/home_page_tabs_screen.dart';
+import '../models/data_model.dart';
+import '../screens/pending_payments_admin_screen.dart';
+
+import '../models/key_data_model.dart';
+import '../screens/notifications_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../screens/admin_screen.dart';
 import '../screens/user_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +39,18 @@ class AppDrawer extends StatelessWidget {
             duration: Duration(seconds: 1),
           ),
         );
+        //  If going back to home, remove previous home
+      } else if (name == DataModel.HOME) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
+      } else if (parentName != DataModel.HOME) {
+        //  Two times so that all the screens do not get stacked up on top of each other
+        //  Only the home screen remains always at the bottom while using drawer
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(routeName);
       } else {
         Navigator.of(context).pop();
         Navigator.of(context).pushNamed(routeName);
@@ -37,103 +58,186 @@ class AppDrawer extends StatelessWidget {
     }
 
     return Drawer(
-      child: Column(
+      child: Stack(
+        alignment: Alignment.topRight,
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(
-                5, MediaQuery.of(context).padding.top + 5, 5, 2),
-            width: double.infinity,
-            color: Theme.of(context).primaryColor,
-            height: 50,
-            child: Center(
-              child: Text(
-                "HELLO, FRIEND",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+            color: Colors.black,
+          ),
+          Container(
+            height: double.maxFinite,
+            width: 251.5,
+            decoration: BoxDecoration(
+              color: Colors.white,
             ),
           ),
-          //  If email isn't verified, show a red container on app bar
-          if (FirebaseAuth.instance.currentUser.emailVerified == false)
-            Container(
-              margin: EdgeInsets.fromLTRB(5, 5, 5, 2),
-              width: double.infinity,
-              color: Theme.of(context).errorColor,
-              height: 50,
-              child: Text(
-                "Email isn't verified.\nVerify to unlock features",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          Container(
+            height: double.maxFinite,
+            width: 250,
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+            ),
+          ),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                        horizontal: BorderSide(color: Colors.black, width: 4)),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      DataModel.HELLO_FRIEND,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
+                //  If email isn't verified, show a red container on app bar
+                if (FirebaseAuth.instance.currentUser.emailVerified == false)
+                  Container(
+                    width: double.infinity,
+                    color: Theme.of(context).errorColor,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: Text(
+                      DataModel.VERIFY_MAIL_TO_UNLOCK_FEATURES,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text(DataModel.HOME),
+                  onTap: () {
+                    checkAndPush(DataModel.HOME, HomePageTabsScreen.routeName);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                ListTile(
+                  leading: Icon(Icons.request_page),
+                  title: Text(DataModel.MY_ORDERS),
+                  onTap: () {
+                    checkAndPush(DataModel.MY_ORDERS, OrdersScreen.routeName);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                ListTile(
+                  leading: Icon(Icons.shopping_bag_rounded),
+                  title: Text(DataModel.MY_CART),
+                  onTap: () {
+                    checkAndPush(DataModel.MY_CART, CartScreen.routeName);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                ListTile(
+                  leading: Icon(Icons.edit_outlined),
+                  title: Text(DataModel.MY_PRODUCTS),
+                  onTap: () {
+                    checkAndPush(
+                        DataModel.MY_PRODUCTS, UserProductsScreen.routeName);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                ListTile(
+                  leading: Icon(Icons.person_outline),
+                  title: Text(DataModel.MY_PROFILE),
+                  onTap: () {
+                    checkAndPush(
+                        DataModel.MY_PROFILE, UserProfileScreen.routeName);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                if (FirebaseAuth.instance.currentUser.email ==
+                    KeyDataModel.adminEmail)
+                  ListTile(
+                    leading: Icon(Icons.done_all),
+                    title: Text(DataModel.APPROVE_PRODUCTS),
+                    onTap: () {
+                      checkAndPush(
+                          DataModel.APPROVE_PRODUCTS, AdminScreen.routeName);
+                    },
+                  ),
+                if (FirebaseAuth.instance.currentUser.email ==
+                    KeyDataModel.adminEmail)
+                  Divider(
+                    thickness: 1,
+                    endIndent: 15,
+                    indent: 15,
+                  ),
+                if (FirebaseAuth.instance.currentUser.email ==
+                    KeyDataModel.adminEmail)
+                  ListTile(
+                    leading: Icon(Icons.timelapse),
+                    title: Text(DataModel.PENDING_PAYMENTS),
+                    onTap: () {
+                      checkAndPush(DataModel.PENDING_PAYMENTS,
+                          PendingPaymentsAdminScreen.routeName);
+                    },
+                  ),
+                if (FirebaseAuth.instance.currentUser.email ==
+                    KeyDataModel.adminEmail)
+                  Divider(
+                    thickness: 1,
+                    endIndent: 15,
+                    indent: 15,
+                  ),
+                ListTile(
+                  leading: Icon(Icons.notification_important),
+                  title: Text(DataModel.MY_NOTIFICATIONS),
+                  onTap: () {
+                    checkAndPush(DataModel.MY_NOTIFICATIONS,
+                        NotificationsScreen.routeName);
+                  },
+                ),
+
+                Divider(
+                  thickness: 1,
+                  endIndent: 15,
+                  indent: 15,
+                ),
+                ListTile(
+                  leading: Icon(Icons.mail),
+                  title: Text(DataModel.CONTACT_US),
+                  onTap: () async {
+                    var url =
+                        "mailto:kirana.mart.grocery@gmail.com?subject=Kirana Mart Query&body=Please provide details regarding your problem.\nWe will contact you shortly.";
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: DataModel.SOMETHING_WENT_WRONG);
+                    }
+                  },
+                ),
+              ],
             ),
-          Divider(
-            thickness: 2,
           ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text("Home"),
-            onTap: () {
-              checkAndPush("Home", "/home_page_tabs_screen");
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          ListTile(
-            leading: Icon(Icons.request_page),
-            title: Text("My Orders"),
-            onTap: () {
-              checkAndPush("My Orders", OrdersScreen.routeName);
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          ListTile(
-            leading: Icon(Icons.shopping_bag_rounded),
-            title: Text("My Cart"),
-            onTap: () {
-              checkAndPush("My Cart", CartScreen.routeName);
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          ListTile(
-            leading: Icon(Icons.edit_outlined),
-            title: Text("My Products"),
-            onTap: () {
-              checkAndPush("My Products", UserProductsScreen.routeName);
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text("My Profile"),
-            onTap: () {
-              checkAndPush("My Profile", UserProfileScreen.routeName);
-            },
-          ),
-          Divider(
-            thickness: 1,
-          ),
-          if (FirebaseAuth.instance.currentUser.email ==
-              "aditya2512sharma@gmail.com")
-            ListTile(
-              leading: Icon(Icons.done_all),
-              title: Text("Approve Products"),
-              onTap: () {
-                checkAndPush("Approve Products", AdminScreen.routeName);
-              },
-            ),
-          if (FirebaseAuth.instance.currentUser.email ==
-              "aditya2512sharma@gmail.com")
-            Divider(
-              thickness: 1,
-            ),
         ],
       ),
     );
