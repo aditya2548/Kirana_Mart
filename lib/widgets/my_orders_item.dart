@@ -62,7 +62,7 @@ class MyOrdersItem extends StatelessWidget {
                   dense: true,
                   title: Text(order.productsList.toList()[index].title),
                   subtitle: Text(
-                      "Rs. ${order.productsList.toList()[index].pricePerUnit} x ${order.productsList.toList()[index].quantity}"),
+                      "RetailerRs. ${order.productsList.toList()[index].pricePerUnit} x ${order.productsList.toList()[index].quantity}"),
                   trailing: FlatButton(
                     color: Theme.of(context).primaryColorDark,
                     onPressed: () {

@@ -25,13 +25,14 @@ class ProductsProvider with ChangeNotifier {
   bool _hasMoreProducts = true;
 
   //  number of products to be loaded at once
-  int _productsPerPage = 20;
+  int _productsPerPage = 30;
 
   //  List of all pending products for approval by admin
   List<Product> _pendingProducts = [];
 
-  //  function to get a copy of list of products
+  //  function to get a copy of list of products sorted by title
   List<Product> get getProductItems {
+    _productItems.sort((a, b) => a.title.compareTo(b.title));
     return [..._productItems];
   }
 

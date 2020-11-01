@@ -107,16 +107,16 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
+                    headerCategoryItem(
+                        ProductCategory.PersonalCare, Icons.person, context),
                     headerCategoryItem(ProductCategory.Beverages,
                         Icons.emoji_food_beverage, context),
                     headerCategoryItem(ProductCategory.CookingEssentials,
                         Icons.food_bank, context),
-                    headerCategoryItem(ProductCategory.HouseHold,
-                        Icons.house_outlined, context),
                     headerCategoryItem(ProductCategory.PackagedFoods,
                         Icons.fastfood_rounded, context),
-                    headerCategoryItem(
-                        ProductCategory.PersonalCare, Icons.person, context),
+                    headerCategoryItem(ProductCategory.HouseHold,
+                        Icons.house_outlined, context),
                   ],
                 )),
             Container(

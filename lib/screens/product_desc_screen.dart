@@ -127,13 +127,20 @@ class _ProductDescriptionState extends State<ProductDescription> {
                                           color: Colors.red,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                  Text(
-                                    product.title,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 25,
-                                      color: Theme.of(context).primaryColorDark,
+                                  Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: FittedBox(
+                                      child: Text(
+                                        product.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 20,
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(

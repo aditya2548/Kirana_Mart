@@ -60,11 +60,16 @@ class ProductReview extends StatelessWidget {
             Container(
               child: Column(
                 children: [
-                  Text(
-                    "User: ${review.username}, Date: $date",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    width: 200,
+                    child: Text(
+                      "User: ${review.username}, Date: $date",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 10,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Container(
