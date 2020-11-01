@@ -63,11 +63,15 @@ class OrdersProvider with ChangeNotifier {
             "quantity": FieldValue.increment(-1 * element.quantity),
           });
           //  Send product running low in stock to subscribed users(quantity<=10)
+          //  Also, send low stock message to retailer
           await prod.doc(element.productId).get().then((value) {
             if (value.data()["quantity"] <= 10) {
               Provider.of<FcmProvider>(context, listen: false)
                   .sendLowStockAlertToSubscribers(
                       element.productId, element.title);
+              Provider.of<FcmProvider>(context, listen: false)
+                  .sendLowStockMessageToRetailer(element.productId,
+                      value.data()["quantity"], element.title);
             }
           });
           await c.doc(docRef.id).collection("productsList").add(

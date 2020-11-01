@@ -289,6 +289,44 @@ class FcmProvider with ChangeNotifier {
     }
   }
 
+  //  Message to notify retailer whenever his product quantity reaches less than 10
+  Future sendLowStockMessageToRetailer(
+      String productId, int quantity, String productTitle) async {
+    String retailerId = "";
+
+    String token;
+    //  Fetch retailerId from productId
+    await FirebaseFirestore.instance
+        .collection("Products")
+        .doc(productId)
+        .get()
+        .then((value) {
+      retailerId = value.data()["retailerId"];
+    });
+    //  Fetch retailer fcm token using retailerId
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(retailerId)
+        .collection("MyData")
+        .get()
+        .then((value) {
+      token = value.docs.first.data()["fcmToken"];
+    });
+    String title = "Your product is running low on stock";
+    String body = "Product: $productTitle \nQuantity left: $quantity";
+    await sendMessage(token, title, body);
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(retailerId)
+        .collection("MyMessages")
+        .add({
+      "title": title,
+      "body": body,
+      "dateTime": DateTime.now().toIso8601String(),
+      "error": true,
+    });
+  }
+
   //  Message to be sent to admin in case he needs to do a payment to a retailer
   //  And store the payment details (retailer upi and amount to PendingPayments)
   Future<void> sendPaymentMessageToAdmin(
