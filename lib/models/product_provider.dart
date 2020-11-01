@@ -221,7 +221,13 @@ class ProductsProvider with ChangeNotifier {
         // _productItems = _fetchedProducts;
         print(
             "Lazy Loading fetched: ${_fetchedProducts.length}, total: ${allProducts.length}");
+        // _productItems = allProducts.toSet().toList();
+        //  To avoid data duplicacy
+        final ids = allProducts.map((e) => e.id).toSet();
+        allProducts.retainWhere((x) => ids.remove(x.id));
         _productItems = allProducts;
+        print(
+            "Lazy Loading fetched: ${_fetchedProducts.length}, total: ${allProducts.length}");
         fetchFavsRealTime();
 
         notifyListeners();
@@ -266,7 +272,7 @@ class ProductsProvider with ChangeNotifier {
           FirebaseFirestore.instance.collection("Products");
 
       final value = await c.get();
-      final List<Product> _fetchedProducts = [];
+      List<Product> _fetchedProducts = [];
       if (value.docs == null) {
         return;
       }
@@ -299,6 +305,7 @@ class ProductsProvider with ChangeNotifier {
           quantity: element.data()["quantity"],
         ));
       });
+      _fetchedProducts = _fetchedProducts.toSet().toList();
       _fetchedProducts.sort((a, b) => a.title.compareTo(b.title));
       _productItems = _fetchedProducts;
       notifyListeners();

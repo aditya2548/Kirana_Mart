@@ -67,7 +67,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.elliptical(1200, 2200),
+              bottomRight: Radius.elliptical(1200, 2200),
             ),
             color: Colors.grey[900],
           ),
