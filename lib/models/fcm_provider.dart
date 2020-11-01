@@ -381,16 +381,16 @@ class FcmProvider with ChangeNotifier {
 
   //  To subscribe to a product when product is added to fav
   Future<void> subscribeToTopic(String id) async {
-    print("SUBSCRIBING");
+    // print("SUBSCRIBING");
     await _firebaseMessaging.subscribeToTopic(id);
-    print("SUBSCRIBEDDD");
+    // print("SUBSCRIBEDDD");
   }
 
   //  To un-subscribe to a product when product is removed from fav
   Future<void> unsubscribeFromTopic(String id) async {
-    print("UNSUBSCRIBING");
+    // print("UNSUBSCRIBING");
     await _firebaseMessaging.unsubscribeFromTopic(id);
-    print("UNSUBSCRIBIED");
+    // print("UNSUBSCRIBIED");
   }
 
   //  Notification to be sent when a fav product is back in stock

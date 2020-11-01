@@ -1,3 +1,5 @@
+import '../screens/user_profile_screen.dart';
+
 import '../models/data_model.dart';
 import 'package:upi_pay/upi_pay.dart';
 
@@ -52,12 +54,13 @@ class _EditProfileState extends State<EditProfile> {
           "upi": _newUpi,
           "mobileNumber": _newMobileNumber,
         });
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed(UserProfileScreen.routeName);
       } catch (error) {
         print(error);
         Fluttertoast.cancel();
         Fluttertoast.showToast(msg: DataModel.SOMETHING_WENT_WRONG);
-      } finally {
-        Navigator.of(context).pop();
       }
     }
   }
