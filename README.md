@@ -1,16 +1,6 @@
 # Kirana_Mart
 
-A new Flutter project.
+- Your one stop smart shopping app.
+- A grocery shopping application which connects consumers with local hypervendors to buy and sell products online and in the best of their interests without any hassle.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+In the current pandemic time, it is so difficult and unsafe for people to go out, compare products from shop to shop and buy the best value. This job is both time consuming and unsafe. Also due to lockdown, retailers and local vendors are unable to earn as much as they used to do and are finding it difficult to make the two ends meet. Our app connects the customers with the local hypervendors and makes the buying and selling process easier for both of them. Retailers who join with us get good price for their products and customers get the best vale for their products from the trusted sources on their doorstep.
